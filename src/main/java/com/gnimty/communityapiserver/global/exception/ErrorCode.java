@@ -37,5 +37,6 @@ public enum ErrorCode {
 		}
 
 		public static final String INVALID_INPUT_VALUE = "입력값 중 검증에 실패한 값이 있습니다.";
+		public static final String AGREE_TERMS_MUST_BE_TRUE = "약관 동의 항목은 반드시 true여야 합니다.";
 	}
 }
