@@ -9,4 +9,6 @@ public class SignupServiceRequest {
 
 	private String email;
 	private String password;
+	private Boolean agreeTerms;
+	private String code;
 }
