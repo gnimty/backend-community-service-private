@@ -1,5 +1,6 @@
 package com.gnimty.communityapiserver.domain.member.service;
 
+import com.gnimty.communityapiserver.domain.member.entity.Member;
 import com.gnimty.communityapiserver.domain.member.repository.MemberRepository;
 import com.gnimty.communityapiserver.global.exception.BaseException;
 import com.gnimty.communityapiserver.global.exception.ErrorCode;
@@ -18,5 +19,10 @@ public class MemberReadService {
 		if (memberRepository.existsByEmail(email)) {
 			throw new BaseException(ErrorCode.ALREADY_REGISTERED_EMAIL);
 		}
+	}
+
+	public Member findByEmailOrElseThrow(String email) {
+		return memberRepository.findByEmail(email)
+			.orElseThrow(() -> new BaseException(ErrorCode.INVALID_LOGIN));
 	}
 }

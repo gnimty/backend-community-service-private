@@ -22,12 +22,16 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.security:spring-security-crypto:6.0.2'
-	testImplementation 'org.projectlombok:lombok:1.18.22'
+	// db
 	runtimeOnly 'com.mysql:mysql-connector-j'
 	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb'
 	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
 	implementation 'org.springframework.boot:spring-boot-starter-data-redis'
+
+	// else
+	implementation 'io.jsonwebtoken:jjwt:0.9.1'
+	implementation 'org.springframework.security:spring-security-crypto:6.0.2'
+	testImplementation 'org.projectlombok:lombok:1.18.22'
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-web'
 	compileOnly 'org.projectlombok:lombok'

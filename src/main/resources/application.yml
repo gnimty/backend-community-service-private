@@ -21,3 +21,6 @@ spring:
   data:
     mongodb:
       uri: mongodb://localhost:27017/community
+
+jwt:
+  secret: THIS_IS_JWT_SECRET_USING_GNIMTY_BY_2023_08_28
