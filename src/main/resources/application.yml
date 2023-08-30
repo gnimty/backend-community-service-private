@@ -24,3 +24,9 @@ spring:
 
 jwt:
   secret: THIS_IS_JWT_SECRET_USING_GNIMTY_BY_2023_08_28
+
+oauth:
+  kakao:
+    client_id: e705950a0e6b5f5dae67e3c5e5f7ac73
+    client_secret: JIzEKhSZqY16oPaFiascuFSBpdikQW44
+    redirect_uri: http://localhost:8080/oauth/kakao/redirect
