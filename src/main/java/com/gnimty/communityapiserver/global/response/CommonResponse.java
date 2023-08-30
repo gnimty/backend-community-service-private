@@ -44,7 +44,9 @@ public class CommonResponse<T> {
 
 	public static <T extends CustomFieldError> CommonResponse<T> fail(ErrorCode errorCode, T data) {
 		return CommonResponse.<T>builder()
-			.status(new ApiStatus(data.getMessage(), errorCode.getStatus().value(), data.getField())).build();
+			.status(
+				new ApiStatus(data.getMessage(), errorCode.getStatus().value(), data.getField()))
+			.build();
 	}
 
 	@Data
