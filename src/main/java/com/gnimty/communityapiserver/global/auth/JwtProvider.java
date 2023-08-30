@@ -6,7 +6,9 @@ import static com.gnimty.communityapiserver.global.constant.Auth.BEARER;
 import static com.gnimty.communityapiserver.global.constant.Auth.REFRESH_TOKEN_EXPIRATION;
 import static com.gnimty.communityapiserver.global.constant.Auth.SUBJECT_ACCESS_TOKEN;
 import static com.gnimty.communityapiserver.global.constant.Auth.SUBJECT_REFRESH_TOKEN;
-import static com.gnimty.communityapiserver.global.exception.ErrorCode.*;
+import static com.gnimty.communityapiserver.global.exception.ErrorCode.MEMBER_NOT_FOUND;
+import static com.gnimty.communityapiserver.global.exception.ErrorCode.TOKEN_EXPIRED;
+import static com.gnimty.communityapiserver.global.exception.ErrorCode.TOKEN_INVALID;
 
 import com.gnimty.communityapiserver.domain.member.controller.dto.response.AuthToken;
 import com.gnimty.communityapiserver.domain.member.entity.Member;
