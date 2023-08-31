@@ -5,7 +5,7 @@ import lombok.Getter;
 
 @Getter
 @Builder
-public class KakaoLoginServiceRequest {
+public class OauthLoginServiceRequest {
 
 	private String authCode;
 }

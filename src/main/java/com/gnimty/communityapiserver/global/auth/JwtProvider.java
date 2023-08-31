@@ -10,6 +10,7 @@ import static com.gnimty.communityapiserver.global.exception.ErrorCode.MEMBER_NO
 import static com.gnimty.communityapiserver.global.exception.ErrorCode.TOKEN_EXPIRED;
 import static com.gnimty.communityapiserver.global.exception.ErrorCode.TOKEN_INVALID;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gnimty.communityapiserver.domain.member.controller.dto.response.AuthToken;
 import com.gnimty.communityapiserver.domain.member.entity.Member;
 import com.gnimty.communityapiserver.domain.member.repository.MemberRepository;
@@ -20,8 +21,11 @@ import io.jsonwebtoken.Jwts;
 import io.jsonwebtoken.MalformedJwtException;
 import io.jsonwebtoken.SignatureAlgorithm;
 import io.jsonwebtoken.SignatureException;
+import java.io.IOException;
 import java.nio.charset.StandardCharsets;
+import java.util.Base64;
 import java.util.Date;
+import java.util.Map;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -94,6 +98,20 @@ public class JwtProvider {
 			.accessToken(newAccessToken)
 			.refreshToken(newRefreshToken)
 			.build();
+	}
+
+	public String getEmailByToken(String token) {
+		String[] chunks = token.split("\\.");
+		Base64.Decoder decoder = Base64.getUrlDecoder();
+		String payload = new String(decoder.decode(chunks[1]));
+		ObjectMapper objectMapper = new ObjectMapper();
+
+		try {
+			Map<String, Object> payloadMap = objectMapper.readValue(payload, Map.class);
+			return (String) payloadMap.get("email");
+		} catch (IOException e) {
+			throw new BaseException(TOKEN_INVALID);
+		}
 	}
 
 	private boolean checkRefreshTokenEquals(Member member, String refreshToken) {

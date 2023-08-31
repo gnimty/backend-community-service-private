@@ -19,7 +19,7 @@ public enum ErrorCode {
 	URL_NOT_FOUND(NOT_FOUND, "%s : 해당 경로는 존재하지 않는 경로입니다."),
 	METHOD_NOT_ALLOWED(HttpStatus.METHOD_NOT_ALLOWED, "%s : 해당 HTTP 메소드는 지원되지 않습니다. 허용 메소드 : %s"),
 	MEDIA_TYPE_NOT_SUPPORTED(UNSUPPORTED_MEDIA_TYPE, "%s : 지원하지 않는 media type 입니다. 지원 type : %s"),
-	ALREADY_REGISTERED_EMAIL(CONFLICT, "이미 인증된 이메일 입니다."),
+	ALREADY_REGISTERED_EMAIL(CONFLICT, "이미 가입된 이메일 입니다."),
 	MEMBER_NOT_FOUND(NOT_FOUND, ErrorMessage.MEMBER_NOT_FOUND),
 	TOKEN_EXPIRED(UNAUTHORIZED, ErrorMessage.TOKEN_EXPIRED),
 	TOKEN_INVALID(UNAUTHORIZED, ErrorMessage.TOKEN_INVALID),
