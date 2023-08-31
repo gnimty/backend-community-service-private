@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class AuthService {
 
 	private final MemberRepository memberRepository;
@@ -40,7 +41,6 @@ public class AuthService {
 	private static final String NICKNAME_PREFIX = "익명의소환사#";
 	private static final String REFRESH_PREFIX = "[REFRESH]";
 
-	@Transactional
 	public void signup(SignupServiceRequest request) {
 		memberReadService.throwIfExistByEmail(request.getEmail());
 
@@ -60,7 +60,6 @@ public class AuthService {
 		// 기존 인증 정보들 삭제
 	}
 
-	@Transactional
 	public AuthToken login(LoginServiceRequest request) {
 		Member member = memberReadService.findByEmailOrElseThrow(request.getEmail());
 		throwIfMismatchPassword(request.getPassword(), member.getPassword());
@@ -70,7 +69,6 @@ public class AuthService {
 		return authToken;
 	}
 
-	@Transactional
 	public AuthToken kakaoLogin(OauthLoginServiceRequest request) {
 		String userEmail = kakaoOauthUtil.getKakaoUserEmail(request.getAuthCode());
 
