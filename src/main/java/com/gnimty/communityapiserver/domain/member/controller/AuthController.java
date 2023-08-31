@@ -1,6 +1,6 @@
 package com.gnimty.communityapiserver.domain.member.controller;
 
-import com.gnimty.communityapiserver.domain.member.controller.dto.request.KakaoLoginRequest;
+import com.gnimty.communityapiserver.domain.member.controller.dto.request.OauthLoginRequest;
 import com.gnimty.communityapiserver.domain.member.controller.dto.request.LoginRequest;
 import com.gnimty.communityapiserver.domain.member.controller.dto.request.SignupRequest;
 import com.gnimty.communityapiserver.domain.member.controller.dto.response.AuthToken;
@@ -35,7 +35,12 @@ public class AuthController {
 	}
 
 	@PostMapping("/oauth/kakao")
-	public CommonResponse<AuthToken> kakaoLogin(@RequestBody @Valid KakaoLoginRequest request) {
+	public CommonResponse<AuthToken> kakaoLogin(@RequestBody @Valid OauthLoginRequest request) {
 		return CommonResponse.success(authService.kakaoLogin(request.toServiceRequest()));
+	}
+
+	@PostMapping("/oauth/google")
+	public CommonResponse<AuthToken> googleLogin(@RequestBody @Valid OauthLoginRequest request) {
+		return CommonResponse.success(authService.googleLogin(request.toServiceRequest()));
 	}
 }
