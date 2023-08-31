@@ -3,9 +3,10 @@ package com.gnimty.communityapiserver.domain.member.service;
 import com.gnimty.communityapiserver.domain.member.controller.dto.response.AuthToken;
 import com.gnimty.communityapiserver.domain.member.entity.Member;
 import com.gnimty.communityapiserver.domain.member.repository.MemberRepository;
-import com.gnimty.communityapiserver.domain.member.service.dto.request.KakaoLoginServiceRequest;
+import com.gnimty.communityapiserver.domain.member.service.dto.request.OauthLoginServiceRequest;
 import com.gnimty.communityapiserver.domain.member.service.dto.request.LoginServiceRequest;
 import com.gnimty.communityapiserver.domain.member.service.dto.request.SignupServiceRequest;
+import com.gnimty.communityapiserver.domain.member.service.utils.GoogleOauthUtil;
 import com.gnimty.communityapiserver.domain.member.service.utils.KakaoOauthUtil;
 import com.gnimty.communityapiserver.domain.oauthinfo.entity.OauthInfo;
 import com.gnimty.communityapiserver.domain.oauthinfo.repository.OauthInfoRepository;
@@ -34,6 +35,7 @@ public class AuthService {
 	private final JwtProvider jwtProvider;
 	private final StringRedisTemplate redisTemplate;
 	private final KakaoOauthUtil kakaoOauthUtil;
+	private final GoogleOauthUtil googleOauthUtil;
 
 	private static final String NICKNAME_PREFIX = "익명의소환사#";
 	private static final String REFRESH_PREFIX = "[REFRESH]";
@@ -69,18 +71,29 @@ public class AuthService {
 	}
 
 	@Transactional
-	public AuthToken kakaoLogin(KakaoLoginServiceRequest request) {
-		String kakaoUserEmail = kakaoOauthUtil.getKakaoUserEmail(request.getAuthCode());
+	public AuthToken kakaoLogin(OauthLoginServiceRequest request) {
+		String userEmail = kakaoOauthUtil.getKakaoUserEmail(request.getAuthCode());
 
-		Member member = oauthInfoRepository.findByEmail(kakaoUserEmail)
+		Member member = oauthInfoRepository.findByEmail(userEmail)
 			.map(OauthInfo::getMember)
-			.orElseGet(() -> createMemberByKakaoEmail(kakaoUserEmail));
+			.orElseGet(() -> createMemberByEmail(userEmail, Provider.KAKAO));
 		AuthToken authToken = generateTokenPair(member);
 		saveRefreshTokenInRedis(member, authToken.getRefreshToken());
 		return authToken;
 	}
 
-	private Member createMemberByKakaoEmail(String kakaoUserEmail) {
+	public AuthToken googleLogin(OauthLoginServiceRequest request) {
+		String googleUserEmail = googleOauthUtil.getGoogleUserEmail(request.getAuthCode());
+
+		Member member = oauthInfoRepository.findByEmail(googleUserEmail)
+			.map(OauthInfo::getMember)
+			.orElseGet(() -> createMemberByEmail(googleUserEmail, Provider.GOOGLE));
+		AuthToken authToken = generateTokenPair(member);
+		saveRefreshTokenInRedis(member, authToken.getRefreshToken());
+		return authToken;
+	}
+
+	private Member createMemberByEmail(String userEmail, Provider provider) {
 		Member member = Member.builder()
 			.rsoLinked(false)
 			.favoriteChampionID(null)
@@ -89,8 +102,8 @@ public class AuthService {
 		memberRepository.save(member);
 
 		OauthInfo oauthInfo = OauthInfo.builder()
-			.provider(Provider.KAKAO)
-			.email(kakaoUserEmail)
+			.provider(provider)
+			.email(userEmail)
 			.member(member)
 			.build();
 		oauthInfoRepository.save(oauthInfo);
