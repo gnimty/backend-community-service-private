@@ -30,3 +30,7 @@ oauth:
     client_id: e705950a0e6b5f5dae67e3c5e5f7ac73
     client_secret: JIzEKhSZqY16oPaFiascuFSBpdikQW44
     redirect_uri: http://localhost:8080/oauth/kakao/redirect
+  google:
+    client_id: 512671619671-tuu1i18egbsg2ie3ph6crs9p984evjbt.apps.googleusercontent.com
+    client_secret: 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
+    redirect_uri: http://localhost:8080/oauth/google/redirect
