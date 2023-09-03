@@ -14,6 +14,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gnimty.communityapiserver.domain.member.controller.dto.response.AuthToken;
 import com.gnimty.communityapiserver.domain.member.entity.Member;
 import com.gnimty.communityapiserver.domain.member.repository.MemberRepository;
+import com.gnimty.communityapiserver.global.constant.Auth;
 import com.gnimty.communityapiserver.global.exception.BaseException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -26,6 +27,8 @@ import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Date;
 import java.util.Map;
+import java.util.Optional;
+import javax.servlet.http.HttpServletRequest;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
@@ -45,20 +48,6 @@ public class JwtProvider {
 	public Member findMemberByToken(String token) {
 		return memberRepository.findById(getIdByToken(token))
 			.orElseThrow(() -> new BaseException(MEMBER_NOT_FOUND));
-	}
-
-	private Long getIdByToken(String token) {
-		try {
-			return Long.parseLong(String.valueOf(Jwts.parser()
-				.setSigningKey(generateKey())
-				.parseClaimsJws(token)
-				.getBody()
-				.get("id")));
-		} catch (ExpiredJwtException e) {
-			throw new BaseException(TOKEN_EXPIRED);
-		} catch (MalformedJwtException | SignatureException | IllegalArgumentException e) {
-			throw new BaseException(TOKEN_INVALID);
-		}
 	}
 
 	public String generateToken(Long id, Long expiration, String subject) {
@@ -114,6 +103,22 @@ public class JwtProvider {
 		}
 	}
 
+	public void checkValidation(String token) {
+		try {
+			Jwts.parser()
+				.setSigningKey(generateKey())
+				.parseClaimsJws(token);
+		} catch (ExpiredJwtException e) {
+			throw new BaseException(TOKEN_EXPIRED);
+		} catch (MalformedJwtException | SignatureException | IllegalArgumentException e) {
+			throw new BaseException(TOKEN_INVALID);
+		}
+	}
+
+	public Optional<String> resolveToken(HttpServletRequest request) {
+		return Optional.ofNullable(request.getHeader(Auth.AUTHORIZATION.getContent()));
+	}
+
 	private boolean checkRefreshTokenEquals(Member member, String refreshToken) {
 		ValueOperations<String, String> stringValueOperations = redisTemplate.opsForValue();
 
@@ -139,11 +144,13 @@ public class JwtProvider {
 		return claims;
 	}
 
-	public void checkValidation(String token) {
+	private Long getIdByToken(String token) {
 		try {
-			Jwts.parser()
+			return Long.parseLong(String.valueOf(Jwts.parser()
 				.setSigningKey(generateKey())
-				.parseClaimsJws(token);
+				.parseClaimsJws(token)
+				.getBody()
+				.get("id")));
 		} catch (ExpiredJwtException e) {
 			throw new BaseException(TOKEN_EXPIRED);
 		} catch (MalformedJwtException | SignatureException | IllegalArgumentException e) {
