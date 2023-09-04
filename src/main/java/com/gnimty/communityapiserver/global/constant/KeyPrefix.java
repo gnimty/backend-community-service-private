@@ -7,7 +7,8 @@ public enum KeyPrefix {
 
 	NICKNAME("익명의소환사#"),
 	REFRESH("[REFRESH]"),
-	EMAIL("[EMAIL]");
+	EMAIL("[EMAIL]"),
+	SIGNUP("[SIGNUP]");
 
 	private final String prefix;
 
