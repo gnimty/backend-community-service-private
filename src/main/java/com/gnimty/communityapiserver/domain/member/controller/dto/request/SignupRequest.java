@@ -25,15 +25,11 @@ public class SignupRequest {
 	@AssertTrue(message = AGREE_TERMS_MUST_BE_TRUE)
 	private Boolean agreeTerms;
 
-	@NotNull(message = INVALID_INPUT_VALUE)
-	private String code;
-
 	public SignupServiceRequest toServiceRequest() {
 		return SignupServiceRequest.builder()
 			.email(email)
 			.password(password)
 			.agreeTerms(agreeTerms)
-			.code(code)
 			.build();
 	}
 }
