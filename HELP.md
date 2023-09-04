@@ -1,6 +1,7 @@
 # Getting Started
 
 ### Reference Documentation
+
 For further reference, please consider the following sections:
 
 * [Official Gradle documentation](https://docs.gradle.org)
@@ -12,6 +13,7 @@ For further reference, please consider the following sections:
 * [Spring Data Redis (Access+Driver)](https://docs.spring.io/spring-boot/docs/2.7.15/reference/htmlsingle/index.html#data.nosql.redis)
 
 ### Guides
+
 The following guides illustrate how to use some features concretely:
 
 * [Validation](https://spring.io/guides/gs/validating-form-input/)
@@ -22,6 +24,7 @@ The following guides illustrate how to use some features concretely:
 * [Messaging with Redis](https://spring.io/guides/gs/messaging-redis/)
 
 ### Additional Links
+
 These additional references should also help you:
 
 * [Gradle Build Scans – insights for your project's build](https://scans.gradle.com#gradle)
