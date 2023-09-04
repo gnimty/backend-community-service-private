@@ -1,8 +1,9 @@
 package com.gnimty.communityapiserver.domain.member.controller;
 
 import com.gnimty.communityapiserver.domain.member.controller.dto.request.EmailAuthRequest;
-import com.gnimty.communityapiserver.domain.member.controller.dto.request.OauthLoginRequest;
+import com.gnimty.communityapiserver.domain.member.controller.dto.request.EmailVerifyRequest;
 import com.gnimty.communityapiserver.domain.member.controller.dto.request.LoginRequest;
+import com.gnimty.communityapiserver.domain.member.controller.dto.request.OauthLoginRequest;
 import com.gnimty.communityapiserver.domain.member.controller.dto.request.SignupRequest;
 import com.gnimty.communityapiserver.domain.member.controller.dto.response.AuthToken;
 import com.gnimty.communityapiserver.domain.member.service.AuthService;
@@ -46,6 +47,14 @@ public class AuthController {
 	@PostMapping("/auth/email")
 	public CommonResponse<Void> sendEmailAuthCode(@RequestBody @Valid EmailAuthRequest request) {
 		authService.sendEmailAuthCode(request.toServiceRequest());
+		return CommonResponse.success();
+	}
+
+	@PostMapping("/auth/email/code")
+	public CommonResponse<Void> verifyEmailAuthCode(
+		@RequestBody @Valid EmailVerifyRequest request
+	) {
+		authService.verifyEmailAuthCode(request.toServiceRequest());
 		return CommonResponse.success();
 	}
 }
