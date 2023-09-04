@@ -3,8 +3,9 @@ package com.gnimty.communityapiserver.domain.member.service;
 import com.gnimty.communityapiserver.domain.member.controller.dto.response.AuthToken;
 import com.gnimty.communityapiserver.domain.member.entity.Member;
 import com.gnimty.communityapiserver.domain.member.repository.MemberRepository;
-import com.gnimty.communityapiserver.domain.member.service.dto.request.OauthLoginServiceRequest;
+import com.gnimty.communityapiserver.domain.member.service.dto.request.EmailAuthServiceRequest;
 import com.gnimty.communityapiserver.domain.member.service.dto.request.LoginServiceRequest;
+import com.gnimty.communityapiserver.domain.member.service.dto.request.OauthLoginServiceRequest;
 import com.gnimty.communityapiserver.domain.member.service.dto.request.SignupServiceRequest;
 import com.gnimty.communityapiserver.domain.member.service.utils.GoogleOauthUtil;
 import com.gnimty.communityapiserver.domain.member.service.utils.KakaoOauthUtil;
@@ -12,14 +13,19 @@ import com.gnimty.communityapiserver.domain.oauthinfo.entity.OauthInfo;
 import com.gnimty.communityapiserver.domain.oauthinfo.repository.OauthInfoRepository;
 import com.gnimty.communityapiserver.global.auth.JwtProvider;
 import com.gnimty.communityapiserver.global.constant.Auth;
+import com.gnimty.communityapiserver.global.constant.KeyPrefix;
 import com.gnimty.communityapiserver.global.constant.Provider;
 import com.gnimty.communityapiserver.global.constant.Status;
 import com.gnimty.communityapiserver.global.exception.BaseException;
 import com.gnimty.communityapiserver.global.exception.ErrorCode;
+import com.gnimty.communityapiserver.global.utils.RandomCodeGenerator;
 import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -37,9 +43,7 @@ public class AuthService {
 	private final StringRedisTemplate redisTemplate;
 	private final KakaoOauthUtil kakaoOauthUtil;
 	private final GoogleOauthUtil googleOauthUtil;
-
-	private static final String NICKNAME_PREFIX = "익명의소환사#";
-	private static final String REFRESH_PREFIX = "[REFRESH]";
+	private final JavaMailSender mailSender;
 
 	public void signup(SignupServiceRequest request) {
 		memberReadService.throwIfExistByEmail(request.getEmail());
@@ -91,6 +95,32 @@ public class AuthService {
 		return authToken;
 	}
 
+	public void sendEmailAuthCode(EmailAuthServiceRequest request) {
+		String subject = "인증 코드 전송 메일";
+		String code = RandomCodeGenerator.generateCodeByLength(6);
+		sendMail(request.getEmail(), subject, code);
+
+		ValueOperations<String, String> stringValueOperations = redisTemplate.opsForValue();
+		String key = getRedisKey(KeyPrefix.EMAIL, request.getEmail());
+		stringValueOperations.set(key, code);
+		stringValueOperations.getAndExpire(
+			key,
+			Auth.EMAIL_CODE_EXPIRATION.getExpiration(),
+			TimeUnit.MILLISECONDS
+		);
+	}
+
+	private void sendMail(String to, String subject, String body) {
+		MimeMessagePreparator messagePreparator =
+			mimeMessage -> {
+				final MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+				helper.setTo(to);
+				helper.setSubject(subject);
+				helper.setText(body, true);
+			};
+		mailSender.send(messagePreparator);
+	}
+
 	private Member createMemberByEmail(String userEmail, Provider provider) {
 		Member member = Member.builder()
 			.rsoLinked(false)
@@ -109,7 +139,7 @@ public class AuthService {
 	}
 
 	private String generateTemporaryNickname(Long id) {
-		return NICKNAME_PREFIX + id;
+		return KeyPrefix.NICKNAME.getPrefix() + id;
 	}
 
 	private String encodePassword(String rawPassword) {
@@ -136,7 +166,7 @@ public class AuthService {
 
 	private void saveRefreshTokenInRedis(Member member, String refreshToken) {
 		ValueOperations<String, String> stringValueOperations = redisTemplate.opsForValue();
-		String key = getRefreshKey(member.getId());
+		String key = getRedisKey(KeyPrefix.REFRESH, String.valueOf(member.getId()));
 
 		stringValueOperations.set(key, refreshToken.replaceAll(Auth.BEARER.getContent(), ""));
 		stringValueOperations.getAndExpire(
@@ -146,7 +176,7 @@ public class AuthService {
 		);
 	}
 
-	private String getRefreshKey(Long id) {
-		return REFRESH_PREFIX + id;
+	private String getRedisKey(KeyPrefix prefix, String key) {
+		return prefix + key;
 	}
 }
