@@ -4,6 +4,7 @@ import com.gnimty.communityapiserver.domain.member.controller.dto.response.AuthT
 import com.gnimty.communityapiserver.domain.member.entity.Member;
 import com.gnimty.communityapiserver.domain.member.repository.MemberRepository;
 import com.gnimty.communityapiserver.domain.member.service.dto.request.EmailAuthServiceRequest;
+import com.gnimty.communityapiserver.domain.member.service.dto.request.EmailVerifyServiceRequest;
 import com.gnimty.communityapiserver.domain.member.service.dto.request.LoginServiceRequest;
 import com.gnimty.communityapiserver.domain.member.service.dto.request.OauthLoginServiceRequest;
 import com.gnimty.communityapiserver.domain.member.service.dto.request.SignupServiceRequest;
@@ -48,8 +49,11 @@ public class AuthService {
 
 	public void signup(SignupServiceRequest request) {
 		memberReadService.throwIfExistByEmail(request.getEmail());
-
-		// 이메일 인증 확인
+		ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+		String verify = valueOperations.get(getRedisKey(KeyPrefix.SIGNUP, request.getEmail()));
+		if (verify == null) {
+			throw new BaseException(ErrorCode.UNAUTHORIZED_EMAIL);
+		}
 
 		Member member = Member.builder()
 			.rsoLinked(false)
@@ -62,7 +66,7 @@ public class AuthService {
 		memberRepository.save(member);
 		member.updateNickname(generateTemporaryNickname(member.getId()));
 
-		// 기존 인증 정보들 삭제
+		redisTemplate.delete(getRedisKey(KeyPrefix.SIGNUP, request.getEmail()));
 	}
 
 	public AuthToken login(LoginServiceRequest request) {
@@ -70,7 +74,10 @@ public class AuthService {
 		throwIfMismatchPassword(request.getPassword(), member.getPassword());
 
 		AuthToken authToken = generateTokenPair(member);
-		saveRefreshTokenInRedis(member, authToken.getRefreshToken());
+		saveInRedis(
+			getRedisKey(KeyPrefix.REFRESH, String.valueOf(member.getId())),
+			authToken.getRefreshToken().replaceAll(Auth.BEARER.getContent(), ""),
+			Auth.REFRESH_TOKEN_EXPIRATION.getExpiration());
 		return authToken;
 	}
 
@@ -81,7 +88,10 @@ public class AuthService {
 			.map(OauthInfo::getMember)
 			.orElseGet(() -> createMemberByEmail(userEmail, Provider.KAKAO));
 		AuthToken authToken = generateTokenPair(member);
-		saveRefreshTokenInRedis(member, authToken.getRefreshToken());
+		saveInRedis(
+			getRedisKey(KeyPrefix.REFRESH, String.valueOf(member.getId())),
+			authToken.getRefreshToken().replaceAll(Auth.BEARER.getContent(), ""),
+			Auth.REFRESH_TOKEN_EXPIRATION.getExpiration());
 		return authToken;
 	}
 
@@ -92,7 +102,10 @@ public class AuthService {
 			.map(OauthInfo::getMember)
 			.orElseGet(() -> createMemberByEmail(googleUserEmail, Provider.GOOGLE));
 		AuthToken authToken = generateTokenPair(member);
-		saveRefreshTokenInRedis(member, authToken.getRefreshToken());
+		saveInRedis(
+			getRedisKey(KeyPrefix.REFRESH, String.valueOf(member.getId())),
+			authToken.getRefreshToken().replaceAll(Auth.BEARER.getContent(), ""),
+			Auth.REFRESH_TOKEN_EXPIRATION.getExpiration());
 		return authToken;
 	}
 
@@ -110,6 +123,21 @@ public class AuthService {
 			Auth.EMAIL_CODE_EXPIRATION.getExpiration(),
 			TimeUnit.MILLISECONDS
 		);
+	}
+
+	public void verifyEmailAuthCode(EmailVerifyServiceRequest request) {
+		ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+
+		String emailAuthKey = getRedisKey(KeyPrefix.EMAIL, request.getEmail());
+		String signupKey = getRedisKey(KeyPrefix.SIGNUP, request.getEmail());
+		String savedCode = valueOperations.get(emailAuthKey);
+
+		if (!request.getCode().equals(savedCode)) {
+			throw new BaseException(ErrorCode.INVALID_EMAIL_AUTH_CODE);
+		}
+
+		saveInRedis(signupKey, "verified", Auth.SIGNUP_EXPIRATION.getExpiration());
+		valueOperations.getAndDelete(emailAuthKey);
 	}
 
 	private void sendMail(String to, String subject, String body) {
@@ -166,14 +194,13 @@ public class AuthService {
 			.build();
 	}
 
-	private void saveRefreshTokenInRedis(Member member, String refreshToken) {
+	private void saveInRedis(String key, String value, long timeout) {
 		ValueOperations<String, String> stringValueOperations = redisTemplate.opsForValue();
-		String key = getRedisKey(KeyPrefix.REFRESH, String.valueOf(member.getId()));
 
-		stringValueOperations.set(key, refreshToken.replaceAll(Auth.BEARER.getContent(), ""));
+		stringValueOperations.set(key, value);
 		stringValueOperations.getAndExpire(
 			key,
-			Auth.REFRESH_TOKEN_EXPIRATION.getExpiration(),
+			timeout,
 			TimeUnit.MILLISECONDS
 		);
 	}
