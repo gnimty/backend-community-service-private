@@ -44,7 +44,7 @@ spring:
             enable: true
         debug: true
         transport:
-            protocol: smtp
+          protocol: smtp
 
 jwt:
   secret: THIS_IS_JWT_SECRET_USING_GNIMTY_BY_2023_08_28
