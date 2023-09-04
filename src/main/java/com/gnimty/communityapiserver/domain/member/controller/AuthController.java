@@ -1,5 +1,6 @@
 package com.gnimty.communityapiserver.domain.member.controller;
 
+import com.gnimty.communityapiserver.domain.member.controller.dto.request.EmailAuthRequest;
 import com.gnimty.communityapiserver.domain.member.controller.dto.request.OauthLoginRequest;
 import com.gnimty.communityapiserver.domain.member.controller.dto.request.LoginRequest;
 import com.gnimty.communityapiserver.domain.member.controller.dto.request.SignupRequest;
@@ -11,7 +12,6 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -41,5 +41,11 @@ public class AuthController {
 	@PostMapping("/oauth/google")
 	public CommonResponse<AuthToken> googleLogin(@RequestBody @Valid OauthLoginRequest request) {
 		return CommonResponse.success(authService.googleLogin(request.toServiceRequest()));
+	}
+
+	@PostMapping("/auth/email")
+	public CommonResponse<Void> sendEmailAuthCode(@RequestBody @Valid EmailAuthRequest request) {
+		authService.sendEmailAuthCode(request.toServiceRequest());
+		return CommonResponse.success();
 	}
 }

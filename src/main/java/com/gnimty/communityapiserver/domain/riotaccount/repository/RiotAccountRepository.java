@@ -7,5 +7,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface RiotAccountRepository extends JpaRepository<RiotAccount, Long> {
 
 	Boolean existsByPuuid(String puuid);
+
 	Boolean existsByMember(Member member);
 }
