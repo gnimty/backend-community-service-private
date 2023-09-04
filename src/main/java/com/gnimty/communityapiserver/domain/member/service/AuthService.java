@@ -26,6 +26,7 @@ import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.mail.javamail.JavaMailSender;
 import org.springframework.mail.javamail.MimeMessageHelper;
 import org.springframework.mail.javamail.MimeMessagePreparator;
+import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -95,6 +96,7 @@ public class AuthService {
 		return authToken;
 	}
 
+	@Async("mailExecutor")
 	public void sendEmailAuthCode(EmailAuthServiceRequest request) {
 		String subject = "인증 코드 전송 메일";
 		String code = RandomCodeGenerator.generateCodeByLength(6);
@@ -177,6 +179,6 @@ public class AuthService {
 	}
 
 	private String getRedisKey(KeyPrefix prefix, String key) {
-		return prefix + key;
+		return prefix.getPrefix() + key;
 	}
 }
