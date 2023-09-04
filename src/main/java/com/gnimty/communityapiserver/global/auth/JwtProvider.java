@@ -15,6 +15,7 @@ import com.gnimty.communityapiserver.domain.member.controller.dto.response.AuthT
 import com.gnimty.communityapiserver.domain.member.entity.Member;
 import com.gnimty.communityapiserver.domain.member.repository.MemberRepository;
 import com.gnimty.communityapiserver.global.constant.Auth;
+import com.gnimty.communityapiserver.global.constant.KeyPrefix;
 import com.gnimty.communityapiserver.global.exception.BaseException;
 import io.jsonwebtoken.Claims;
 import io.jsonwebtoken.ExpiredJwtException;
@@ -43,7 +44,6 @@ public class JwtProvider {
 	private String secret;
 	private final MemberRepository memberRepository;
 	private final StringRedisTemplate redisTemplate;
-	private static final String REFRESH_KEY_PREFIX = "[REFRESH]";
 
 	public Member findMemberByToken(String token) {
 		return memberRepository.findById(getIdByToken(token))
@@ -135,7 +135,7 @@ public class JwtProvider {
 	}
 
 	private String getRefreshKey(Member member) {
-		return REFRESH_KEY_PREFIX + member.getId();
+		return KeyPrefix.REFRESH.getPrefix() + member.getId();
 	}
 
 	private Claims generateClaims(Long id) {
