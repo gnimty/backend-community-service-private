@@ -68,6 +68,7 @@ public class Member {
 	public void updateNickname(String nickname) {
 		this.nickname = nickname;
 	}
+
 	public void updateRsoLinked(Boolean rsoLinked) {
 		this.rsoLinked = rsoLinked;
 	}
