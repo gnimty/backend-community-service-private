@@ -11,6 +11,8 @@ public enum Auth {
 	REFRESH_TOKEN_EXPIRATION(1_000L * 60 * 60 * 24 * 14),
 	// 3분
 	EMAIL_CODE_EXPIRATION(1_000L * 60 * 3),
+	// 10분
+	SIGNUP_EXPIRATION(1_000L * 60 * 10),
 
 	SUBJECT_ACCESS_TOKEN("accessToken"),
 	SUBJECT_REFRESH_TOKEN("refreshToken"),
