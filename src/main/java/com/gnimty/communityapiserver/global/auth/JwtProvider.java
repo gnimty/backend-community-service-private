@@ -134,7 +134,7 @@ public class JwtProvider {
 		return true;
 	}
 
-	private static String getRefreshKey(Member member) {
+	private String getRefreshKey(Member member) {
 		return REFRESH_KEY_PREFIX + member.getId();
 	}
 
