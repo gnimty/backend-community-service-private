@@ -73,7 +73,7 @@ public class AuthService {
 		Member member = memberReadService.findByEmailOrElseThrow(request.getEmail());
 		throwIfMismatchPassword(request.getPassword(), member.getPassword());
 
-		AuthToken authToken = generateTokenPair(member);
+		AuthToken authToken = generateTokenPair(member.getId());
 		saveInRedis(
 			getRedisKey(KeyPrefix.REFRESH, String.valueOf(member.getId())),
 			authToken.getRefreshToken().replaceAll(Auth.BEARER.getContent(), ""),
@@ -87,7 +87,7 @@ public class AuthService {
 		Member member = oauthInfoRepository.findByEmail(userEmail)
 			.map(OauthInfo::getMember)
 			.orElseGet(() -> createMemberByEmail(userEmail, Provider.KAKAO));
-		AuthToken authToken = generateTokenPair(member);
+		AuthToken authToken = generateTokenPair(member.getId());
 		saveInRedis(
 			getRedisKey(KeyPrefix.REFRESH, String.valueOf(member.getId())),
 			authToken.getRefreshToken().replaceAll(Auth.BEARER.getContent(), ""),
@@ -101,7 +101,7 @@ public class AuthService {
 		Member member = oauthInfoRepository.findByEmail(googleUserEmail)
 			.map(OauthInfo::getMember)
 			.orElseGet(() -> createMemberByEmail(googleUserEmail, Provider.GOOGLE));
-		AuthToken authToken = generateTokenPair(member);
+		AuthToken authToken = generateTokenPair(member.getId());
 		saveInRedis(
 			getRedisKey(KeyPrefix.REFRESH, String.valueOf(member.getId())),
 			authToken.getRefreshToken().replaceAll(Auth.BEARER.getContent(), ""),
@@ -138,6 +138,28 @@ public class AuthService {
 
 		saveInRedis(signupKey, "verified", Auth.SIGNUP_EXPIRATION.getExpiration());
 		valueOperations.getAndDelete(emailAuthKey);
+	}
+
+	public AuthToken tokenRefresh(String refreshToken) {
+		Long idByToken = jwtProvider.getIdByToken(refreshToken);
+		throwIfInvalidToken(refreshToken, idByToken);
+		AuthToken authToken = generateTokenPair(idByToken);
+		saveInRedis(
+			getRedisKey(KeyPrefix.REFRESH, String.valueOf(idByToken)),
+			authToken.getRefreshToken(),
+			Auth.REFRESH_TOKEN_EXPIRATION.getExpiration()
+		);
+		return authToken;
+	}
+
+	private void throwIfInvalidToken(String refreshToken, Long idByToken) {
+		ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+		String savedToken = valueOperations.get(
+			getRedisKey(KeyPrefix.REFRESH, String.valueOf(idByToken)));
+
+		if (savedToken == null || !savedToken.equals(refreshToken)) {
+			throw new BaseException(ErrorCode.TOKEN_INVALID);
+		}
 	}
 
 	private void sendMail(String to, String subject, String body) {
@@ -182,10 +204,10 @@ public class AuthService {
 		}
 	}
 
-	private AuthToken generateTokenPair(Member member) {
-		String accessToken = Auth.BEARER.getContent() + jwtProvider.generateToken(member.getId(),
+	private AuthToken generateTokenPair(Long id) {
+		String accessToken = Auth.BEARER.getContent() + jwtProvider.generateToken(id,
 			Auth.ACCESS_TOKEN_EXPIRATION.getExpiration(), Auth.SUBJECT_ACCESS_TOKEN.getContent());
-		String refreshToken = Auth.BEARER.getContent() + jwtProvider.generateToken(member.getId(),
+		String refreshToken = Auth.BEARER.getContent() + jwtProvider.generateToken(id,
 			Auth.REFRESH_TOKEN_EXPIRATION.getExpiration(), Auth.SUBJECT_REFRESH_TOKEN.getContent());
 
 		return AuthToken.builder()
