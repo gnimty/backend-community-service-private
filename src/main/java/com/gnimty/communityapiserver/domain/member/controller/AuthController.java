@@ -7,12 +7,15 @@ import com.gnimty.communityapiserver.domain.member.controller.dto.request.OauthL
 import com.gnimty.communityapiserver.domain.member.controller.dto.request.SignupRequest;
 import com.gnimty.communityapiserver.domain.member.controller.dto.response.AuthToken;
 import com.gnimty.communityapiserver.domain.member.service.AuthService;
+import com.gnimty.communityapiserver.global.constant.Auth;
 import com.gnimty.communityapiserver.global.response.CommonResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.http.HttpStatus;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestHeader;
 import org.springframework.web.bind.annotation.ResponseStatus;
 import org.springframework.web.bind.annotation.RestController;
 
@@ -56,5 +59,13 @@ public class AuthController {
 	) {
 		authService.verifyEmailAuthCode(request.toServiceRequest());
 		return CommonResponse.success();
+	}
+
+	@GetMapping("/auth/refresh")
+	public CommonResponse<AuthToken> tokenRefresh(
+		@RequestHeader("RefreshToken") String refreshToken
+	) {
+		return CommonResponse.success(
+			authService.tokenRefresh(refreshToken.replaceAll(Auth.BEARER.getContent(), "")));
 	}
 }
