@@ -119,6 +119,20 @@ public class JwtProvider {
 		return Optional.ofNullable(request.getHeader(Auth.AUTHORIZATION.getContent()));
 	}
 
+	public Long getIdByToken(String token) {
+		try {
+			return Long.parseLong(String.valueOf(Jwts.parser()
+				.setSigningKey(generateKey())
+				.parseClaimsJws(token)
+				.getBody()
+				.get("id")));
+		} catch (ExpiredJwtException e) {
+			throw new BaseException(TOKEN_EXPIRED);
+		} catch (MalformedJwtException | SignatureException | IllegalArgumentException e) {
+			throw new BaseException(TOKEN_INVALID);
+		}
+	}
+
 	private boolean checkRefreshTokenEquals(Member member, String refreshToken) {
 		ValueOperations<String, String> stringValueOperations = redisTemplate.opsForValue();
 
@@ -142,20 +156,6 @@ public class JwtProvider {
 		Claims claims = Jwts.claims();
 		claims.put("id", id);
 		return claims;
-	}
-
-	private Long getIdByToken(String token) {
-		try {
-			return Long.parseLong(String.valueOf(Jwts.parser()
-				.setSigningKey(generateKey())
-				.parseClaimsJws(token)
-				.getBody()
-				.get("id")));
-		} catch (ExpiredJwtException e) {
-			throw new BaseException(TOKEN_EXPIRED);
-		} catch (MalformedJwtException | SignatureException | IllegalArgumentException e) {
-			throw new BaseException(TOKEN_INVALID);
-		}
 	}
 
 	private byte[] generateKey() {
