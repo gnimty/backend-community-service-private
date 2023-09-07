@@ -1,7 +1,9 @@
 package com.gnimty.communityapiserver.domain.oauthinfo.repository;
 
+import com.gnimty.communityapiserver.domain.member.entity.Member;
 import com.gnimty.communityapiserver.domain.oauthinfo.entity.OauthInfo;
 import com.gnimty.communityapiserver.global.constant.Provider;
+import java.util.List;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -10,4 +12,6 @@ public interface OauthInfoRepository extends JpaRepository<OauthInfo, Long> {
 	Optional<OauthInfo> findByEmail(String email);
 
 	Boolean existsByEmailAndProvider(String email, Provider provider);
+
+	List<OauthInfo> findByMember(Member member);
 }
