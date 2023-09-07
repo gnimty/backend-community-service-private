@@ -20,7 +20,8 @@ public class WebConfiguration implements WebMvcConfigurer {
 		registry
 			.addInterceptor(tokenAuthInterceptor)
 			.addPathPatterns("/**")
-			.excludePathPatterns("/auth/**");
+			.excludePathPatterns("/auth/**")
+			.excludePathPatterns("/oauth/**");
 
 		registry
 			.addInterceptor(memberAuthInterceptor)
