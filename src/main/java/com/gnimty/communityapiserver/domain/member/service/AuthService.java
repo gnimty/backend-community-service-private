@@ -61,6 +61,7 @@ public class AuthService {
 			.password(encodePassword(request.getPassword()))
 			.favoriteChampionID(null)
 			.status(Status.OFFLINE)
+			.upCount(0L)
 			.build();
 
 		memberRepository.save(member);
@@ -178,6 +179,7 @@ public class AuthService {
 			.rsoLinked(false)
 			.favoriteChampionID(null)
 			.status(Status.OFFLINE)
+			.upCount(0L)
 			.build();
 		memberRepository.save(member);
 
