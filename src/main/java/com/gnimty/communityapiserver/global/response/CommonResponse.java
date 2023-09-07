@@ -1,6 +1,7 @@
 package com.gnimty.communityapiserver.global.response;
 
 import com.fasterxml.jackson.annotation.JsonInclude;
+import com.gnimty.communityapiserver.global.constant.ResponseMessage;
 import com.gnimty.communityapiserver.global.exception.ErrorCode;
 import com.gnimty.communityapiserver.global.handler.GlobalExceptionHandler.CustomFieldError;
 import lombok.AccessLevel;
@@ -8,6 +9,7 @@ import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Data;
 import lombok.Getter;
+import org.springframework.http.HttpStatus;
 
 @Getter
 @Builder
@@ -19,6 +21,10 @@ public class CommonResponse<T> {
 
 	@JsonInclude(JsonInclude.Include.NON_NULL)
 	private T data;
+
+	public static CommonResponse<Void> success(ResponseMessage message, HttpStatus status) {
+		return new CommonResponse<>(new ApiStatus(message.getMessage(), status.value()), null);
+	}
 
 	public static CommonResponse<Void> success() {
 		return new CommonResponse<>(null, null);

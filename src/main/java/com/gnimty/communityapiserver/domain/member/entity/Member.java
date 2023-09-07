@@ -48,6 +48,10 @@ public class Member {
 	@Column(name = "status", columnDefinition = "VARCHAR(10)")
 	private Status status;
 
+	@Column(name = "up_count", columnDefinition = "BIGINT")
+	@NotNull
+	private Long upCount;
+
 	@Builder
 	public Member(
 		Boolean rsoLinked,
@@ -55,7 +59,8 @@ public class Member {
 		String password,
 		Long favoriteChampionID,
 		String nickname,
-		Status status
+		Status status,
+		Long upCount
 	) {
 		this.rsoLinked = rsoLinked;
 		this.email = email;
@@ -63,6 +68,7 @@ public class Member {
 		this.favoriteChampionID = favoriteChampionID;
 		this.nickname = nickname;
 		this.status = status;
+		this.upCount = upCount;
 	}
 
 	public void updateNickname(String nickname) {
