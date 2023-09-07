@@ -1,23 +1,39 @@
 package com.gnimty.communityapiserver.domain.member.service;
 
+import com.gnimty.communityapiserver.domain.introduction.entity.Introduction;
+import com.gnimty.communityapiserver.domain.introduction.service.IntroductionReadService;
 import com.gnimty.communityapiserver.domain.member.entity.Member;
 import com.gnimty.communityapiserver.domain.member.service.dto.request.OauthLoginServiceRequest;
+import com.gnimty.communityapiserver.domain.member.service.dto.response.IntroductionEntry;
+import com.gnimty.communityapiserver.domain.member.service.dto.response.MyProfileServiceResponse;
+import com.gnimty.communityapiserver.domain.member.service.dto.response.OauthInfoEntry;
+import com.gnimty.communityapiserver.domain.member.service.dto.response.PreferGameModeEntry;
+import com.gnimty.communityapiserver.domain.member.service.dto.response.RiotAccountEntry;
+import com.gnimty.communityapiserver.domain.member.service.dto.response.RiotDependentInfo;
+import com.gnimty.communityapiserver.domain.member.service.dto.response.ScheduleEntry;
 import com.gnimty.communityapiserver.domain.member.service.utils.GoogleOauthUtil;
 import com.gnimty.communityapiserver.domain.member.service.utils.KakaoOauthUtil;
 import com.gnimty.communityapiserver.domain.member.service.utils.RiotOauthUtil;
 import com.gnimty.communityapiserver.domain.oauthinfo.entity.OauthInfo;
 import com.gnimty.communityapiserver.domain.oauthinfo.repository.OauthInfoRepository;
 import com.gnimty.communityapiserver.domain.oauthinfo.service.OauthInfoReadService;
+import com.gnimty.communityapiserver.domain.prefergamemode.entity.PreferGameMode;
+import com.gnimty.communityapiserver.domain.prefergamemode.service.PreferGameModeReadService;
 import com.gnimty.communityapiserver.domain.riotaccount.entity.RiotAccount;
 import com.gnimty.communityapiserver.domain.riotaccount.repository.RiotAccountRepository;
 import com.gnimty.communityapiserver.domain.riotaccount.service.RiotAccountReadService;
+import com.gnimty.communityapiserver.domain.schedule.entity.Schedule;
+import com.gnimty.communityapiserver.domain.schedule.service.ScheduleReadService;
 import com.gnimty.communityapiserver.global.auth.MemberThreadLocal;
 import com.gnimty.communityapiserver.global.constant.Provider;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 @Service
 @RequiredArgsConstructor
+@Transactional
 public class MemberService {
 
 	private final RiotOauthUtil riotOauthUtil;
@@ -27,6 +43,9 @@ public class MemberService {
 	private final GoogleOauthUtil googleOauthUtil;
 	private final OauthInfoRepository oauthInfoRepository;
 	private final OauthInfoReadService oauthInfoReadService;
+	private final IntroductionReadService introductionReadService;
+	private final ScheduleReadService scheduleReadService;
+	private final PreferGameModeReadService preferGameModeReadService;
 
 	public void summonerAccountLink(OauthLoginServiceRequest request) {
 		Member member = MemberThreadLocal.get();
@@ -71,6 +90,40 @@ public class MemberService {
 		}
 		oauthInfoReadService.throwIfExistsByEmailAndProvider(userEmail, provider);
 		createOauthInfoByEmail(member, userEmail, provider);
+	}
+
+	public MyProfileServiceResponse getMyProfile() {
+		final Member member = MemberThreadLocal.get();
+		RiotDependentInfo riotDependentInfo = getRiotDependentInfo(member);
+		List<OauthInfo> oauthInfos = oauthInfoReadService.findByMember(member);
+		List<OauthInfoEntry> oauthInfoEntries = oauthInfos.stream()
+			.map(OauthInfoEntry::from)
+			.toList();
+
+		return MyProfileServiceResponse.builder()
+			.id(member.getId())
+			.email(member.getEmail())
+			.nickname(member.getNickname())
+			.favoriteChampionId(member.getFavoriteChampionID())
+			.upCount(member.getUpCount())
+			.riotDependentInfo(riotDependentInfo)
+			.oauthInfos(oauthInfoEntries)
+			.build();
+	}
+
+	private RiotDependentInfo getRiotDependentInfo(Member member) {
+		List<RiotAccount> riotAccounts = riotAccountReadService.findByMember(member);
+		List<Introduction> introductions = introductionReadService.findByMember(member);
+		List<Schedule> schedules = scheduleReadService.findByMember(member);
+		List<PreferGameMode> preferGameModes = preferGameModeReadService.findByMember(member);
+		return RiotDependentInfo.builder()
+			.isLinked(!riotAccounts.isEmpty())
+			.status(member.getStatus())
+			.introductions(introductions.stream().map(IntroductionEntry::from).toList())
+			.schedules(schedules.stream().map(ScheduleEntry::from).toList())
+			.preferGameModes(preferGameModes.stream().map(PreferGameModeEntry::from).toList())
+			.riotAccounts(riotAccounts.stream().map(RiotAccountEntry::from).toList())
+			.build();
 	}
 
 	private void createOauthInfoByEmail(Member member, String userEmail, Provider provider) {
