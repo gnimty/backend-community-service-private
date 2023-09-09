@@ -1,3 +1,20 @@
+jwt:
+  secret: ${JWT_SECRET}
+
+oauth:
+  kakao:
+    client_id: ${OAUTH_KAKAO_CLIENT_ID}
+    client_secret: ${OAUTH_KAKAO_CLIENT_SECRET}
+    redirect_uri: ${OAUTH_KAKAO_REDIRECT_URI}
+  google:
+    client_id: ${OAUTH_GOOGLE_CLIENT_ID}
+    client_secret: ${OAUTH_GOOGLE_CLIENT_SECRET}
+    redirect_uri: ${OAUTH_GOOGLE_REDIRECT_URI}
+  riot:
+    client_id: ${OAUTH_RIOT_CLIENT_ID}
+    client_secret: ${OAUTH_RIOT_CLIENT_SECRET}
+    redirect_uri: ${OAUTH_RIOT_REDIRECT_URI}
+
 server:
   servlet:
     context-path: /community
@@ -10,31 +27,14 @@ spring:
   jpa:
     properties:
       hibernate:
-        hbm2ddl:
-          auto: create-drop
         format_sql: true
-    database: MYSQL
     show-sql: true
-
-  datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: root
-    jdbc-url: jdbc:mysql://localhost:3306/community
-    hikari:
-      max-lifetime: 60000
-      connection-timeout: 30000
-      maximum-pool-size: 10
-
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/community
 
   mail:
     host: smtp.gmail.com
     port: 587
-    username: gnimtylol@gmail.com
-    password: uazqoigqidmdvgvg
+    username: ${MAIL_USERNAME}
+    password: ${MAIL_PASSWORD}
     properties:
       mail:
         smtp:
@@ -45,20 +45,83 @@ spring:
         debug: true
         transport:
           protocol: smtp
+---
+spring:
+  config:
+    activate:
+      on-profile: local
 
-jwt:
-  secret: THIS_IS_JWT_SECRET_USING_GNIMTY_BY_2023_08_28
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: root
+    password: root
+    jdbc-url: jdbc:mysql://localhost:3306/community
+    hikari:
+      max-lifetime: 60000
+      connection-timeout: 30000
+      maximum-pool-size: 10
+  jpa:
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: create-drop
 
-oauth:
-  kakao:
-    client_id: e705950a0e6b5f5dae67e3c5e5f7ac73
-    client_secret: JIzEKhSZqY16oPaFiascuFSBpdikQW44
-    redirect_uri: http://localhost:8080/oauth/kakao/redirect
-  google:
-    client_id: 512671619671-tuu1i18egbsg2ie3ph6crs9p984evjbt.apps.googleusercontent.com
-    client_secret: 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
-    redirect_uri: http://localhost:8080/oauth/google/redirect
-  riot:
-    client_id:
-    client_secret:
-    redirect_uri:
+  data:
+    mongodb:
+      uri:
+      port:
+      username:
+      password:
+      authentication-database: admin
+---
+spring:
+  config:
+    activate:
+      on-profile: test
+  datasource:
+    hikari:
+      max-lifetime: 60000
+      connection-timeout: 30000
+      maximum-pool-size: 10
+    driver-class-name: org.h2.Driver
+    url: jdbc:h2:~/test
+    username: sa
+    password:
+
+  jpa:
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: create-drop
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
+
+---
+spring:
+  config:
+    activate:
+      on-profile: dev
+  jpa:
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: update
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+    jdbc-url: ${MYSQL_HOST}
+    hikari:
+      max-lifetime: 60000
+      connection-timeout: 30000
+      maximum-pool-size: 10
+
+  data:
+    mongodb:
+      uri: ${MONGO_HOST}
+      port: ${MONGO_PORT}
+      username: ${MONGO_USERNAME}
+      password: ${MONGO_PASSWORD}
+      authentication-database: admin
