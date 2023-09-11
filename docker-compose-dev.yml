@@ -51,7 +51,7 @@ services:
       - "16379:6379"
     volumes:
       - ./dev-data:/data/community/redis
-      - ./dev-data:/data/community/redis/redis.conf
+      - ./dev-redis-conf:/data/community/redis/redis.conf
     labels:
       - "name=redis"
       - "mode=standalone"
