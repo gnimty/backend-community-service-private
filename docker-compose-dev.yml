@@ -2,11 +2,20 @@ version: '3'
 services:
 
   community-web-dev:
-    build:
-      context: ./community
-      dockerfile: Dockerfile
+    image: kariskan/gnimty-community-server:latest
+    container_name: community-server
+    depends_on:
+      - community-mongo-dev
+      - community-mysql-dev
+      - community-redis-dev
+    ports:
+      - "18080:8080"
+    environment:
+      - TZ=Asia/Seoul
     env_file:
       - .env
+    volumes:
+      - ./dev-logs:/app/logs/community
 
   community-mysql-dev:
     image: mysql:8.0
@@ -17,6 +26,7 @@ services:
       - db.env
     environment:
       TZ: Asia/Seoul
+      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - ./dev-data:/data/community/mysql
     command:
