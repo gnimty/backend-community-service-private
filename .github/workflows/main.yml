@@ -64,6 +64,6 @@ jobs:
             touch db.env
             sudo echo "${{ secrets.DEV_DB_ENV }}" > db.env
             
-            sudo docker rm -f $(docker ps -qa)
             sudo docker pull ${{ secrets.REGISTRY }}/${{ secrets.IMAGE_NAME }}:${{ secrets.TAG }}
+            sudo docker-compose -f docker-compose-dev.yml down -v
             sudo docker-compose -f docker-compose-dev.yml up -d
