@@ -14,6 +14,7 @@ services:
       - TZ=Asia/Seoul
     env_file:
       - .env
+      - .db.env
     volumes:
       - ./dev-logs:/app/logs/community
 
@@ -24,9 +25,6 @@ services:
       - "13306:3306"
     env_file:
       - db.env
-    environment:
-      - TZ: Asia/Seoul
-      - MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - ./dev-data:/data/community/mysql
     command:
