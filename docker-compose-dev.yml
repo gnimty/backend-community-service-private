@@ -14,7 +14,7 @@ services:
       - TZ=Asia/Seoul
     env_file:
       - .env
-      - .db.env
+      - db.env
     volumes:
       - ./dev-logs:/app/logs/community
 
@@ -26,7 +26,7 @@ services:
     env_file:
       - db.env
     environment:
-      - TZ: Asia/Seoul
+      - TZ:Asia/Seoul
     volumes:
       - ./dev-data:/data/community/mysql
     command:
