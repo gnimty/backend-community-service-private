@@ -25,8 +25,8 @@ services:
     env_file:
       - db.env
     environment:
-      TZ: Asia/Seoul
-      MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
+      - TZ: Asia/Seoul
+      - MYSQL_ROOT_PASSWORD: ${MYSQL_PASSWORD}
     volumes:
       - ./dev-data:/data/community/mysql
     command:
