@@ -48,7 +48,7 @@ jobs:
           key: ${{ secrets.DEV_SSH_KEY }}
           port: ${{ secrets.SSH_PORT }}
           source: docker-compose-dev.yml
-          target: "/home/${{ secrets.DEV_USER }}/${{ secrets.DIR }}"
+          target: "${{ secrets.DIR }}"
 
       - name: Docker 이미지 pull 이후 down/up
         uses: appleboy/ssh-action@master
