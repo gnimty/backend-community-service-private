@@ -9,4 +9,4 @@ ENV MYSQL_HOST ${MYSQL_HOST}
 
 ENTRYPOINT ["java", "-jar", "./app.jar"]
 
-EXPOSE 8080
+EXPOSE 18080
