@@ -4,7 +4,7 @@ ARG JAR_FILE=build/libs/communityapiserver-0.0.1-SNAPSHOT.jar
 
 COPY ${JAR_FILE} ./app.jar
 
-ENV SPRING_ACTIVE_PROFILES dev
+ENV SPRING_PROFILES_ACTIVE dev
 
 ENTRYPOINT ["java", "-jar", "./app.jar"]
 
