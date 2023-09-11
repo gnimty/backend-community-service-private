@@ -5,6 +5,7 @@ ARG JAR_FILE=build/libs/communityapiserver-0.0.1-SNAPSHOT.jar
 COPY ${JAR_FILE} ./app.jar
 
 ENV SPRING_PROFILES_ACTIVE dev
+ENV MYSQL_HOST ${MYSQL_HOST}
 
 ENTRYPOINT ["java", "-jar", "./app.jar"]
 
