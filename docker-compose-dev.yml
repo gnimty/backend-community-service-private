@@ -35,7 +35,7 @@ services:
 
   community-mongo-dev:
     image: mongo:6.0.4
-    container_name: mongodb
+    container_name: gnimty-community-mongo-main
     ports:
       - "37017:27017"
     env_file:
