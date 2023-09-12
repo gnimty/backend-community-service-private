@@ -104,4 +104,8 @@ public class RiotAccount {
 		this.puuid = puuid;
 		this.member = member;
 	}
+
+	public void updateIsMain() {
+		isMain = !isMain;
+	}
 }
