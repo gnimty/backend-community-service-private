@@ -1,8 +1,11 @@
 package com.gnimty.communityapiserver.domain.member.service;
 
 import com.gnimty.communityapiserver.domain.introduction.entity.Introduction;
+import com.gnimty.communityapiserver.domain.introduction.repository.IntroductionRepository;
 import com.gnimty.communityapiserver.domain.introduction.service.IntroductionReadService;
 import com.gnimty.communityapiserver.domain.member.entity.Member;
+import com.gnimty.communityapiserver.domain.member.repository.MemberRepository;
+import com.gnimty.communityapiserver.domain.member.service.dto.request.MyProfileUpdateServiceRequest;
 import com.gnimty.communityapiserver.domain.member.service.dto.request.OauthLoginServiceRequest;
 import com.gnimty.communityapiserver.domain.member.service.dto.response.IntroductionEntry;
 import com.gnimty.communityapiserver.domain.member.service.dto.response.MyProfileServiceResponse;
@@ -26,7 +29,10 @@ import com.gnimty.communityapiserver.domain.schedule.entity.Schedule;
 import com.gnimty.communityapiserver.domain.schedule.service.ScheduleReadService;
 import com.gnimty.communityapiserver.global.auth.MemberThreadLocal;
 import com.gnimty.communityapiserver.global.constant.Provider;
+import com.gnimty.communityapiserver.global.exception.BaseException;
+import com.gnimty.communityapiserver.global.exception.ErrorCode;
 import java.util.List;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -46,6 +52,8 @@ public class MemberService {
 	private final IntroductionReadService introductionReadService;
 	private final ScheduleReadService scheduleReadService;
 	private final PreferGameModeReadService preferGameModeReadService;
+	private final IntroductionRepository introductionRepository;
+	private final MemberRepository memberRepository;
 
 	public void summonerAccountLink(OauthLoginServiceRequest request) {
 		Member member = MemberThreadLocal.get();
@@ -109,6 +117,104 @@ public class MemberService {
 			.riotDependentInfo(riotDependentInfo)
 			.oauthInfos(oauthInfoEntries)
 			.build();
+	}
+
+	public void updateMyProfile(MyProfileUpdateServiceRequest request) {
+		Member member = MemberThreadLocal.get();
+		if (!member.getRsoLinked()) {
+			throw new BaseException(ErrorCode.NOT_LINKED_RSO);
+		}
+
+		updateMainRiotAccount(request, member);
+		updateStatus(request, member);
+		updateIntroductions(request, member);
+		memberRepository.save(member);
+	}
+
+	private void updateIntroductions(MyProfileUpdateServiceRequest request, Member member) {
+		if (request.getIntroductions() != null) {
+			List<IntroductionEntry> updateIntroductions = request.getIntroductions().stream()
+				.filter(entry -> entry.getId() != null)
+				.peek(entry -> validatePermission(entry.getId(), member))
+				.peek(this::updateIntroduction)
+				.toList();
+			List<IntroductionEntry> insertIntroductions = request.getIntroductions().stream()
+				.filter(introductionEntry -> introductionEntry.getId() == null)
+				.toList();
+
+			throwIfDuplicatedId(updateIntroductions);
+			throwIfDuplicatedIsMain(request);
+			List<Introduction> existIntroductions = introductionReadService.findByMember(member);
+			throwIfExceedIntroductionCount(existIntroductions.size(), insertIntroductions.size());
+			insertIntroductions.forEach(entry -> saveIntroduction(member, entry));
+			introductionReadService.throwIfNotExistsMain(member);
+		}
+	}
+
+	private void saveIntroduction(Member member, IntroductionEntry entry) {
+		introductionRepository.save(Introduction.builder()
+			.member(member)
+			.content(entry.getContent())
+			.isMain(entry.getIsMain())
+			.build());
+	}
+
+	private void updateIntroduction(IntroductionEntry entry) {
+		Introduction findIntroduction = introductionReadService.findById(entry.getId());
+		findIntroduction.updateContent(entry.getContent());
+		findIntroduction.updateIsMain(entry.getIsMain());
+	}
+
+	private void validatePermission(Long id, Member member) {
+		Introduction findIntroduction = introductionReadService.findById(id);
+		if (!Objects.equals(member.getId(), findIntroduction.getMember().getId())) {
+			throw new BaseException(ErrorCode.NO_PERMISSION);
+		}
+	}
+
+	private void throwIfExceedIntroductionCount(int updateSize, int insertSize) {
+		if (updateSize + insertSize > 3) {
+			throw new BaseException(ErrorCode.EXCEED_INTRODUCTION_COUNT);
+		}
+	}
+
+	private void throwIfDuplicatedIsMain(MyProfileUpdateServiceRequest request) {
+		long mainCount = request.getIntroductions().stream()
+			.filter(IntroductionEntry::getIsMain)
+			.count();
+		if (mainCount > 1) {
+			throw new BaseException(ErrorCode.MAIN_CONTENT_MUST_BE_ONLY);
+		}
+	}
+
+	private void throwIfDuplicatedId(List<IntroductionEntry> introductions) {
+		long count = introductions.stream()
+			.map(IntroductionEntry::getId)
+			.distinct()
+			.count();
+		if (count != introductions.size()) {
+			throw new BaseException(ErrorCode.DUPLICATED_ID);
+		}
+	}
+
+	private void updateStatus(MyProfileUpdateServiceRequest request, Member member) {
+		if (request.getStatus() != null) {
+			member.updateStatus(request.getStatus());
+		}
+	}
+
+	private void updateMainRiotAccount(MyProfileUpdateServiceRequest request, Member member) {
+		if (request.getMainRiotAccountId() != null) {
+			RiotAccount prevMainAccount = riotAccountReadService.findMainAccountByMember(
+				member);
+			RiotAccount postMainAccount = riotAccountReadService.findById(
+				request.getMainRiotAccountId());
+			if (!Objects.equals(postMainAccount.getMember().getId(), member.getId())) {
+				throw new BaseException(ErrorCode.NO_PERMISSION);
+			}
+			prevMainAccount.updateIsMain();
+			postMainAccount.updateIsMain();
+		}
 	}
 
 	private RiotDependentInfo getRiotDependentInfo(Member member) {
