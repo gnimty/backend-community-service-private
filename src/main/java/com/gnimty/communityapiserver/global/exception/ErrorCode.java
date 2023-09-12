@@ -31,6 +31,12 @@ public enum ErrorCode {
 	INVALID_EMAIL_AUTH_CODE(BAD_REQUEST, ErrorMessage.INVALID_EMAIL_AUTH_CODE),
 	UNAUTHORIZED_EMAIL(UNAUTHORIZED, ErrorMessage.UNAUTHORIZED_EMAIL),
 	ALREADY_LINKED_OAUTH(CONFLICT, ErrorMessage.ALREADY_LINKED_OAUTH),
+	NOT_LINKED_RSO(BAD_REQUEST, ErrorMessage.NOT_LINKED_RSO),
+	RIOT_ACCOUNT_NOT_FOUND(NOT_FOUND, ErrorMessage.RIOT_ACCOUNT_NOT_FOUND),
+	INTRODUCTION_NOT_FOUND(NOT_FOUND, ErrorMessage.INTRODUCTION_NOT_FOUND),
+	MAIN_CONTENT_MUST_BE_ONLY(CONFLICT, ErrorMessage.MAIN_CONTENT_MUST_BE_ONLY),
+	EXCEED_INTRODUCTION_COUNT(BAD_REQUEST, ErrorMessage.EXCEED_INTRODUCTION_COUNT),
+	DUPLICATED_ID(CONFLICT, ErrorMessage.DUPLICATED_ID),
 
 	// server
 	INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Server Error");
@@ -61,5 +67,11 @@ public enum ErrorCode {
 		public static final String INVALID_EMAIL_AUTH_CODE = "만료됐거나, 올바르지 않은 이메일 인증 코드입니다.";
 		public static final String UNAUTHORIZED_EMAIL = "만료됐거나, 인증되지 않은 이메일입니다.";
 		public static final String ALREADY_LINKED_OAUTH = "이미 연결된 oauth 정보입니다.";
+		public static final String NOT_LINKED_RSO = "소환사 계정에 연동되지 않은 회원입니다.";
+		public static final String RIOT_ACCOUNT_NOT_FOUND = "요청에 해당하는 소환사 계정이 존재하지 않습니다.";
+		public static final String INTRODUCTION_NOT_FOUND = "요청에 해당하는 소개글이 존재하지 않습니다.";
+		public static final String MAIN_CONTENT_MUST_BE_ONLY = "main에 해당하는 요소는 반드시 1개만 존재해야 합니다.";
+		public static final String EXCEED_INTRODUCTION_COUNT = "소개글의 최대 개수는 3개입니다.";
+		public static final String DUPLICATED_ID = "중복된 id가 존재합니다";
 	}
 }
