@@ -30,4 +30,14 @@ public class RiotAccountReadService {
 	public List<RiotAccount> findByMember(Member member) {
 		return riotAccountRepository.findByMember(member);
 	}
+
+	public RiotAccount findMainAccountByMember(Member member) {
+		return riotAccountRepository.findByMemberAndIsMain(member, true)
+			.orElseThrow(() -> new BaseException(ErrorCode.NOT_LINKED_RSO));
+	}
+
+	public RiotAccount findById(Long id) {
+		return riotAccountRepository.findById(id)
+			.orElseThrow(() -> new BaseException(ErrorCode.RIOT_ACCOUNT_NOT_FOUND));
+	}
 }
