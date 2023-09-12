@@ -78,4 +78,8 @@ public class Member {
 	public void updateRsoLinked(Boolean rsoLinked) {
 		this.rsoLinked = rsoLinked;
 	}
+
+	public void updateStatus(Status status) {
+		this.status = status;
+	}
 }
