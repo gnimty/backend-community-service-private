@@ -48,4 +48,12 @@ public class Introduction {
 		this.member = member;
 		this.isMain = isMain;
 	}
+
+	public void updateContent(String content) {
+		this.content = content;
+	}
+
+	public void updateIsMain(Boolean isMain) {
+		this.isMain = isMain;
+	}
 }
