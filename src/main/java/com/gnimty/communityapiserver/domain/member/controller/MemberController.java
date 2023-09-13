@@ -36,7 +36,7 @@ public class MemberController {
 
 	private final MemberService memberService;
 
-	@RequestMapping("/{member_id}/rso")
+	@PostMapping("/{member_id}/rso")
 	public CommonResponse<Void> summonerAccountLink(
 		@RequestBody @Valid OauthLoginRequest request
 	) {
@@ -44,7 +44,7 @@ public class MemberController {
 		return CommonResponse.success(SUCCESS_SUMMONER_LINK, OK);
 	}
 
-	@RequestMapping("/{member_id}/oauth/kakao")
+	@PostMapping("/{member_id}/oauth/kakao")
 	public CommonResponse<Void> kakaoAdditionalLink(
 		@RequestBody @Valid OauthLoginRequest request
 	) {
@@ -52,7 +52,7 @@ public class MemberController {
 		return CommonResponse.success(SUCCESS_KAKAO_LINK, OK);
 	}
 
-	@RequestMapping("/{member_id}/oauth/google")
+	@PostMapping("/{member_id}/oauth/google")
 	public CommonResponse<Void> googleAdditionalLink(
 		@RequestBody @Valid OauthLoginRequest request
 	) {
