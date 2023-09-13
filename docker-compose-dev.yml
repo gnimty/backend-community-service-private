@@ -17,6 +17,7 @@ services:
       - db.env
     volumes:
       - ./dev-logs:/app/logs/community
+    restart: always
 
   community-mysql-dev:
     image: mysql:8.0
@@ -32,6 +33,7 @@ services:
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
+    restart: always
 
   community-mongo-dev:
     image: mongo:6.0.4

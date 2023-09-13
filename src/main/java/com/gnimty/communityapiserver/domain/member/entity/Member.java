@@ -82,4 +82,8 @@ public class Member {
 	public void updateStatus(Status status) {
 		this.status = status;
 	}
+
+	public void updatePassword(String password) {
+		this.password = password;
+	}
 }
