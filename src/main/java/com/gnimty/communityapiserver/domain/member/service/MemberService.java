@@ -185,6 +185,12 @@ public class MemberService {
 
 	public void updatePassword(PasswordUpdateServiceRequest request) {
 		Member member = MemberThreadLocal.get();
+		ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+		String verify = valueOperations.get(
+			getRedisKey(KeyPrefix.SIGNUP, String.valueOf(member.getId())));
+		if (verify == null) {
+			throw new BaseException(ErrorCode.UNAUTHORIZED_EMAIL);
+		}
 		member.updatePassword(passwordEncoder.encode(request.getPassword()));
 		memberRepository.save(member);
 
