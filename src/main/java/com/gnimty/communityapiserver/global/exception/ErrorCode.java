@@ -38,6 +38,7 @@ public enum ErrorCode {
 	EXCEED_INTRODUCTION_COUNT(BAD_REQUEST, ErrorMessage.EXCEED_INTRODUCTION_COUNT),
 	DUPLICATED_ID(CONFLICT, ErrorMessage.DUPLICATED_ID),
 	NOT_LOGIN_BY_FORM(BAD_REQUEST, ErrorMessage.NOT_LOGIN_BY_FORM),
+	ALREADY_LINKED_PROVIDER(CONFLICT, ErrorMessage.ALREADY_LINKED_PROVIDER),
 
 	// server
 	INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Server Error");
@@ -75,5 +76,6 @@ public enum ErrorCode {
 		public static final String EXCEED_INTRODUCTION_COUNT = "소개글의 최대 개수는 3개입니다.";
 		public static final String DUPLICATED_ID = "중복된 id가 존재합니다";
 		public static final String NOT_LOGIN_BY_FORM = "form 로그인 유저가 아닙니다.";
+		public static final String ALREADY_LINKED_PROVIDER = "이미 요청의 provider에 해당하는 oauth에 연결돼 있습니다.";
 	}
 }
