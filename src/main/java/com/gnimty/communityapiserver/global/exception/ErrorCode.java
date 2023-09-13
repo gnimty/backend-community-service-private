@@ -67,7 +67,7 @@ public enum ErrorCode {
 		public static final String ALREADY_REGISTERED_EMAIL = "이미 가입된 이메일 입니다.";
 		public static final String ALREADY_LINKED_SUMMONER = "이미 연결된 소환사 입니다.";
 		public static final String INVALID_EMAIL_AUTH_CODE = "만료됐거나, 올바르지 않은 이메일 인증 코드입니다.";
-		public static final String UNAUTHORIZED_EMAIL = "만료됐거나, 인증되지 않은 이메일입니다.";
+		public static final String UNAUTHORIZED_EMAIL = "만료됐거나, 인증되지 않은 이메일입니다. 이메일 인증이 필요합니다.";
 		public static final String ALREADY_LINKED_OAUTH = "이미 연결된 oauth 정보입니다.";
 		public static final String NOT_LINKED_RSO = "소환사 계정에 연동되지 않은 회원입니다.";
 		public static final String RIOT_ACCOUNT_NOT_FOUND = "요청에 해당하는 소환사 계정이 존재하지 않습니다.";
