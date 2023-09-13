@@ -7,6 +7,8 @@ import com.gnimty.communityapiserver.domain.member.entity.Member;
 import com.gnimty.communityapiserver.domain.member.repository.MemberRepository;
 import com.gnimty.communityapiserver.domain.member.service.dto.request.MyProfileUpdateServiceRequest;
 import com.gnimty.communityapiserver.domain.member.service.dto.request.OauthLoginServiceRequest;
+import com.gnimty.communityapiserver.domain.member.service.dto.request.PasswordEmailVerifyServiceRequest;
+import com.gnimty.communityapiserver.domain.member.service.dto.request.PasswordUpdateServiceRequest;
 import com.gnimty.communityapiserver.domain.member.service.dto.response.IntroductionEntry;
 import com.gnimty.communityapiserver.domain.member.service.dto.response.MyProfileServiceResponse;
 import com.gnimty.communityapiserver.domain.member.service.dto.response.OauthInfoEntry;
@@ -28,13 +30,24 @@ import com.gnimty.communityapiserver.domain.riotaccount.service.RiotAccountReadS
 import com.gnimty.communityapiserver.domain.schedule.entity.Schedule;
 import com.gnimty.communityapiserver.domain.schedule.service.ScheduleReadService;
 import com.gnimty.communityapiserver.global.auth.MemberThreadLocal;
+import com.gnimty.communityapiserver.global.constant.Auth;
+import com.gnimty.communityapiserver.global.constant.KeyPrefix;
 import com.gnimty.communityapiserver.global.constant.Lane;
 import com.gnimty.communityapiserver.global.constant.Provider;
 import com.gnimty.communityapiserver.global.exception.BaseException;
 import com.gnimty.communityapiserver.global.exception.ErrorCode;
+import com.gnimty.communityapiserver.global.utils.RandomCodeGenerator;
 import java.util.List;
 import java.util.Objects;
+import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.redis.core.StringRedisTemplate;
+import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.mail.javamail.JavaMailSender;
+import org.springframework.mail.javamail.MimeMessageHelper;
+import org.springframework.mail.javamail.MimeMessagePreparator;
+import org.springframework.scheduling.annotation.Async;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -55,6 +68,9 @@ public class MemberService {
 	private final PreferGameModeReadService preferGameModeReadService;
 	private final IntroductionRepository introductionRepository;
 	private final MemberRepository memberRepository;
+	private final StringRedisTemplate redisTemplate;
+	private final JavaMailSender mailSender;
+	private final PasswordEncoder passwordEncoder;
 
 	public void summonerAccountLink(OauthLoginServiceRequest request) {
 		Member member = MemberThreadLocal.get();
@@ -130,6 +146,60 @@ public class MemberService {
 		updateStatus(request, member);
 		updateIntroductions(request, member);
 		memberRepository.save(member);
+	}
+
+	@Async("mailExecutor")
+	public void sendEmailAuthCode(Member member) {
+		if (member.getEmail() == null) {
+			throw new BaseException(ErrorCode.NOT_LOGIN_BY_FORM);
+		}
+		String subject = "인증 코드 전송 메일";
+		String code = RandomCodeGenerator.generateCodeByLength(6);
+		sendMail(member.getEmail(), subject, code);
+
+		ValueOperations<String, String> stringValueOperations = redisTemplate.opsForValue();
+		String key = getRedisKey(KeyPrefix.PASSWORD, String.valueOf(member.getId()));
+		stringValueOperations.set(key, code);
+		stringValueOperations.getAndExpire(
+			key,
+			Auth.EMAIL_CODE_EXPIRATION.getExpiration(),
+			TimeUnit.MILLISECONDS
+		);
+	}
+
+	public void verifyEmailAuthCode(PasswordEmailVerifyServiceRequest request) {
+		Member member = MemberThreadLocal.get();
+		ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+
+		String emailAuthKey = getRedisKey(KeyPrefix.PASSWORD, String.valueOf(member.getId()));
+		String savedCode = valueOperations.get(emailAuthKey);
+
+		if (!request.getCode().equals(savedCode)) {
+			throw new BaseException(ErrorCode.INVALID_EMAIL_AUTH_CODE);
+		}
+		String passwordKey = getRedisKey(KeyPrefix.UPDATE_PASSWORD, String.valueOf(member.getId()));
+		saveInRedis(passwordKey, "verified", Auth.PASSWORD_EXPIRATION.getExpiration());
+		valueOperations.getAndDelete(emailAuthKey);
+	}
+
+	public void updatePassword(PasswordUpdateServiceRequest request) {
+		Member member = MemberThreadLocal.get();
+		member.updatePassword(passwordEncoder.encode(request.getPassword()));
+		memberRepository.save(member);
+
+		redisTemplate.delete(
+			getRedisKey(KeyPrefix.UPDATE_PASSWORD, String.valueOf(member.getId())));
+	}
+
+	private void sendMail(String to, String subject, String body) {
+		MimeMessagePreparator messagePreparator =
+			mimeMessage -> {
+				final MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
+				helper.setTo(to);
+				helper.setSubject(subject);
+				helper.setText(body, true);
+			};
+		mailSender.send(messagePreparator);
 	}
 
 	private void updateIntroductions(MyProfileUpdateServiceRequest request, Member member) {
@@ -239,5 +309,20 @@ public class MemberService {
 			.email(userEmail)
 			.member(member)
 			.build());
+	}
+
+	private String getRedisKey(KeyPrefix prefix, String key) {
+		return prefix.getPrefix() + key;
+	}
+
+	private void saveInRedis(String key, String value, long timeout) {
+		ValueOperations<String, String> stringValueOperations = redisTemplate.opsForValue();
+
+		stringValueOperations.set(key, value);
+		stringValueOperations.getAndExpire(
+			key,
+			timeout,
+			TimeUnit.MILLISECONDS
+		);
 	}
 }
