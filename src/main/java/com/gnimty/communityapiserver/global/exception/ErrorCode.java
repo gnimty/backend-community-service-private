@@ -37,6 +37,7 @@ public enum ErrorCode {
 	MAIN_CONTENT_MUST_BE_ONLY(CONFLICT, ErrorMessage.MAIN_CONTENT_MUST_BE_ONLY),
 	EXCEED_INTRODUCTION_COUNT(BAD_REQUEST, ErrorMessage.EXCEED_INTRODUCTION_COUNT),
 	DUPLICATED_ID(CONFLICT, ErrorMessage.DUPLICATED_ID),
+	NOT_LOGIN_BY_FORM(BAD_REQUEST, ErrorMessage.NOT_LOGIN_BY_FORM),
 
 	// server
 	INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Server Error");
@@ -73,5 +74,6 @@ public enum ErrorCode {
 		public static final String MAIN_CONTENT_MUST_BE_ONLY = "main에 해당하는 요소는 반드시 1개만 존재해야 합니다.";
 		public static final String EXCEED_INTRODUCTION_COUNT = "소개글의 최대 개수는 3개입니다.";
 		public static final String DUPLICATED_ID = "중복된 id가 존재합니다";
+		public static final String NOT_LOGIN_BY_FORM = "form 로그인 유저가 아닙니다.";
 	}
 }
