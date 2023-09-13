@@ -1,6 +1,7 @@
 package com.gnimty.communityapiserver.domain.member.service.dto.response;
 
 import com.gnimty.communityapiserver.domain.riotaccount.entity.RiotAccount;
+import com.gnimty.communityapiserver.global.constant.Lane;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -16,8 +17,8 @@ public class RiotAccountEntry {
 	private Long lp;
 	private Integer division;
 	private Long mmr;
-	private String frequentLane1;
-	private String frequentLane2;
+	private Lane frequentLane1;
+	private Lane frequentLane2;
 	private Long frequentChampionId1;
 	private Long frequentChampionId2;
 	private Long frequentChampionId3;

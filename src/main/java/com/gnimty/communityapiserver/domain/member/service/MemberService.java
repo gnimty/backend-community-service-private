@@ -28,6 +28,7 @@ import com.gnimty.communityapiserver.domain.riotaccount.service.RiotAccountReadS
 import com.gnimty.communityapiserver.domain.schedule.entity.Schedule;
 import com.gnimty.communityapiserver.domain.schedule.service.ScheduleReadService;
 import com.gnimty.communityapiserver.global.auth.MemberThreadLocal;
+import com.gnimty.communityapiserver.global.constant.Lane;
 import com.gnimty.communityapiserver.global.constant.Provider;
 import com.gnimty.communityapiserver.global.exception.BaseException;
 import com.gnimty.communityapiserver.global.exception.ErrorCode;
@@ -72,8 +73,8 @@ public class MemberService {
 			.lp(100L)
 			.division(100)
 			.mmr(100L)
-			.frequentLane1("")
-			.frequentLane2("")
+			.frequentLane1(Lane.TOP)
+			.frequentLane2(Lane.BOTTOM)
 			.frequentChampionId1(1L)
 			.frequentChampionId2(1L)
 			.frequentChampionId3(1L)
