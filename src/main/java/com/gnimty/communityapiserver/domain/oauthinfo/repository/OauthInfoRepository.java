@@ -14,4 +14,6 @@ public interface OauthInfoRepository extends JpaRepository<OauthInfo, Long> {
 	Boolean existsByEmailAndProvider(String email, Provider provider);
 
 	List<OauthInfo> findByMember(Member member);
+
+	Boolean existsByMemberAndProvider(Member member, Provider provider);
 }
