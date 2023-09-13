@@ -10,7 +10,8 @@ public enum ResponseMessage {
 	SUCCESS_SIGN_UP("성공적으로 회원가입을 완료하였습니다."),
 	SUCCESS_SEND_EMAIL_AUTH_CODE("성공적으로 이메일 인증 코드를 발송하였습니다."),
 	SUCCESS_VERIFY_EMAIL("이메일 인증을 성공적으로 완료하였습니다."),
-	SUCCESS_UPDATE_PROFILE("성공적으로 프로필 수정을 완료하였습니다.");
+	SUCCESS_UPDATE_PROFILE("성공적으로 프로필 수정을 완료하였습니다."),
+	SUCCESS_UPDATE_PASSWORD("성공적으로 비밀번호 변경을 완료하였습니다.");
 
 	private final String message;
 
