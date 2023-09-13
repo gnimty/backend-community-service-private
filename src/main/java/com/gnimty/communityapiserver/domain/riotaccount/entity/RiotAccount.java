@@ -1,6 +1,7 @@
 package com.gnimty.communityapiserver.domain.riotaccount.entity;
 
 import com.gnimty.communityapiserver.domain.member.entity.Member;
+import com.gnimty.communityapiserver.global.constant.Lane;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
@@ -52,10 +53,10 @@ public class RiotAccount {
 	private Long mmr;
 
 	@Column(name = "frequent_lane_1", columnDefinition = "VARCHAR(10)")
-	private String frequentLane1;
+	private Lane frequentLane1;
 
 	@Column(name = "frequent_lane_2", columnDefinition = "VARCHAR(10)")
-	private String frequentLane2;
+	private Lane frequentLane2;
 
 	@Column(name = "frequent_champion_id_1", columnDefinition = "BIGINT")
 	private Long frequentChampionId1;
@@ -82,8 +83,8 @@ public class RiotAccount {
 		Long lp,
 		Integer division,
 		Long mmr,
-		String frequentLane1,
-		String frequentLane2,
+		Lane frequentLane1,
+		Lane frequentLane2,
 		Long frequentChampionId1,
 		Long frequentChampionId2,
 		Long frequentChampionId3,
