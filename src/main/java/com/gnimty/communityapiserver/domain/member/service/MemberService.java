@@ -107,6 +107,7 @@ public class MemberService {
 
 	public void oauthAdditionalLink(Provider provider, OauthLoginServiceRequest request) {
 		final Member member = MemberThreadLocal.get();
+		throwIfAlreadyLinkedProvider(member, provider);
 		String userEmail;
 		if (provider.equals(Provider.KAKAO)) {
 			userEmail = kakaoOauthUtil.getKakaoUserEmail(request.getAuthCode());
@@ -324,5 +325,11 @@ public class MemberService {
 			timeout,
 			TimeUnit.MILLISECONDS
 		);
+	}
+
+	private void throwIfAlreadyLinkedProvider(Member member, Provider provider) {
+		if (oauthInfoReadService.existsByMemberAndProvider(member, provider)) {
+			throw new BaseException(ErrorCode.ALREADY_LINKED_OAUTH);
+		}
 	}
 }
