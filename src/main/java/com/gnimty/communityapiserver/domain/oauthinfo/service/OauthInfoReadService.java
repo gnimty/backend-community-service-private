@@ -29,6 +29,6 @@ public class OauthInfoReadService {
 	}
 
 	public Boolean existsByMemberAndProvider(Member member, Provider provider) {
-		return oauthInfoRepository.existsByMemberAndProvider(member , provider);
+		return oauthInfoRepository.existsByMemberAndProvider(member, provider);
 	}
 }

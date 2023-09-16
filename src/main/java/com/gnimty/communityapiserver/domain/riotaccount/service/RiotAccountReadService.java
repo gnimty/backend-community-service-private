@@ -40,4 +40,13 @@ public class RiotAccountReadService {
 		return riotAccountRepository.findById(id)
 			.orElseThrow(() -> new BaseException(ErrorCode.RIOT_ACCOUNT_NOT_FOUND));
 	}
+
+	public List<RiotAccount> findByPuuids(List<String> puuids) {
+		return riotAccountRepository.findByPuuids(puuids);
+	}
+
+	public RiotAccount findByPuuid(String puuid) {
+		return riotAccountRepository.findByPuuid(puuid)
+			.orElse(null);
+	}
 }
