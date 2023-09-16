@@ -1,6 +1,6 @@
 package com.gnimty.communityapiserver.domain.member.controller;
 
-import static com.gnimty.communityapiserver.global.constant.Auth.*;
+import static com.gnimty.communityapiserver.global.constant.Auth.BEARER;
 import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_SEND_EMAIL_AUTH_CODE;
 import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_SIGN_UP;
 import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_VERIFY_EMAIL;

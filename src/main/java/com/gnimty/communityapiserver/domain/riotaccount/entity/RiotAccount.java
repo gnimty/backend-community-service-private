@@ -4,6 +4,8 @@ import com.gnimty.communityapiserver.domain.member.entity.Member;
 import com.gnimty.communityapiserver.global.constant.Lane;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.EnumType;
+import javax.persistence.Enumerated;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -52,9 +54,11 @@ public class RiotAccount {
 	@Column(name = "mmr", columnDefinition = "BIGINT")
 	private Long mmr;
 
+	@Enumerated(EnumType.STRING)
 	@Column(name = "frequent_lane_1", columnDefinition = "VARCHAR(10)")
 	private Lane frequentLane1;
 
+	@Enumerated(EnumType.STRING)
 	@Column(name = "frequent_lane_2", columnDefinition = "VARCHAR(10)")
 	private Lane frequentLane2;
 
