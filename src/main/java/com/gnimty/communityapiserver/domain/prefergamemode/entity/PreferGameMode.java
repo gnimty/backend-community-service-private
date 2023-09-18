@@ -1,5 +1,6 @@
 package com.gnimty.communityapiserver.domain.prefergamemode.entity;
 
+import com.gnimty.communityapiserver.domain.base.entity.BaseEntity;
 import com.gnimty.communityapiserver.domain.member.entity.Member;
 import com.gnimty.communityapiserver.global.constant.GameMode;
 import javax.persistence.Column;
@@ -22,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "prefer_game_mode")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class PreferGameMode {
+public class PreferGameMode extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
