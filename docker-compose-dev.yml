@@ -29,7 +29,7 @@ services:
     environment:
       TZ: Asia/Seoul
     volumes:
-      - ./dev-data:/data/community/mysql
+      - ./dev-data:/var/lib/mysql
     command:
       - --character-set-server=utf8mb4
       - --collation-server=utf8mb4_unicode_ci
@@ -43,8 +43,6 @@ services:
     env_file:
       - db.env
     restart: always
-    volumes:
-      - ./dev-data:/data/community/mongo
 
   community-redis-dev:
     image: redis:latest
@@ -52,8 +50,8 @@ services:
     ports:
       - "16379:6379"
     volumes:
-      - ./dev-data:/data/community/redis
-      - ./dev-redis-conf:/data/community/redis/redis.conf
+      - ./dev-redis:/data
+      - ./dev-redis-conf:/usr/local/etc/redis/redis.conf
     labels:
       - "name=redis"
       - "mode=standalone"
