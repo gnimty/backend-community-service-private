@@ -1,5 +1,6 @@
 package com.gnimty.communityapiserver.domain.oauthinfo.entity;
 
+import com.gnimty.communityapiserver.domain.base.entity.BaseEntity;
 import com.gnimty.communityapiserver.domain.member.entity.Member;
 import com.gnimty.communityapiserver.global.constant.Provider;
 import javax.persistence.Column;
@@ -22,7 +23,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "oauth_info")
 @Getter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-public class OauthInfo {
+public class OauthInfo extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
