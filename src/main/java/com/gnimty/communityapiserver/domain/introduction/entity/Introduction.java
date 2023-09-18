@@ -1,5 +1,6 @@
 package com.gnimty.communityapiserver.domain.introduction.entity;
 
+import com.gnimty.communityapiserver.domain.base.entity.BaseEntity;
 import com.gnimty.communityapiserver.domain.member.entity.Member;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -20,7 +21,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "introduction")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class Introduction {
+public class Introduction extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
