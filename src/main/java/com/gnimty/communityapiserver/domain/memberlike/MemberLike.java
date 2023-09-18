@@ -1,5 +1,6 @@
 package com.gnimty.communityapiserver.domain.memberlike;
 
+import com.gnimty.communityapiserver.domain.base.entity.BaseEntity;
 import com.gnimty.communityapiserver.domain.member.entity.Member;
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -19,7 +20,7 @@ import lombok.NoArgsConstructor;
 @Table(name = "member_like")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class MemberLike {
+public class MemberLike extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
