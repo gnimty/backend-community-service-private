@@ -11,6 +11,7 @@ import lombok.Getter;
 public class BlockListEntry {
 
 	private Long id;
+	private Long blockerId;
 	private LocalDate date;
 	private String nickname;
 	private Status status;
@@ -19,6 +20,7 @@ public class BlockListEntry {
 	public static BlockListEntry from(BlockList blockList) {
 		return BlockListEntry.builder()
 			.id(blockList.getBlocked().getId())
+			.blockerId(blockList.getBlocker().getId())
 			.date(blockList.getCreatedAt().toLocalDate())
 			.nickname(blockList.getBlocked().getNickname())
 			.status(blockList.getBlocked().getStatus())
