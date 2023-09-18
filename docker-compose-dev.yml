@@ -56,4 +56,4 @@ services:
       - "name=redis"
       - "mode=standalone"
     restart: on-failure
-    command: redis-server /data/community/redis/redis.conf
+    command: redis-server /usr/local/conf/redis.conf
