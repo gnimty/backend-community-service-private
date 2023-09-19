@@ -1,18 +1,16 @@
 package com.gnimty.communityapiserver.domain.block.controller;
 
-import static com.gnimty.communityapiserver.global.constant.ResponseMessage.*;
-import static org.springframework.http.HttpStatus.*;
+import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_BLOCK;
+import static org.springframework.http.HttpStatus.OK;
 
 import com.gnimty.communityapiserver.domain.block.controller.dto.request.BlockRequest;
 import com.gnimty.communityapiserver.domain.block.controller.dto.response.BlockReadResponse;
 import com.gnimty.communityapiserver.domain.block.service.BlockReadService;
 import com.gnimty.communityapiserver.domain.block.service.BlockService;
 import com.gnimty.communityapiserver.domain.block.service.dto.response.BlockReadServiceResponse;
-import com.gnimty.communityapiserver.global.constant.ResponseMessage;
 import com.gnimty.communityapiserver.global.response.CommonResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
-import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
