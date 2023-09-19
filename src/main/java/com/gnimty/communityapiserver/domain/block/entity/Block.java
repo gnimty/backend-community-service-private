@@ -1,4 +1,4 @@
-package com.gnimty.communityapiserver.domain.blocklist.entity;
+package com.gnimty.communityapiserver.domain.block.entity;
 
 import com.gnimty.communityapiserver.domain.base.entity.BaseEntity;
 import com.gnimty.communityapiserver.domain.member.entity.Member;
@@ -17,14 +17,14 @@ import lombok.Getter;
 import lombok.NoArgsConstructor;
 
 @Entity
-@Table(name = "block_list")
+@Table(name = "block")
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
 @Getter
-public class BlockList extends BaseEntity {
+public class Block extends BaseEntity {
 
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
-	@Column(name = "block_list_id", columnDefinition = "BIGINT", updatable = false, unique = true)
+	@Column(name = "block_id", columnDefinition = "BIGINT", updatable = false, unique = true)
 	private Long id;
 
 	@ManyToOne(optional = false, fetch = FetchType.LAZY)
@@ -39,7 +39,7 @@ public class BlockList extends BaseEntity {
 	private String memo;
 
 	@Builder
-	public BlockList(
+	public Block(
 		Member blocker,
 		Member blocked,
 		String memo
