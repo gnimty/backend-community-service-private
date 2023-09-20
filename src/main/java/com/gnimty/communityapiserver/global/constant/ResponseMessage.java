@@ -12,7 +12,8 @@ public enum ResponseMessage {
 	SUCCESS_VERIFY_EMAIL("이메일 인증을 성공적으로 완료하였습니다."),
 	SUCCESS_UPDATE_PROFILE("성공적으로 프로필 수정을 완료하였습니다."),
 	SUCCESS_UPDATE_PASSWORD("성공적으로 비밀번호 변경을 완료하였습니다."),
-	SUCCESS_UPDATE_SUMMONERS("성공적으로 소환사 정보를 변경하였습니다.");
+	SUCCESS_UPDATE_SUMMONERS("성공적으로 소환사 정보를 변경하였습니다."),
+	SUCCESS_BLOCK("성공적으로 회원 차단을 완료하였습니다.");
 
 	private final String message;
 

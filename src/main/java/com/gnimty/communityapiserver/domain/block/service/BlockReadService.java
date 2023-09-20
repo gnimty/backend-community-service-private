@@ -27,4 +27,8 @@ public class BlockReadService {
 				.toList()
 			).build();
 	}
+
+	public Boolean existsByBlockerAndBlocked(Member blocker, Member blocked) {
+		return blockRepository.existsByBlockerAndBlocked(blocker, blocked);
+	}
 }
