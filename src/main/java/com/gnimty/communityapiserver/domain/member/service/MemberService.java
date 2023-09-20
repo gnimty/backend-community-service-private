@@ -15,7 +15,6 @@ import com.gnimty.communityapiserver.domain.member.service.dto.response.OauthInf
 import com.gnimty.communityapiserver.domain.member.service.dto.response.PreferGameModeEntry;
 import com.gnimty.communityapiserver.domain.member.service.dto.response.RiotAccountEntry;
 import com.gnimty.communityapiserver.domain.member.service.dto.response.RiotDependentInfo;
-import com.gnimty.communityapiserver.domain.schedule.controller.dto.request.ScheduleEntry;
 import com.gnimty.communityapiserver.domain.member.service.utils.GoogleOauthUtil;
 import com.gnimty.communityapiserver.domain.member.service.utils.KakaoOauthUtil;
 import com.gnimty.communityapiserver.domain.member.service.utils.RiotOauthUtil;
@@ -27,6 +26,7 @@ import com.gnimty.communityapiserver.domain.prefergamemode.service.PreferGameMod
 import com.gnimty.communityapiserver.domain.riotaccount.entity.RiotAccount;
 import com.gnimty.communityapiserver.domain.riotaccount.repository.RiotAccountRepository;
 import com.gnimty.communityapiserver.domain.riotaccount.service.RiotAccountReadService;
+import com.gnimty.communityapiserver.domain.schedule.controller.dto.request.ScheduleEntry;
 import com.gnimty.communityapiserver.domain.schedule.entity.Schedule;
 import com.gnimty.communityapiserver.domain.schedule.service.ScheduleReadService;
 import com.gnimty.communityapiserver.global.auth.MemberThreadLocal;

@@ -1,6 +1,6 @@
 package com.gnimty.communityapiserver.domain.schedule.controller;
 
-import static org.springframework.http.HttpStatus.*;
+import static org.springframework.http.HttpStatus.OK;
 
 import com.gnimty.communityapiserver.domain.schedule.controller.dto.request.ScheduleRequest;
 import com.gnimty.communityapiserver.domain.schedule.service.ScheduleService;
