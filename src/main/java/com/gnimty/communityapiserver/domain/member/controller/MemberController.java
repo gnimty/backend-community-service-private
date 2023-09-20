@@ -4,18 +4,25 @@ import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCC
 import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_KAKAO_LINK;
 import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_SEND_EMAIL_AUTH_CODE;
 import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_SUMMONER_LINK;
+import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_UPDATE_INTRODUCTION;
 import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_UPDATE_PASSWORD;
+import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_UPDATE_PREFER_GAME_MODE;
 import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_UPDATE_PROFILE;
+import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_UPDATE_STATUS;
 import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_VERIFY_EMAIL;
 import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.HttpStatus.OK;
 
+import com.gnimty.communityapiserver.domain.member.controller.dto.request.IntroductionUpdateRequest;
 import com.gnimty.communityapiserver.domain.member.controller.dto.request.MyProfileUpdateRequest;
 import com.gnimty.communityapiserver.domain.member.controller.dto.request.OauthLoginRequest;
 import com.gnimty.communityapiserver.domain.member.controller.dto.request.PasswordEmailVerifyRequest;
 import com.gnimty.communityapiserver.domain.member.controller.dto.request.PasswordUpdateRequest;
+import com.gnimty.communityapiserver.domain.member.controller.dto.request.PreferGameModeUpdateRequest;
+import com.gnimty.communityapiserver.domain.member.controller.dto.request.StatusUpdateRequest;
 import com.gnimty.communityapiserver.domain.member.controller.dto.response.MyProfileResponse;
 import com.gnimty.communityapiserver.domain.member.service.MemberService;
+import com.gnimty.communityapiserver.domain.member.service.dto.response.IntroductionEntry;
 import com.gnimty.communityapiserver.domain.member.service.dto.response.MyProfileServiceResponse;
 import com.gnimty.communityapiserver.global.auth.MemberThreadLocal;
 import com.gnimty.communityapiserver.global.constant.Provider;
@@ -94,5 +101,29 @@ public class MemberController {
 	) {
 		memberService.updatePassword(request.toServiceRequest());
 		return CommonResponse.success(SUCCESS_UPDATE_PASSWORD, OK);
+	}
+
+	@PatchMapping("/{member_id}/status")
+	public CommonResponse<Void> updateStatus(
+		@RequestBody @Valid StatusUpdateRequest request
+	) {
+		memberService.updateStatus(request.toServiceRequest());
+		return CommonResponse.success(SUCCESS_UPDATE_STATUS, OK);
+	}
+
+	@PatchMapping("/{member_id}/introductions")
+	public CommonResponse<Void> updateIntroduction(
+		@RequestBody @Valid IntroductionUpdateRequest request
+	) {
+		memberService.updateIntroduction(request.toServiceRequest());
+		return CommonResponse.success(SUCCESS_UPDATE_INTRODUCTION, OK);
+	}
+
+	@PatchMapping("/{member_id}/prefer-game-mode")
+	public CommonResponse<Void> updatePreferGameMode(
+		@RequestBody @Valid PreferGameModeUpdateRequest request
+	) {
+		memberService.updatePreferGameMode(request.toServiceRequest());
+		return CommonResponse.success(SUCCESS_UPDATE_PREFER_GAME_MODE, OK);
 	}
 }
