@@ -22,7 +22,6 @@ import com.gnimty.communityapiserver.domain.member.controller.dto.request.Prefer
 import com.gnimty.communityapiserver.domain.member.controller.dto.request.StatusUpdateRequest;
 import com.gnimty.communityapiserver.domain.member.controller.dto.response.MyProfileResponse;
 import com.gnimty.communityapiserver.domain.member.service.MemberService;
-import com.gnimty.communityapiserver.domain.member.service.dto.response.IntroductionEntry;
 import com.gnimty.communityapiserver.domain.member.service.dto.response.MyProfileServiceResponse;
 import com.gnimty.communityapiserver.global.auth.MemberThreadLocal;
 import com.gnimty.communityapiserver.global.constant.Provider;
