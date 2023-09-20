@@ -2,12 +2,14 @@ package com.gnimty.communityapiserver.domain.block.service;
 
 import com.gnimty.communityapiserver.domain.block.entity.Block;
 import com.gnimty.communityapiserver.domain.block.repository.BlockRepository;
+import com.gnimty.communityapiserver.domain.block.service.dto.request.BlockClearServiceRequest;
 import com.gnimty.communityapiserver.domain.block.service.dto.request.BlockServiceRequest;
 import com.gnimty.communityapiserver.domain.member.entity.Member;
 import com.gnimty.communityapiserver.domain.member.service.MemberReadService;
 import com.gnimty.communityapiserver.global.auth.MemberThreadLocal;
 import com.gnimty.communityapiserver.global.exception.BaseException;
 import com.gnimty.communityapiserver.global.exception.ErrorCode;
+import java.util.Objects;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -28,6 +30,15 @@ public class BlockService {
 			throw new BaseException(ErrorCode.ALREADY_BLOCKED_MEMBER);
 		}
 		blockRepository.save(createBlockEntity(request, member, blocked));
+	}
+
+	public void clearBlock(BlockClearServiceRequest request) {
+		Member member = MemberThreadLocal.get();
+		Block block = blockReadService.findById(request.getId());
+		if (!Objects.equals(block.getBlocker().getId(), member.getId())) {
+			throw new BaseException(ErrorCode.NO_PERMISSION);
+		}
+		blockRepository.delete(block);
 	}
 
 	private Block createBlockEntity(BlockServiceRequest request, Member member, Member blocked) {
