@@ -17,6 +17,8 @@ public enum ResponseMessage {
 	SUCCESS_UPDATE_STATUS("성공적으로 접속 상태를 변경했습니다."),
 	SUCCESS_UPDATE_INTRODUCTION("성공적으로 상태 메세지를 변경했습니다."),
 	SUCCESS_UPDATE_PREFER_GAME_MODE("성공적으로 선호 게임 타입을 변경했습니다.");
+	SUCCESS_BLOCK("성공적으로 회원 차단을 완료하였습니다."),
+	SUCCESS_CLEAR_BLOCK("성공적으로 차단 해제를 완료하였습니다.");
 
 	private final String message;
 

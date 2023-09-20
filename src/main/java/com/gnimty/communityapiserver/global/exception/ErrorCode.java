@@ -39,6 +39,8 @@ public enum ErrorCode {
 	DUPLICATED_ID(CONFLICT, ErrorMessage.DUPLICATED_ID),
 	NOT_LOGIN_BY_FORM(BAD_REQUEST, ErrorMessage.NOT_LOGIN_BY_FORM),
 	ALREADY_LINKED_PROVIDER(CONFLICT, ErrorMessage.ALREADY_LINKED_PROVIDER),
+	ALREADY_BLOCKED_MEMBER(CONFLICT, ErrorMessage.ALREADY_BLOCKED_MEMBER),
+	BLOCK_NOT_FOUND(NOT_FOUND, ErrorMessage.BLOCK_NOT_FOUND),
 
 	// server
 	INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Server Error");
@@ -58,7 +60,7 @@ public enum ErrorCode {
 
 		public static final String INVALID_INPUT_VALUE = "입력값 중 검증에 실패한 값이 있습니다.";
 		public static final String AGREE_TERMS_MUST_BE_TRUE = "약관 동의 항목은 반드시 true여야 합니다.";
-		public static final String MEMBER_NOT_FOUND = "token에 해당하는 회원을 찾을 수 없습니다.";
+		public static final String MEMBER_NOT_FOUND = "요청에 해당하는 회원을 찾을 수 없습니다.";
 		public static final String TOKEN_EXPIRED = "만료된 token 입니다.";
 		public static final String TOKEN_INVALID = "유효하지 않은 token 입니다.";
 		public static final String INVALID_LOGIN = "올바르지 않은 로그인 정보입니다.";
@@ -77,5 +79,7 @@ public enum ErrorCode {
 		public static final String DUPLICATED_ID = "중복된 id가 존재합니다";
 		public static final String NOT_LOGIN_BY_FORM = "form 로그인 유저가 아닙니다.";
 		public static final String ALREADY_LINKED_PROVIDER = "이미 요청의 provider에 해당하는 oauth에 연결돼 있습니다.";
+		public static final String ALREADY_BLOCKED_MEMBER = "이미 차단된 회원입니다.";
+		public static final String BLOCK_NOT_FOUND = "요청에 해당하는 차단 정보가 존재하지 않습니다.";
 	}
 }
