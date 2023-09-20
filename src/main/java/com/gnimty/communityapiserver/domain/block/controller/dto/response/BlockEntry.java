@@ -11,7 +11,7 @@ import lombok.Getter;
 public class BlockEntry {
 
 	private Long id;
-	private Long blockerId;
+	private Long blockedId;
 	private LocalDate date;
 	private String nickname;
 	private Status status;
@@ -19,8 +19,8 @@ public class BlockEntry {
 
 	public static BlockEntry from(Block block) {
 		return BlockEntry.builder()
-			.id(block.getBlocked().getId())
-			.blockerId(block.getBlocker().getId())
+			.id(block.getId())
+			.blockedId(block.getBlocked().getId())
 			.date(block.getCreatedAt().toLocalDate())
 			.nickname(block.getBlocked().getNickname())
 			.status(block.getBlocked().getStatus())
