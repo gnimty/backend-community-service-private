@@ -5,10 +5,13 @@ import com.gnimty.communityapiserver.domain.introduction.repository.Introduction
 import com.gnimty.communityapiserver.domain.introduction.service.IntroductionReadService;
 import com.gnimty.communityapiserver.domain.member.entity.Member;
 import com.gnimty.communityapiserver.domain.member.repository.MemberRepository;
+import com.gnimty.communityapiserver.domain.member.service.dto.request.IntroductionUpdateServiceRequest;
 import com.gnimty.communityapiserver.domain.member.service.dto.request.MyProfileUpdateServiceRequest;
 import com.gnimty.communityapiserver.domain.member.service.dto.request.OauthLoginServiceRequest;
 import com.gnimty.communityapiserver.domain.member.service.dto.request.PasswordEmailVerifyServiceRequest;
 import com.gnimty.communityapiserver.domain.member.service.dto.request.PasswordUpdateServiceRequest;
+import com.gnimty.communityapiserver.domain.member.service.dto.request.PreferGameModeUpdateServiceRequest;
+import com.gnimty.communityapiserver.domain.member.service.dto.request.StatusUpdateServiceRequest;
 import com.gnimty.communityapiserver.domain.member.service.dto.response.IntroductionEntry;
 import com.gnimty.communityapiserver.domain.member.service.dto.response.MyProfileServiceResponse;
 import com.gnimty.communityapiserver.domain.member.service.dto.response.OauthInfoEntry;
@@ -22,6 +25,7 @@ import com.gnimty.communityapiserver.domain.oauthinfo.entity.OauthInfo;
 import com.gnimty.communityapiserver.domain.oauthinfo.repository.OauthInfoRepository;
 import com.gnimty.communityapiserver.domain.oauthinfo.service.OauthInfoReadService;
 import com.gnimty.communityapiserver.domain.prefergamemode.entity.PreferGameMode;
+import com.gnimty.communityapiserver.domain.prefergamemode.repository.PreferGameModeRepository;
 import com.gnimty.communityapiserver.domain.prefergamemode.service.PreferGameModeReadService;
 import com.gnimty.communityapiserver.domain.riotaccount.entity.RiotAccount;
 import com.gnimty.communityapiserver.domain.riotaccount.repository.RiotAccountRepository;
@@ -34,6 +38,7 @@ import com.gnimty.communityapiserver.global.constant.Auth;
 import com.gnimty.communityapiserver.global.constant.KeyPrefix;
 import com.gnimty.communityapiserver.global.constant.Lane;
 import com.gnimty.communityapiserver.global.constant.Provider;
+import com.gnimty.communityapiserver.global.constant.Status;
 import com.gnimty.communityapiserver.global.exception.BaseException;
 import com.gnimty.communityapiserver.global.exception.ErrorCode;
 import com.gnimty.communityapiserver.global.utils.RandomCodeGenerator;
@@ -71,6 +76,7 @@ public class MemberService {
 	private final StringRedisTemplate redisTemplate;
 	private final JavaMailSender mailSender;
 	private final PasswordEncoder passwordEncoder;
+	private final PreferGameModeRepository preferGameModeRepository;
 
 	public void summonerAccountLink(OauthLoginServiceRequest request) {
 		Member member = MemberThreadLocal.get();
@@ -144,8 +150,8 @@ public class MemberService {
 		}
 
 		updateMainRiotAccount(request, member);
-		updateStatus(request, member);
-		updateIntroductions(request, member);
+		updateStatus(request.getStatus(), member);
+		updateIntroductions(request.getIntroductions(), member);
 		memberRepository.save(member);
 	}
 
@@ -198,6 +204,26 @@ public class MemberService {
 			getRedisKey(KeyPrefix.UPDATE_PASSWORD, String.valueOf(member.getId())));
 	}
 
+	public void updateStatus(StatusUpdateServiceRequest request) {
+		Member member = MemberThreadLocal.get();
+		updateStatus(request.getStatus(), member);
+		memberRepository.save(member);
+	}
+
+	public void updateIntroduction(IntroductionUpdateServiceRequest request) {
+		Member member = MemberThreadLocal.get();
+		updateIntroductions(request.getIntroductions(), member);
+		memberRepository.save(member);
+	}
+
+	public void updatePreferGameMode(PreferGameModeUpdateServiceRequest request) {
+		Member member = MemberThreadLocal.get();
+		preferGameModeRepository.deleteByMember(member);
+		request.getPreferGameModes().stream()
+			.map(entry -> createPreferGameMode(entry, member))
+			.forEach(preferGameModeRepository::save);
+	}
+
 	private void sendMail(String to, String subject, String body) {
 		MimeMessagePreparator messagePreparator =
 			mimeMessage -> {
@@ -209,23 +235,23 @@ public class MemberService {
 		mailSender.send(messagePreparator);
 	}
 
-	private void updateIntroductions(MyProfileUpdateServiceRequest request, Member member) {
-		if (request.getIntroductions() != null) {
-			List<IntroductionEntry> updateIntroductions = request.getIntroductions().stream()
+	private void updateIntroductions(List<IntroductionEntry> introductions, Member member) {
+		if (introductions != null) {
+			List<IntroductionEntry> updateIntroductions = introductions.stream()
 				.filter(entry -> entry.getId() != null)
 				.peek(entry -> validatePermission(entry.getId(), member))
 				.peek(this::updateIntroduction)
 				.toList();
-			List<IntroductionEntry> insertIntroductions = request.getIntroductions().stream()
+			List<IntroductionEntry> insertIntroductions = introductions.stream()
 				.filter(introductionEntry -> introductionEntry.getId() == null)
 				.toList();
 
 			throwIfDuplicatedId(updateIntroductions);
-			throwIfDuplicatedIsMain(request);
+			throwIfDuplicatedIsMain(introductions);
 			List<Introduction> existIntroductions = introductionReadService.findByMember(member);
 			throwIfExceedIntroductionCount(existIntroductions.size(), insertIntroductions.size());
 			insertIntroductions.forEach(entry -> saveIntroduction(member, entry));
-			introductionReadService.throwIfNotExistsMain(member);
+			introductionReadService.throwIfNotExistsOrExceedMain(member);
 		}
 	}
 
@@ -256,8 +282,8 @@ public class MemberService {
 		}
 	}
 
-	private void throwIfDuplicatedIsMain(MyProfileUpdateServiceRequest request) {
-		long mainCount = request.getIntroductions().stream()
+	private void throwIfDuplicatedIsMain(List<IntroductionEntry> introductions) {
+		long mainCount = introductions.stream()
 			.filter(IntroductionEntry::getIsMain)
 			.count();
 		if (mainCount > 1) {
@@ -275,9 +301,9 @@ public class MemberService {
 		}
 	}
 
-	private void updateStatus(MyProfileUpdateServiceRequest request, Member member) {
-		if (request.getStatus() != null) {
-			member.updateStatus(request.getStatus());
+	private void updateStatus(Status status, Member member) {
+		if (status != null) {
+			member.updateStatus(status);
 		}
 	}
 
@@ -337,5 +363,12 @@ public class MemberService {
 		if (oauthInfoReadService.existsByMemberAndProvider(member, provider)) {
 			throw new BaseException(ErrorCode.ALREADY_LINKED_OAUTH);
 		}
+	}
+
+	private PreferGameMode createPreferGameMode(PreferGameModeEntry entry, Member member) {
+		return PreferGameMode.builder()
+			.gameMode(entry.getGameMode())
+			.member(member)
+			.build();
 	}
 }
