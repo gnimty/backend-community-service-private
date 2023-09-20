@@ -15,8 +15,12 @@ import javax.validation.Payload;
 public @interface BeforeEndTime {
 
 	String message() default ErrorMessage.INVALID_INPUT_VALUE;
+
 	Class<?>[] groups() default {};
+
 	Class<? extends Payload>[] payload() default {};
+
 	String startTime();
+
 	String endTime();
 }
