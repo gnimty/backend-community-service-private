@@ -6,6 +6,8 @@ import com.gnimty.communityapiserver.domain.block.repository.BlockRepository;
 import com.gnimty.communityapiserver.domain.block.service.dto.response.BlockReadServiceResponse;
 import com.gnimty.communityapiserver.domain.member.entity.Member;
 import com.gnimty.communityapiserver.global.auth.MemberThreadLocal;
+import com.gnimty.communityapiserver.global.exception.BaseException;
+import com.gnimty.communityapiserver.global.exception.ErrorCode;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -26,5 +28,14 @@ public class BlockReadService {
 				.map(BlockEntry::from)
 				.toList()
 			).build();
+	}
+
+	public Boolean existsByBlockerAndBlocked(Member blocker, Member blocked) {
+		return blockRepository.existsByBlockerAndBlocked(blocker, blocked);
+	}
+
+	public Block findById(Long id) {
+		return blockRepository.findById(id)
+			.orElseThrow(() -> new BaseException(ErrorCode.BLOCK_NOT_FOUND));
 	}
 }
