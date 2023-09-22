@@ -5,15 +5,12 @@ oauth:
   kakao:
     client_id: ${OAUTH_KAKAO_CLIENT_ID}
     client_secret: ${OAUTH_KAKAO_CLIENT_SECRET}
-    redirect_uri: ${OAUTH_KAKAO_REDIRECT_URI}
   google:
     client_id: ${OAUTH_GOOGLE_CLIENT_ID}
     client_secret: ${OAUTH_GOOGLE_CLIENT_SECRET}
-    redirect_uri: ${OAUTH_GOOGLE_REDIRECT_URI}
   riot:
     client_id: ${OAUTH_RIOT_CLIENT_ID}
     client_secret: ${OAUTH_RIOT_CLIENT_SECRET}
-    redirect_uri: ${OAUTH_RIOT_REDIRECT_URI}
 
 server:
   servlet:
@@ -73,6 +70,15 @@ spring:
       username:
       password:
       authentication-database: admin
+
+oauth:
+  kakao:
+    redirect_uri: http://localhost:8080/community/oauth/kakao/redirect
+  google:
+    redirect_uri: http://localhost:8080/community/oauth/google/redirect
+  riot:
+    redirect_uri: http://localhost:8080/community/oauth/riot/redirect
+
 ---
 spring:
   config:
@@ -97,6 +103,14 @@ spring:
     console:
       enabled: true
       path: /h2-console
+
+oauth:
+  kakao:
+    redirect_uri: http://localhost:8080/community/oauth/kakao/redirect
+  google:
+    redirect_uri: http://localhost:8080/community/oauth/google/redirect
+  riot:
+    redirect_uri: http://localhost:8080/community/oauth/riot/redirect
 
 ---
 spring:
@@ -129,3 +143,11 @@ spring:
   redis:
     host: ${REDIS_HOST}
     port: ${REDIS_PORT}
+
+oauth:
+  kakao:
+    redirect_uri: ${OAUTH_KAKAO_REDIRECT_URI}
+  google:
+    redirect_uri: ${OAUTH_GOOGLE_REDIRECT_URI}
+  riot:
+    redirect_uri: ${OAUTH_GOOGLE_REDIRECT_URI}
