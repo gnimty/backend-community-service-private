@@ -2,6 +2,8 @@ package com.gnimty.communityapiserver.domain.member.service.utils;
 
 import static com.gnimty.communityapiserver.global.constant.Auth.BEARER;
 
+import com.gnimty.communityapiserver.global.exception.BaseException;
+import com.gnimty.communityapiserver.global.exception.ErrorCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -11,6 +13,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 @Service
 @RequiredArgsConstructor
@@ -25,8 +28,13 @@ public class KakaoOauthUtil {
 
 
 	public String getKakaoUserEmail(String authCode) {
-		TokenInfo block = getTokenInfo(authCode);
-		AccountInfo accountInfo = getAccountInfo(block);
+		AccountInfo accountInfo;
+		try {
+			TokenInfo block = getTokenInfo(authCode);
+			accountInfo = getAccountInfo(block);
+		} catch (WebClientResponseException e) {
+			throw new BaseException(ErrorCode.INVALID_AUTH_CODE);
+		}
 		return accountInfo.getKakao_account().getEmail();
 	}
 
