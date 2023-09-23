@@ -41,6 +41,7 @@ public enum ErrorCode {
 	ALREADY_LINKED_PROVIDER(CONFLICT, ErrorMessage.ALREADY_LINKED_PROVIDER),
 	ALREADY_BLOCKED_MEMBER(CONFLICT, ErrorMessage.ALREADY_BLOCKED_MEMBER),
 	BLOCK_NOT_FOUND(NOT_FOUND, ErrorMessage.BLOCK_NOT_FOUND),
+	INVALID_AUTH_CODE(BAD_REQUEST, ErrorMessage.INVALID_AUTH_CODE),
 
 	// server
 	INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Server Error");
@@ -81,5 +82,6 @@ public enum ErrorCode {
 		public static final String ALREADY_LINKED_PROVIDER = "이미 요청의 provider에 해당하는 oauth에 연결돼 있습니다.";
 		public static final String ALREADY_BLOCKED_MEMBER = "이미 차단된 회원입니다.";
 		public static final String BLOCK_NOT_FOUND = "요청에 해당하는 차단 정보가 존재하지 않습니다.";
+		public static final String INVALID_AUTH_CODE = "요청한 code가 유효하지 않습니다.";
 	}
 }

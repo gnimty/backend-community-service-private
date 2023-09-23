@@ -21,10 +21,18 @@ public class WebConfiguration implements WebMvcConfigurer {
 			.addInterceptor(tokenAuthInterceptor)
 			.addPathPatterns("/**")
 			.excludePathPatterns("/auth/**")
-			.excludePathPatterns("/oauth/**");
+			.excludePathPatterns("/oauth/**")
+			.excludePathPatterns(
+				"/css/**", "/*.ico"
+				, "/error", "/error-page/**"
+			);
 
 		registry
 			.addInterceptor(memberAuthInterceptor)
-			.addPathPatterns("/members/**");
+			.addPathPatterns("/members/**")
+			.excludePathPatterns(
+				"/css/**", "/*.ico"
+				, "/error", "/error-page/**"
+			);
 	}
 }
