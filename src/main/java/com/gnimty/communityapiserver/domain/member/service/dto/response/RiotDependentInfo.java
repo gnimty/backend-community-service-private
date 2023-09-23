@@ -1,5 +1,6 @@
 package com.gnimty.communityapiserver.domain.member.service.dto.response;
 
+import com.gnimty.communityapiserver.domain.schedule.controller.dto.request.ScheduleEntry;
 import com.gnimty.communityapiserver.global.constant.Status;
 import java.util.List;
 import lombok.Builder;
