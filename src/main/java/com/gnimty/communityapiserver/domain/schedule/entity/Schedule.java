@@ -2,7 +2,7 @@ package com.gnimty.communityapiserver.domain.schedule.entity;
 
 import com.gnimty.communityapiserver.domain.base.entity.BaseEntity;
 import com.gnimty.communityapiserver.domain.member.entity.Member;
-import java.time.DayOfWeek;
+import com.gnimty.communityapiserver.global.constant.DayOfWeek;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -15,6 +15,7 @@ import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -39,10 +40,20 @@ public class Schedule extends BaseEntity {
 	@Column(name = "end_time", columnDefinition = "INTEGER")
 	private Integer endTime;
 
-	@Column(name = "is_activated", columnDefinition = "TINYINT")
-	private Boolean isActivated;
-
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "member_id", nullable = false)
 	private Member member;
+
+	@Builder
+	public Schedule(
+		DayOfWeek dayOfWeek,
+		Integer startTime,
+		Integer endTime,
+		Member member
+	) {
+		this.dayOfWeek = dayOfWeek;
+		this.startTime = startTime;
+		this.endTime = endTime;
+		this.member = member;
+	}
 }
