@@ -4,6 +4,8 @@ package com.gnimty.communityapiserver.domain.member.service.utils;
 import static com.gnimty.communityapiserver.global.constant.Auth.BEARER;
 
 import com.gnimty.communityapiserver.global.auth.JwtProvider;
+import com.gnimty.communityapiserver.global.exception.BaseException;
+import com.gnimty.communityapiserver.global.exception.ErrorCode;
 import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
@@ -13,6 +15,7 @@ import org.springframework.util.LinkedMultiValueMap;
 import org.springframework.util.MultiValueMap;
 import org.springframework.web.reactive.function.BodyInserters;
 import org.springframework.web.reactive.function.client.WebClient;
+import org.springframework.web.reactive.function.client.WebClientResponseException;
 
 @Service
 @RequiredArgsConstructor
@@ -27,7 +30,12 @@ public class RiotOauthUtil {
 	private final JwtProvider jwtProvider;
 
 	public String getPuuid(String authCode) {
-		TokenInfo token = getTokenInfo(authCode);
+		TokenInfo token;
+		try {
+			token = getTokenInfo(authCode);
+		} catch (WebClientResponseException e) {
+			throw new BaseException(ErrorCode.INVALID_AUTH_CODE);
+		}
 		return getAccountInfo(token).getPuuid();
 	}
 
