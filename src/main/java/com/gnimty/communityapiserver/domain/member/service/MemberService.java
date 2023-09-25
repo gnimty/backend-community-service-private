@@ -206,18 +206,27 @@ public class MemberService {
 
 	public void updateStatus(StatusUpdateServiceRequest request) {
 		Member member = MemberThreadLocal.get();
+		if (!member.getRsoLinked()) {
+			throw new BaseException(ErrorCode.NOT_LINKED_RSO);
+		}
 		updateStatus(request.getStatus(), member);
 		memberRepository.save(member);
 	}
 
 	public void updateIntroduction(IntroductionUpdateServiceRequest request) {
 		Member member = MemberThreadLocal.get();
+		if (!member.getRsoLinked()) {
+			throw new BaseException(ErrorCode.NOT_LINKED_RSO);
+		}
 		updateIntroductions(request.getIntroductions(), member);
 		memberRepository.save(member);
 	}
 
 	public void updatePreferGameMode(PreferGameModeUpdateServiceRequest request) {
 		Member member = MemberThreadLocal.get();
+		if (!member.getRsoLinked()) {
+			throw new BaseException(ErrorCode.NOT_LINKED_RSO);
+		}
 		preferGameModeRepository.deleteByMember(member);
 		request.getPreferGameModes().stream()
 			.map(entry -> createPreferGameMode(entry, member))
