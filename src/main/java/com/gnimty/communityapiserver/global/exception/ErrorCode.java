@@ -42,6 +42,9 @@ public enum ErrorCode {
 	ALREADY_BLOCKED_MEMBER(CONFLICT, ErrorMessage.ALREADY_BLOCKED_MEMBER),
 	BLOCK_NOT_FOUND(NOT_FOUND, ErrorMessage.BLOCK_NOT_FOUND),
 	INVALID_AUTH_CODE(BAD_REQUEST, ErrorMessage.INVALID_AUTH_CODE),
+	HEADER_NOT_FOUND(BAD_REQUEST, ErrorMessage.HEADER_NOT_FOUND),
+	REQUEST_BODY_INVALID(BAD_REQUEST, ErrorMessage.REQUEST_BODY_INVALID),
+	INVALID_PATH_VARIABLE(BAD_REQUEST, ErrorMessage.INVALID_PATH_VARIABLE),
 
 	// server
 	INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Server Error");
@@ -83,5 +86,8 @@ public enum ErrorCode {
 		public static final String ALREADY_BLOCKED_MEMBER = "이미 차단된 회원입니다.";
 		public static final String BLOCK_NOT_FOUND = "요청에 해당하는 차단 정보가 존재하지 않습니다.";
 		public static final String INVALID_AUTH_CODE = "요청한 code가 유효하지 않습니다.";
+		public static final String HEADER_NOT_FOUND = "요청에 필요한 header가 존재하지 않습니다.";
+		public static final String REQUEST_BODY_INVALID = "request의 type 등이 유효하지 않습니다.";
+		public static final String INVALID_PATH_VARIABLE = "path variable이 유효하지 않습니다.";
 	}
 }
