@@ -5,15 +5,12 @@ oauth:
   kakao:
     client_id: ${OAUTH_KAKAO_CLIENT_ID}
     client_secret: ${OAUTH_KAKAO_CLIENT_SECRET}
-    redirect_uri: ${OAUTH_KAKAO_REDIRECT_URI}
   google:
     client_id: ${OAUTH_GOOGLE_CLIENT_ID}
     client_secret: ${OAUTH_GOOGLE_CLIENT_SECRET}
-    redirect_uri: ${OAUTH_GOOGLE_REDIRECT_URI}
   riot:
     client_id: ${OAUTH_RIOT_CLIENT_ID}
     client_secret: ${OAUTH_RIOT_CLIENT_SECRET}
-    redirect_uri: ${OAUTH_RIOT_REDIRECT_URI}
 
 server:
   servlet:
@@ -54,25 +51,39 @@ spring:
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: root
-    password: root
+    password: ${MYSQL_LOCAL_PASSWORD}
     jdbc-url: jdbc:mysql://localhost:3306/community
     hikari:
       max-lifetime: 60000
       connection-timeout: 30000
       maximum-pool-size: 10
   jpa:
-    properties:
-      hibernate:
-        hbm2ddl:
-          auto: create-drop
+    database: mysql   # 추가 해준 부분
+    hibernate:
+      ddl-auto: create-drop
+#    properties:
+#      hibernate:
+#        hbm2ddl:
+#          auto: create-drop
 
   data:
     mongodb:
-      uri:
-      port:
-      username:
-      password:
+      host: localhost
+      port: 27017
       authentication-database: admin
+      database: chatServiceTest
+      username: ${MONGODB_LOCAL_USERNAME}
+      password: ${MONGODB_LOCAL_PASSWORD}
+
+
+oauth:
+  kakao:
+    redirect_uri: http://localhost:8080/community/oauth/kakao/redirect
+  google:
+    redirect_uri: http://localhost:8080/community/oauth/google/redirect
+  riot:
+    redirect_uri: http://localhost:8080/community/oauth/riot/redirect
+
 ---
 spring:
   config:
@@ -97,6 +108,14 @@ spring:
     console:
       enabled: true
       path: /h2-console
+
+oauth:
+  kakao:
+    redirect_uri: http://localhost:8080/community/oauth/kakao/redirect
+  google:
+    redirect_uri: http://localhost:8080/community/oauth/google/redirect
+  riot:
+    redirect_uri: http://localhost:8080/community/oauth/riot/redirect
 
 ---
 spring:
@@ -129,3 +148,11 @@ spring:
   redis:
     host: ${REDIS_HOST}
     port: ${REDIS_PORT}
+
+oauth:
+  kakao:
+    redirect_uri: ${OAUTH_KAKAO_REDIRECT_URI}
+  google:
+    redirect_uri: ${OAUTH_GOOGLE_REDIRECT_URI}
+  riot:
+    redirect_uri: ${OAUTH_GOOGLE_REDIRECT_URI}
