@@ -5,6 +5,7 @@ import com.gnimty.communityapiserver.global.interceptor.MemberAuthInterceptor;
 import com.gnimty.communityapiserver.global.interceptor.TokenAuthInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
@@ -14,6 +15,11 @@ public class WebConfiguration implements WebMvcConfigurer {
 
 	private final TokenAuthInterceptor tokenAuthInterceptor;
 	private final MemberAuthInterceptor memberAuthInterceptor;
+
+	@Override
+	public void addCorsMappings(CorsRegistry registry) {
+		registry.addMapping("/**").allowedOrigins("http://localhost:3000");
+	}
 
 	@Override
 	public void addInterceptors(InterceptorRegistry registry) {
@@ -32,7 +38,6 @@ public class WebConfiguration implements WebMvcConfigurer {
 			.addPathPatterns("/members/**")
 			.excludePathPatterns(
 				"/css/**", "/*.ico"
-				, "/error", "/error-page/**"
-			);
+				, "/error", "/error-page/**", "/members/me");
 	}
 }
