@@ -27,11 +27,13 @@ public class MemberAuthInterceptor implements HandlerInterceptor {
 
 		String memberIdStr = pathVariables.get("member_id");
 
-		if (memberIdStr != null) {
+		try {
 			Long memberId = Long.valueOf(memberIdStr);
 			if (!Objects.equals(member.getId(), memberId)) {
 				throwNoPermissionException();
 			}
+		} catch (NumberFormatException e) {
+			throw new BaseException(ErrorCode.INVALID_PATH_VARIABLE);
 		}
 
 		return true;

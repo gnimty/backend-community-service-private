@@ -1,7 +1,9 @@
 package com.gnimty.communityapiserver.global.handler;
 
+import static com.gnimty.communityapiserver.global.exception.ErrorCode.HEADER_NOT_FOUND;
 import static com.gnimty.communityapiserver.global.exception.ErrorCode.MEDIA_TYPE_NOT_SUPPORTED;
 import static com.gnimty.communityapiserver.global.exception.ErrorCode.METHOD_NOT_ALLOWED;
+import static com.gnimty.communityapiserver.global.exception.ErrorCode.REQUEST_BODY_INVALID;
 import static com.gnimty.communityapiserver.global.exception.ErrorCode.URL_NOT_FOUND;
 
 import com.gnimty.communityapiserver.global.exception.BaseException;
@@ -14,11 +16,13 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
+import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
+import org.springframework.web.bind.MissingRequestHeaderException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
@@ -86,6 +90,19 @@ public class GlobalExceptionHandler {
 				.field(err.getField())
 				.build()
 		), HttpStatus.BAD_REQUEST);
+	}
+
+	@ExceptionHandler(MissingRequestHeaderException.class)
+	public ResponseEntity<CommonResponse<Void>> missingRequestHeaderExceptionHandler() {
+		CommonResponse<Void> response = CommonResponse.fail(HEADER_NOT_FOUND);
+		return ResponseEntity.status(HEADER_NOT_FOUND.getStatus()).body(response);
+	}
+
+	@ExceptionHandler(HttpMessageNotReadableException.class)
+	public ResponseEntity<CommonResponse<Void>> HttpMessageNotReadableExceptionHandler(
+		HttpMessageNotReadableException e) {
+		CommonResponse<Void> response = CommonResponse.fail(REQUEST_BODY_INVALID);
+		return ResponseEntity.status(HEADER_NOT_FOUND.getStatus()).body(response);
 	}
 
 	@Data
