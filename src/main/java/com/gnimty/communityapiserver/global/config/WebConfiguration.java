@@ -21,7 +21,7 @@ public class WebConfiguration implements WebMvcConfigurer {
 		registry.addMapping("/**")
 			.allowedOriginPatterns("http://localhost:3000/**", "https://localhost:3000/**")
 			.allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE")
-			.allowedHeaders("*");
+			.allowedHeaders("*");=
 	}
 
 	@Override
