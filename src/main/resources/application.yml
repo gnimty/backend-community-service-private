@@ -58,10 +58,8 @@ spring:
       connection-timeout: 30000
       maximum-pool-size: 10
   jpa:
-    properties:
-      hibernate:
-        hbm2ddl:
-          auto: create-drop
+    hibernate:
+      ddl-auto: create-drop
 
   data:
     mongodb:
@@ -86,27 +84,25 @@ spring:
       on-profile: test
 
   datasource:
-    driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: root
-    jdbc-url: jdbc:mysql://localhost:3306/community
-    hikari:
-      max-lifetime: 60000
-      connection-timeout: 30000
-      maximum-pool-size: 10
+    driver-class-name: org.h2.Driver
+    username: sa
+    password:
+    url: jdbc:h2:mem:test;MODE=MySQL
+  h2:
+    console:
+      enabled: true
+      path: /h2-console
   jpa:
+    hibernate:
+      ddl-auto: create-drop
     properties:
       hibernate:
-        hbm2ddl:
-          auto: create-drop
+        dialect: org.hibernate.dialect.MySQL5InnoDBDialect
+    defer-datasource-initialization: true
 
-  data:
-    mongodb:
-      uri:
-      port:
-      username:
-      password:
-      authentication-database: admin
+  mongodb:
+    embedded:
+      version: 3.5.5
 
 logging:
   level:
@@ -127,10 +123,8 @@ spring:
     activate:
       on-profile: dev
   jpa:
-    properties:
-      hibernate:
-        hbm2ddl:
-          auto: update
+    hibernate:
+      ddl-auto: create-drop
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${MYSQL_USERNAME}
