@@ -28,6 +28,7 @@ dependencies {
     implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
     implementation 'org.springframework.boot:spring-boot-starter-data-redis'
     runtimeOnly 'com.h2database:h2'
+    testImplementation group: 'de.flapdoodle.embed', name: 'de.flapdoodle.embed.mongo', version: '4.9.2'
 
     //web
     implementation 'org.springframework.boot:spring-boot-starter-webflux'
