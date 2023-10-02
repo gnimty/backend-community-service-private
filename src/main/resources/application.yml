@@ -68,12 +68,13 @@ spring:
 
   data:
     mongodb:
-      host: localhost
-      port: 27017
+      uri: mongodb://localhost:27017/community?retryWrites=false
       authentication-database: admin
-      database: chatServiceTest
       username: ${MONGODB_LOCAL_USERNAME}
       password: ${MONGODB_LOCAL_PASSWORD}
+
+
+
 
 
 oauth:
