@@ -14,17 +14,17 @@ import com.gnimty.communityapiserver.domain.riotaccount.service.RiotAccountServi
 import com.gnimty.communityapiserver.domain.schedule.service.ScheduleReadService;
 import com.gnimty.communityapiserver.domain.schedule.service.ScheduleService;
 import com.gnimty.communityapiserver.global.auth.JwtProvider;
-import com.gnimty.communityapiserver.global.config.MongoDBConfiguration;
-import com.gnimty.communityapiserver.global.config.MySQLConfiguration;
-import org.mockito.Mock;
+import com.gnimty.communityapiserver.global.interceptor.TokenAuthInterceptor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.data.jpa.mapping.JpaMetamodelMappingContext;
 import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 
 @ActiveProfiles("test")
 @WebMvcTest(controllers = {})
+@MockBean(JpaMetamodelMappingContext.class)
 public abstract class ControllerTestSupport {
 
 	@Autowired
@@ -73,8 +73,5 @@ public abstract class ControllerTestSupport {
 	protected JwtProvider jwtProvider;
 
 	@MockBean
-	protected MySQLConfiguration mySQLConfiguration;
-
-	@MockBean
-	protected MongoDBConfiguration mongoDBConfiguration;
+	protected TokenAuthInterceptor tokenAuthInterceptor;
 }
