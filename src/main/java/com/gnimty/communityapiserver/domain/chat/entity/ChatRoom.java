@@ -37,11 +37,11 @@ public class ChatRoom {
     }
 
     public List<ChatUser> getChatUsers(){
-        return chatUsers;
+        return this.chatUsers;
     }
 
     public List<Chat> getChats(){
-        return chats;
+        return this.chats;
     }
 
 }

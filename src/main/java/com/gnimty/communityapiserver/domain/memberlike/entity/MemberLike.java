@@ -1,4 +1,4 @@
-package com.gnimty.communityapiserver.domain.memberlike;
+package com.gnimty.communityapiserver.domain.memberlike.entity;
 
 import com.gnimty.communityapiserver.domain.base.entity.BaseEntity;
 import com.gnimty.communityapiserver.domain.member.entity.Member;
@@ -28,19 +28,19 @@ public class MemberLike extends BaseEntity {
 	private Long id;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "liker_member_id", nullable = false)
-	private Member likerMemberId;
+	@JoinColumn(name = "source_member_id", nullable = false)
+	private Member sourceMember;
 
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
-	@JoinColumn(name = "liked_member_id", nullable = false)
-	private Member likedMemberId;
+	@JoinColumn(name = "target_member_id", nullable = false)
+	private Member targetMember;
 
 	@Builder
 	public MemberLike(
-		Member likerMemberId,
-		Member likedMemberId
+		Member sourceMember,
+		Member targetMember
 	) {
-		this.likerMemberId = likerMemberId;
-		this.likedMemberId = likedMemberId;
+		this.sourceMember = sourceMember;
+		this.targetMember = targetMember;
 	}
 }

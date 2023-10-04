@@ -113,31 +113,31 @@ public class ChatRoomRepositoryTest {
         return findChatRoom;
     }
 
-    @Test
-    void findChatRoomAfterTime_past() {
-        // given
-        ChatRoom chatRoom = addChat();
-        LocalDateTime pastTime = LocalDateTime.now().minusMonths(2);
+//    @Test
+//    void findChatRoomAfterTime_past() {
+//        // given
+//        ChatRoom chatRoom = addChat();
+//        LocalDateTime pastTime = LocalDateTime.now().minusMonths(2);
+//
+//        // when
+//        ChatRoom findChatRoom = chatRoomRepository.findByChatRoomIdAfterTime(chatRoom.getId(), pastTime).orElse(null);
+//
+//        // then
+//        assertThat(findChatRoom.getChats().size()).isEqualTo(2);
+//    }
 
-        // when
-        ChatRoom findChatRoom = chatRoomRepository.findByChatRoomIdAfterTime(chatRoom.getId(), pastTime).orElse(null);
-
-        // then
-        assertThat(findChatRoom.getChats().size()).isEqualTo(2);
-    }
-
-    @Test
-    void findChatRoomAfterTime_future() {
-        // given
-        ChatRoom chatRoom = addChat();
-        LocalDateTime futureTime = LocalDateTime.now().plusMonths(2);
-
-        // when
-        ChatRoom findChatRoom = chatRoomRepository.findByChatRoomIdAfterTime(chatRoom.getId(), futureTime).orElse(null);
-
-        // then
-        assertThat(findChatRoom.getChats().size()).isEqualTo(0);
-    }
+//    @Test
+//    void findChatRoomAfterTime_future() {
+//        // given
+//        ChatRoom chatRoom = addChat();
+//        LocalDateTime futureTime = LocalDateTime.now().plusMonths(2);
+//
+//        // when
+//        ChatRoom findChatRoom = chatRoomRepository.findByChatRoomIdAfterTime(chatRoom.getId(), futureTime).orElse(null);
+//
+//        // then
+//        assertThat(findChatRoom.getChats().size()).isEqualTo(0);
+//    }
 
     private ChatUser convertToChatUser(User user) {
         Long userId = user.getUserId();

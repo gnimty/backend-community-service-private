@@ -16,7 +16,7 @@ public interface ChatRoomRepository extends MongoRepository<ChatRoom, ObjectId> 
     Optional<ChatRoom> findByChatUsersUserIdIn(List<Long> userIds);
 
     //@Query(value = "{ '_id': { $oid: ?0 }, 'chats': { $elemMatch: { 'timeSend': { $gte: ?1 } } } }")
-    @Query(value = "{ '_id': { $oid: ?0 },'chats.timeSend': { $gte: ?1 }}")
-    Optional<ChatRoom> findByChatRoomIdAfterTime(ObjectId id, LocalDateTime time);
+//    @Query(value = "{ '_id': { $oid: ?0 },'chats.timeSend': { $gte: ?1 }}")
+//    Optional<ChatRoom> findByChatRoomIdAfterTime(ObjectId id, LocalDateTime time);
 
 }
