@@ -9,5 +9,5 @@ public interface IntroductionRepository extends JpaRepository<Introduction, Long
 
 	List<Introduction> findByMember(Member member);
 
-	Boolean existsByMemberAndIsMain(Member member, Boolean isMain);
+	Long countByMemberAndIsMain(Member member, Boolean isMain);
 }

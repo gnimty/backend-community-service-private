@@ -16,6 +16,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
 import lombok.AccessLevel;
+import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
@@ -35,11 +36,16 @@ public class PreferGameMode extends BaseEntity {
 	@Column(name = "game_mode", columnDefinition = "VARCHAR(20)")
 	private GameMode gameMode;
 
-	@NotNull
-	@Column(name = "is_preferred", columnDefinition = "TINYINT")
-	private Boolean isPreferred;
-
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "member_id", updatable = false)
 	private Member member;
+
+	@Builder
+	public PreferGameMode(
+		GameMode gameMode,
+		Member member
+	) {
+		this.gameMode = gameMode;
+		this.member = member;
+	}
 }

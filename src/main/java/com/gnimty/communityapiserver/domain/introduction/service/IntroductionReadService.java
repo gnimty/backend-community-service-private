@@ -26,8 +26,9 @@ public class IntroductionReadService {
 			.orElseThrow(() -> new BaseException(ErrorCode.INTRODUCTION_NOT_FOUND));
 	}
 
-	public void throwIfNotExistsMain(Member member) {
-		if (!introductionRepository.existsByMemberAndIsMain(member, true)) {
+	public void throwIfNotExistsOrExceedMain(Member member) {
+		Long count = introductionRepository.countByMemberAndIsMain(member, true);
+		if (count > 1) {
 			throw new BaseException(ErrorCode.MAIN_CONTENT_MUST_BE_ONLY);
 		}
 	}
