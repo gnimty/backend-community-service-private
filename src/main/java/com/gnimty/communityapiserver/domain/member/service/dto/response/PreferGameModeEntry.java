@@ -2,22 +2,24 @@ package com.gnimty.communityapiserver.domain.member.service.dto.response;
 
 import com.gnimty.communityapiserver.domain.prefergamemode.entity.PreferGameMode;
 import com.gnimty.communityapiserver.global.constant.GameMode;
+import javax.validation.constraints.NotNull;
+import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Builder
 @Getter
+@NoArgsConstructor
+@AllArgsConstructor
 public class PreferGameModeEntry {
 
-	private Long id;
+	@NotNull
 	private GameMode gameMode;
-	private Boolean isPreferred;
 
 	public static PreferGameModeEntry from(PreferGameMode preferGameMode) {
 		return PreferGameModeEntry.builder()
-			.id(preferGameMode.getId())
 			.gameMode(preferGameMode.getGameMode())
-			.isPreferred(preferGameMode.getIsPreferred())
 			.build();
 	}
 }
