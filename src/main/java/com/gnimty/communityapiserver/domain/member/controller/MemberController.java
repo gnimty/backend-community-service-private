@@ -30,6 +30,7 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -74,9 +75,10 @@ public class MemberController {
 
 	@PatchMapping("/{member_id}")
 	public CommonResponse<Void> updateMyProfile(
+		@PathVariable("member_id") Long memberId,
 		@RequestBody @Valid MyProfileUpdateRequest request
 	) {
-		memberService.updateMyProfile(request.toServiceRequest());
+		memberService.updateMyProfile(memberId, request.toServiceRequest());
 		return CommonResponse.success(SUCCESS_UPDATE_PROFILE, OK);
 	}
 
@@ -96,25 +98,28 @@ public class MemberController {
 
 	@PatchMapping("/{member_id}/password")
 	public CommonResponse<Void> updatePassword(
+		@PathVariable("member_id") Long memberId,
 		@RequestBody @Valid PasswordUpdateRequest request
 	) {
-		memberService.updatePassword(request.toServiceRequest());
+		memberService.updatePassword(memberId, request.toServiceRequest());
 		return CommonResponse.success(SUCCESS_UPDATE_PASSWORD, OK);
 	}
 
 	@PatchMapping("/{member_id}/status")
 	public CommonResponse<Void> updateStatus(
+		@PathVariable("member_id") Long memberId,
 		@RequestBody @Valid StatusUpdateRequest request
 	) {
-		memberService.updateStatus(request.toServiceRequest());
+		memberService.updateStatus(memberId, request.toServiceRequest());
 		return CommonResponse.success(SUCCESS_UPDATE_STATUS, OK);
 	}
 
 	@PatchMapping("/{member_id}/introductions")
 	public CommonResponse<Void> updateIntroduction(
+		@PathVariable("member_id") Long memberId,
 		@RequestBody @Valid IntroductionUpdateRequest request
 	) {
-		memberService.updateIntroduction(request.toServiceRequest());
+		memberService.updateIntroduction(memberId, request.toServiceRequest());
 		return CommonResponse.success(SUCCESS_UPDATE_INTRODUCTION, OK);
 	}
 
