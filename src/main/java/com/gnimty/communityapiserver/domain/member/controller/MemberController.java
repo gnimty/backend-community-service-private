@@ -4,16 +4,22 @@ import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCC
 import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_KAKAO_LINK;
 import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_SEND_EMAIL_AUTH_CODE;
 import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_SUMMONER_LINK;
+import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_UPDATE_INTRODUCTION;
 import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_UPDATE_PASSWORD;
+import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_UPDATE_PREFER_GAME_MODE;
 import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_UPDATE_PROFILE;
+import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_UPDATE_STATUS;
 import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_VERIFY_EMAIL;
 import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.HttpStatus.OK;
 
+import com.gnimty.communityapiserver.domain.member.controller.dto.request.IntroductionUpdateRequest;
 import com.gnimty.communityapiserver.domain.member.controller.dto.request.MyProfileUpdateRequest;
 import com.gnimty.communityapiserver.domain.member.controller.dto.request.OauthLoginRequest;
 import com.gnimty.communityapiserver.domain.member.controller.dto.request.PasswordEmailVerifyRequest;
 import com.gnimty.communityapiserver.domain.member.controller.dto.request.PasswordUpdateRequest;
+import com.gnimty.communityapiserver.domain.member.controller.dto.request.PreferGameModeUpdateRequest;
+import com.gnimty.communityapiserver.domain.member.controller.dto.request.StatusUpdateRequest;
 import com.gnimty.communityapiserver.domain.member.controller.dto.response.MyProfileResponse;
 import com.gnimty.communityapiserver.domain.member.service.MemberService;
 import com.gnimty.communityapiserver.domain.member.service.dto.response.MyProfileServiceResponse;
@@ -24,6 +30,7 @@ import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -68,9 +75,10 @@ public class MemberController {
 
 	@PatchMapping("/{member_id}")
 	public CommonResponse<Void> updateMyProfile(
+		@PathVariable("member_id") Long memberId,
 		@RequestBody @Valid MyProfileUpdateRequest request
 	) {
-		memberService.updateMyProfile(request.toServiceRequest());
+		memberService.updateMyProfile(memberId, request.toServiceRequest());
 		return CommonResponse.success(SUCCESS_UPDATE_PROFILE, OK);
 	}
 
@@ -90,9 +98,36 @@ public class MemberController {
 
 	@PatchMapping("/{member_id}/password")
 	public CommonResponse<Void> updatePassword(
+		@PathVariable("member_id") Long memberId,
 		@RequestBody @Valid PasswordUpdateRequest request
 	) {
-		memberService.updatePassword(request.toServiceRequest());
+		memberService.updatePassword(memberId, request.toServiceRequest());
 		return CommonResponse.success(SUCCESS_UPDATE_PASSWORD, OK);
+	}
+
+	@PatchMapping("/{member_id}/status")
+	public CommonResponse<Void> updateStatus(
+		@PathVariable("member_id") Long memberId,
+		@RequestBody @Valid StatusUpdateRequest request
+	) {
+		memberService.updateStatus(memberId, request.toServiceRequest());
+		return CommonResponse.success(SUCCESS_UPDATE_STATUS, OK);
+	}
+
+	@PatchMapping("/{member_id}/introductions")
+	public CommonResponse<Void> updateIntroduction(
+		@PathVariable("member_id") Long memberId,
+		@RequestBody @Valid IntroductionUpdateRequest request
+	) {
+		memberService.updateIntroduction(memberId, request.toServiceRequest());
+		return CommonResponse.success(SUCCESS_UPDATE_INTRODUCTION, OK);
+	}
+
+	@PatchMapping("/{member_id}/prefer-game-mode")
+	public CommonResponse<Void> updatePreferGameMode(
+		@RequestBody @Valid PreferGameModeUpdateRequest request
+	) {
+		memberService.updatePreferGameMode(request.toServiceRequest());
+		return CommonResponse.success(SUCCESS_UPDATE_PREFER_GAME_MODE, OK);
 	}
 }

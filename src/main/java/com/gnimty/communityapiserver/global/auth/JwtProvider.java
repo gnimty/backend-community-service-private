@@ -6,14 +6,13 @@ import static com.gnimty.communityapiserver.global.constant.Auth.BEARER;
 import static com.gnimty.communityapiserver.global.constant.Auth.REFRESH_TOKEN_EXPIRATION;
 import static com.gnimty.communityapiserver.global.constant.Auth.SUBJECT_ACCESS_TOKEN;
 import static com.gnimty.communityapiserver.global.constant.Auth.SUBJECT_REFRESH_TOKEN;
-import static com.gnimty.communityapiserver.global.exception.ErrorCode.MEMBER_NOT_FOUND;
 import static com.gnimty.communityapiserver.global.exception.ErrorCode.TOKEN_EXPIRED;
 import static com.gnimty.communityapiserver.global.exception.ErrorCode.TOKEN_INVALID;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gnimty.communityapiserver.domain.member.controller.dto.response.AuthToken;
 import com.gnimty.communityapiserver.domain.member.entity.Member;
-import com.gnimty.communityapiserver.domain.member.repository.MemberRepository;
+import com.gnimty.communityapiserver.domain.member.service.MemberReadService;
 import com.gnimty.communityapiserver.global.constant.Auth;
 import com.gnimty.communityapiserver.global.constant.KeyPrefix;
 import com.gnimty.communityapiserver.global.exception.BaseException;
@@ -42,12 +41,11 @@ public class JwtProvider {
 
 	@Value("${jwt.secret}")
 	private String secret;
-	private final MemberRepository memberRepository;
+	private final MemberReadService memberReadService;
 	private final StringRedisTemplate redisTemplate;
 
 	public Member findMemberByToken(String token) {
-		return memberRepository.findById(getIdByToken(token))
-			.orElseThrow(() -> new BaseException(MEMBER_NOT_FOUND));
+		return memberReadService.findById(getIdByToken(token));
 	}
 
 	public String generateToken(Long id, Long expiration, String subject) {
