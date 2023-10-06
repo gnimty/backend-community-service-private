@@ -77,6 +77,7 @@ public class MemberService {
 	private final JavaMailSender mailSender;
 	private final PasswordEncoder passwordEncoder;
 	private final PreferGameModeRepository preferGameModeRepository;
+	private final MemberReadService memberReadService;
 
 	public void summonerAccountLink(OauthLoginServiceRequest request) {
 		Member member = MemberThreadLocal.get();
@@ -143,8 +144,8 @@ public class MemberService {
 			.build();
 	}
 
-	public void updateMyProfile(MyProfileUpdateServiceRequest request) {
-		Member member = MemberThreadLocal.get();
+	public void updateMyProfile(Long memberId, MyProfileUpdateServiceRequest request) {
+		Member member = memberReadService.findById(memberId);
 		if (!member.getRsoLinked()) {
 			throw new BaseException(ErrorCode.NOT_LINKED_RSO);
 		}
@@ -152,7 +153,6 @@ public class MemberService {
 		updateMainRiotAccount(request, member);
 		updateStatus(request.getStatus(), member);
 		updateIntroductions(request.getIntroductions(), member);
-		memberRepository.save(member);
 	}
 
 	@Async("mailExecutor")
@@ -189,8 +189,8 @@ public class MemberService {
 		valueOperations.getAndDelete(emailAuthKey);
 	}
 
-	public void updatePassword(PasswordUpdateServiceRequest request) {
-		Member member = MemberThreadLocal.get();
+	public void updatePassword(Long memberId, PasswordUpdateServiceRequest request) {
+		Member member = memberReadService.findById(memberId);
 		ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
 		String verify = valueOperations.get(
 			getRedisKey(KeyPrefix.SIGNUP, String.valueOf(member.getId())));
@@ -204,8 +204,8 @@ public class MemberService {
 			getRedisKey(KeyPrefix.UPDATE_PASSWORD, String.valueOf(member.getId())));
 	}
 
-	public void updateStatus(StatusUpdateServiceRequest request) {
-		Member member = MemberThreadLocal.get();
+	public void updateStatus(Long memberId, StatusUpdateServiceRequest request) {
+		Member member = memberReadService.findById(memberId);
 		if (!member.getRsoLinked()) {
 			throw new BaseException(ErrorCode.NOT_LINKED_RSO);
 		}
@@ -213,8 +213,8 @@ public class MemberService {
 		memberRepository.save(member);
 	}
 
-	public void updateIntroduction(IntroductionUpdateServiceRequest request) {
-		Member member = MemberThreadLocal.get();
+	public void updateIntroduction(Long memberId, IntroductionUpdateServiceRequest request) {
+		Member member = memberReadService.findById(memberId);
 		if (!member.getRsoLinked()) {
 			throw new BaseException(ErrorCode.NOT_LINKED_RSO);
 		}
