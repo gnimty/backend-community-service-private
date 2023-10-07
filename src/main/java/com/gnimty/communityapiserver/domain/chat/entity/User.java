@@ -1,7 +1,10 @@
 package com.gnimty.communityapiserver.domain.chat.entity;
 
 import com.gnimty.communityapiserver.global.constant.Status;
+
+import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
@@ -14,6 +17,8 @@ import java.time.LocalDateTime;
 
 @Getter
 @Document(collection = "user")
+@NoArgsConstructor
+@AllArgsConstructor
 public class User {
 
     @Id
@@ -22,23 +27,12 @@ public class User {
     private String nickname;
     private Status status;
 
-    public User() {
-    }
-
     public User(Long userId) {
         this.userId = userId;
     }
-
-    public User(Long id, String nickname, Status status) {
-        this.userId = id;
-        this.nickname = nickname;
-        this.status = status;
-    }
-
+  
     public void updateUser(String nickname, Status status) {
         this.nickname = nickname;
         this.status = status;
     }
-
-
 }
