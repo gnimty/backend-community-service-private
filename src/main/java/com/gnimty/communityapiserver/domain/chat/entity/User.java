@@ -1,6 +1,7 @@
 package com.gnimty.communityapiserver.domain.chat.entity;
 
 import com.gnimty.communityapiserver.global.constant.Status;
+
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
@@ -29,7 +30,7 @@ public class User {
     public User(Long userId) {
         this.userId = userId;
     }
-
+  
     public void updateUser(String nickname, Status status) {
         this.nickname = nickname;
         this.status = status;

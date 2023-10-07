@@ -10,9 +10,9 @@ import org.springframework.data.mongodb.core.mapping.Field;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @NoArgsConstructor
 @Document(collection = "chatRoom")
-@Getter
 public class ChatRoom {
 
     @Field(name = "_id")
@@ -21,6 +21,7 @@ public class ChatRoom {
     private List<Chat> chats;
 
     private List<ChatUser> chatUsers;
+
 
     public ChatRoom(List<ChatUser> chatUsers) {
         this.chats = new ArrayList<>();
