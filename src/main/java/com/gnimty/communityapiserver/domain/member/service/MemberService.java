@@ -233,6 +233,12 @@ public class MemberService {
 			.forEach(preferGameModeRepository::save);
 	}
 
+	public void deleteOauthInfo(Provider provider) {
+		Member member = MemberThreadLocal.get();
+		OauthInfo oauthInfo = oauthInfoReadService.findByMemberAndProvider(member, provider);
+		oauthInfoRepository.delete(oauthInfo);
+	}
+
 	private void sendMail(String to, String subject, String body) {
 		MimeMessagePreparator messagePreparator =
 			mimeMessage -> {
