@@ -1,5 +1,7 @@
 package com.gnimty.communityapiserver.domain.member.service;
 
+import static com.gnimty.communityapiserver.global.constant.KeyPrefix.*;
+
 import com.gnimty.communityapiserver.domain.introduction.entity.Introduction;
 import com.gnimty.communityapiserver.domain.introduction.repository.IntroductionRepository;
 import com.gnimty.communityapiserver.domain.introduction.service.IntroductionReadService;
@@ -165,7 +167,7 @@ public class MemberService {
 		sendMail(member.getEmail(), subject, code);
 
 		ValueOperations<String, String> stringValueOperations = redisTemplate.opsForValue();
-		String key = getRedisKey(KeyPrefix.PASSWORD, String.valueOf(member.getId()));
+		String key = getRedisKey(PASSWORD, String.valueOf(member.getId()));
 		stringValueOperations.set(key, code);
 		stringValueOperations.getAndExpire(
 			key,
@@ -178,13 +180,13 @@ public class MemberService {
 		Member member = MemberThreadLocal.get();
 		ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
 
-		String emailAuthKey = getRedisKey(KeyPrefix.PASSWORD, String.valueOf(member.getId()));
+		String emailAuthKey = getRedisKey(PASSWORD, String.valueOf(member.getId()));
 		String savedCode = valueOperations.get(emailAuthKey);
 
 		if (!request.getCode().equals(savedCode)) {
 			throw new BaseException(ErrorCode.INVALID_EMAIL_AUTH_CODE);
 		}
-		String passwordKey = getRedisKey(KeyPrefix.UPDATE_PASSWORD, String.valueOf(member.getId()));
+		String passwordKey = getRedisKey(UPDATE_PASSWORD, String.valueOf(member.getId()));
 		saveInRedis(passwordKey, "verified", Auth.PASSWORD_EXPIRATION.getExpiration());
 		valueOperations.getAndDelete(emailAuthKey);
 	}
@@ -193,7 +195,7 @@ public class MemberService {
 		Member member = memberReadService.findById(memberId);
 		ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
 		String verify = valueOperations.get(
-			getRedisKey(KeyPrefix.SIGNUP, String.valueOf(member.getId())));
+			getRedisKey(SIGNUP, String.valueOf(member.getId())));
 		if (verify == null) {
 			throw new BaseException(ErrorCode.UNAUTHORIZED_EMAIL);
 		}
@@ -201,7 +203,7 @@ public class MemberService {
 		memberRepository.save(member);
 
 		redisTemplate.delete(
-			getRedisKey(KeyPrefix.UPDATE_PASSWORD, String.valueOf(member.getId())));
+			getRedisKey(UPDATE_PASSWORD, String.valueOf(member.getId())));
 	}
 
 	public void updateStatus(Long memberId, StatusUpdateServiceRequest request) {
@@ -231,6 +233,12 @@ public class MemberService {
 		request.getPreferGameModes().stream()
 			.map(entry -> createPreferGameMode(entry, member))
 			.forEach(preferGameModeRepository::save);
+	}
+
+	public void logout() {
+		Member member = MemberThreadLocal.get();
+		ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+		valueOperations.getAndDelete(getRedisKey(REFRESH, String.valueOf(member.getId())));
 	}
 
 	private void sendMail(String to, String subject, String body) {
