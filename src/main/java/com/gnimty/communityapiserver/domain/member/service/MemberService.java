@@ -39,6 +39,7 @@ import com.gnimty.communityapiserver.global.constant.KeyPrefix;
 import com.gnimty.communityapiserver.global.constant.Lane;
 import com.gnimty.communityapiserver.global.constant.Provider;
 import com.gnimty.communityapiserver.global.constant.Status;
+import com.gnimty.communityapiserver.global.constant.Tier;
 import com.gnimty.communityapiserver.global.exception.BaseException;
 import com.gnimty.communityapiserver.global.exception.ErrorCode;
 import com.gnimty.communityapiserver.global.utils.RandomCodeGenerator;
@@ -92,7 +93,7 @@ public class MemberService {
 		riotAccountRepository.save(RiotAccount.builder()
 			.summonerName("summonerName")
 			.isMain(!existsMain)
-			.queue("queue")
+			.queue(Tier.BRONZE)
 			.lp(100L)
 			.division(100)
 			.mmr(100L)
