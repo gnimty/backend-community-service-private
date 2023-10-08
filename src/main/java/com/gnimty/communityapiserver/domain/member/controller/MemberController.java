@@ -11,6 +11,7 @@ import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCC
 import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_UPDATE_PROFILE;
 import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_UPDATE_STATUS;
 import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_VERIFY_EMAIL;
+import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_WITHDRAWAL;
 import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -137,5 +138,11 @@ public class MemberController {
 	public CommonResponse<Void> logout() {
 		memberService.logout();
 		return CommonResponse.success(SUCCESS_LOGOUT, OK);
+	}
+
+	@DeleteMapping("/{member_id}")
+	public CommonResponse<Void> withdrawal() {
+		memberService.withdrawal();
+		return CommonResponse.success(SUCCESS_WITHDRAWAL, OK);
 	}
 }
