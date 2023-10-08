@@ -5,6 +5,7 @@ import com.gnimty.communityapiserver.domain.memberlike.entity.MemberLike;
 import com.gnimty.communityapiserver.domain.memberlike.repository.MemberLikeRepository;
 import com.gnimty.communityapiserver.global.exception.BaseException;
 import com.gnimty.communityapiserver.global.exception.ErrorCode;
+import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
@@ -23,5 +24,9 @@ public class MemberLikeReadService {
 
 	public Boolean existsBySourceAndTarget(Member source, Member target) {
 		return memberLikeRepository.existsBySourceMemberAndTargetMember(source, target);
+	}
+
+	public List<MemberLike> findBySourceMember(Member source) {
+		return memberLikeRepository.findBySourceMember(source);
 	}
 }

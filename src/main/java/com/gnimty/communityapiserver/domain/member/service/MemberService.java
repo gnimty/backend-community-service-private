@@ -1,7 +1,11 @@
 package com.gnimty.communityapiserver.domain.member.service;
 
-import static com.gnimty.communityapiserver.global.constant.KeyPrefix.*;
+import static com.gnimty.communityapiserver.global.constant.KeyPrefix.PASSWORD;
+import static com.gnimty.communityapiserver.global.constant.KeyPrefix.REFRESH;
+import static com.gnimty.communityapiserver.global.constant.KeyPrefix.SIGNUP;
+import static com.gnimty.communityapiserver.global.constant.KeyPrefix.UPDATE_PASSWORD;
 
+import com.gnimty.communityapiserver.domain.block.repository.BlockRepository;
 import com.gnimty.communityapiserver.domain.introduction.entity.Introduction;
 import com.gnimty.communityapiserver.domain.introduction.repository.IntroductionRepository;
 import com.gnimty.communityapiserver.domain.introduction.service.IntroductionReadService;
@@ -23,6 +27,9 @@ import com.gnimty.communityapiserver.domain.member.service.dto.response.RiotDepe
 import com.gnimty.communityapiserver.domain.member.service.utils.GoogleOauthUtil;
 import com.gnimty.communityapiserver.domain.member.service.utils.KakaoOauthUtil;
 import com.gnimty.communityapiserver.domain.member.service.utils.RiotOauthUtil;
+import com.gnimty.communityapiserver.domain.memberlike.entity.MemberLike;
+import com.gnimty.communityapiserver.domain.memberlike.repository.MemberLikeRepository;
+import com.gnimty.communityapiserver.domain.memberlike.service.MemberLikeReadService;
 import com.gnimty.communityapiserver.domain.oauthinfo.entity.OauthInfo;
 import com.gnimty.communityapiserver.domain.oauthinfo.repository.OauthInfoRepository;
 import com.gnimty.communityapiserver.domain.oauthinfo.service.OauthInfoReadService;
@@ -34,6 +41,7 @@ import com.gnimty.communityapiserver.domain.riotaccount.repository.RiotAccountRe
 import com.gnimty.communityapiserver.domain.riotaccount.service.RiotAccountReadService;
 import com.gnimty.communityapiserver.domain.schedule.controller.dto.request.ScheduleEntry;
 import com.gnimty.communityapiserver.domain.schedule.entity.Schedule;
+import com.gnimty.communityapiserver.domain.schedule.repository.ScheduleRepository;
 import com.gnimty.communityapiserver.domain.schedule.service.ScheduleReadService;
 import com.gnimty.communityapiserver.global.auth.MemberThreadLocal;
 import com.gnimty.communityapiserver.global.constant.Auth;
@@ -80,6 +88,10 @@ public class MemberService {
 	private final PasswordEncoder passwordEncoder;
 	private final PreferGameModeRepository preferGameModeRepository;
 	private final MemberReadService memberReadService;
+	private final MemberLikeRepository memberLikeRepository;
+	private final MemberLikeReadService memberLikeReadService;
+	private final BlockRepository blockRepository;
+	private final ScheduleRepository scheduleRepository;
 
 	public void summonerAccountLink(OauthLoginServiceRequest request) {
 		Member member = MemberThreadLocal.get();
@@ -239,6 +251,24 @@ public class MemberService {
 		Member member = MemberThreadLocal.get();
 		ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
 		valueOperations.getAndDelete(getRedisKey(REFRESH, String.valueOf(member.getId())));
+	}
+
+	public void withdrawal() {
+		Member member = MemberThreadLocal.get();
+		List<MemberLike> targets = memberLikeReadService.findBySourceMember(member);
+		targets.forEach(
+			memberLike -> memberReadService.findById(memberLike.getTargetMember().getId())
+				.decreaseUpCount()
+		);
+		memberLikeRepository.deleteAllFromMember(member.getId());
+		riotAccountRepository.deleteAllFromMember(member.getId());
+		// 챔피언 운용법, 댓글 좋아요
+		oauthInfoRepository.deleteAllFromMember(member.getId());
+		blockRepository.deleteAllFromMember(member.getId());
+		scheduleRepository.deleteAllFromMember(member.getId());
+		preferGameModeRepository.deleteAllFromMember(member.getId());
+		introductionRepository.deleteAllFromMember(member.getId());
+		memberRepository.delete(member);
 	}
 
 	private void sendMail(String to, String subject, String body) {
