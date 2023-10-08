@@ -60,8 +60,10 @@ spring:
 
   jpa:
     database: mysql   # 추가 해준 부분
-    hibernate:
-      ddl-auto: create-drop
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: create-drop
 
   data:
     mongodb:
@@ -125,8 +127,10 @@ spring:
     activate:
       on-profile: dev
   jpa:
-    hibernate:
-      ddl-auto: create-drop
+    properties:
+      hibernate:
+        hbm2ddl:
+          auto: create-drop
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${MYSQL_USERNAME}
