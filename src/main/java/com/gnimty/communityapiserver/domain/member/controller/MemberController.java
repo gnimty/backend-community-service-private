@@ -2,6 +2,7 @@ package com.gnimty.communityapiserver.domain.member.controller;
 
 import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_GOOGLE_LINK;
 import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_KAKAO_LINK;
+import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_LOGOUT;
 import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_SEND_EMAIL_AUTH_CODE;
 import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_SUMMONER_LINK;
 import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_UPDATE_INTRODUCTION;
@@ -28,6 +29,7 @@ import com.gnimty.communityapiserver.global.constant.Provider;
 import com.gnimty.communityapiserver.global.response.CommonResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -129,5 +131,11 @@ public class MemberController {
 	) {
 		memberService.updatePreferGameMode(request.toServiceRequest());
 		return CommonResponse.success(SUCCESS_UPDATE_PREFER_GAME_MODE, OK);
+	}
+
+	@DeleteMapping("/{member_id}/logout")
+	public CommonResponse<Void> logout() {
+		memberService.logout();
+		return CommonResponse.success(SUCCESS_LOGOUT, OK);
 	}
 }
