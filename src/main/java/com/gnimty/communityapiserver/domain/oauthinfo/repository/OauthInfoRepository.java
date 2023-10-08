@@ -16,4 +16,6 @@ public interface OauthInfoRepository extends JpaRepository<OauthInfo, Long> {
 	List<OauthInfo> findByMember(Member member);
 
 	Boolean existsByMemberAndProvider(Member member, Provider provider);
+
+	Optional<OauthInfo> findByMemberAndProvider(Member member, Provider provider);
 }
