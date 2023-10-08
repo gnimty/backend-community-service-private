@@ -4,7 +4,7 @@ import com.gnimty.communityapiserver.global.validation.annotation.ValidEnum;
 import javax.validation.ConstraintValidator;
 import javax.validation.ConstraintValidatorContext;
 
-public class EnumValidator implements ConstraintValidator<ValidEnum, Enum> {
+public class EnumValidator implements ConstraintValidator<ValidEnum, Enum<?>> {
 
 	private ValidEnum annotation;
 
