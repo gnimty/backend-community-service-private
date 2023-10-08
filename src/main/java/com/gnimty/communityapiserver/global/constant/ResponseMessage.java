@@ -19,7 +19,8 @@ public enum ResponseMessage {
 	SUCCESS_UPDATE_PREFER_GAME_MODE("성공적으로 선호 게임 타입을 변경했습니다."),
 	SUCCESS_BLOCK("성공적으로 회원 차단을 완료하였습니다."),
 	SUCCESS_CLEAR_BLOCK("성공적으로 차단 해제를 완료하였습니다."),
-	SUCCESS_MEMBER_LIKE("회원 좋아요에 대한 수정을 완료하였습니다.");
+	SUCCESS_MEMBER_LIKE("회원 좋아요에 대한 수정을 완료하였습니다."),
+	SUCCESS_DISCONNECT_OAUTH("Oauth 연결 해제를 완료하였습니다.");
 
 	private final String message;
 
