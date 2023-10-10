@@ -1,5 +1,11 @@
 package com.gnimty.communityapiserver.domain.member.service;
 
+import static com.gnimty.communityapiserver.global.constant.KeyPrefix.PASSWORD;
+import static com.gnimty.communityapiserver.global.constant.KeyPrefix.REFRESH;
+import static com.gnimty.communityapiserver.global.constant.KeyPrefix.SIGNUP;
+import static com.gnimty.communityapiserver.global.constant.KeyPrefix.UPDATE_PASSWORD;
+
+import com.gnimty.communityapiserver.domain.block.repository.BlockRepository;
 import com.gnimty.communityapiserver.domain.introduction.entity.Introduction;
 import com.gnimty.communityapiserver.domain.introduction.repository.IntroductionRepository;
 import com.gnimty.communityapiserver.domain.introduction.service.IntroductionReadService;
@@ -21,6 +27,9 @@ import com.gnimty.communityapiserver.domain.member.service.dto.response.RiotDepe
 import com.gnimty.communityapiserver.domain.member.service.utils.GoogleOauthUtil;
 import com.gnimty.communityapiserver.domain.member.service.utils.KakaoOauthUtil;
 import com.gnimty.communityapiserver.domain.member.service.utils.RiotOauthUtil;
+import com.gnimty.communityapiserver.domain.memberlike.entity.MemberLike;
+import com.gnimty.communityapiserver.domain.memberlike.repository.MemberLikeRepository;
+import com.gnimty.communityapiserver.domain.memberlike.service.MemberLikeReadService;
 import com.gnimty.communityapiserver.domain.oauthinfo.entity.OauthInfo;
 import com.gnimty.communityapiserver.domain.oauthinfo.repository.OauthInfoRepository;
 import com.gnimty.communityapiserver.domain.oauthinfo.service.OauthInfoReadService;
@@ -32,6 +41,7 @@ import com.gnimty.communityapiserver.domain.riotaccount.repository.RiotAccountRe
 import com.gnimty.communityapiserver.domain.riotaccount.service.RiotAccountReadService;
 import com.gnimty.communityapiserver.domain.schedule.controller.dto.request.ScheduleEntry;
 import com.gnimty.communityapiserver.domain.schedule.entity.Schedule;
+import com.gnimty.communityapiserver.domain.schedule.repository.ScheduleRepository;
 import com.gnimty.communityapiserver.domain.schedule.service.ScheduleReadService;
 import com.gnimty.communityapiserver.global.auth.MemberThreadLocal;
 import com.gnimty.communityapiserver.global.constant.Auth;
@@ -79,6 +89,10 @@ public class MemberService {
 	private final PasswordEncoder passwordEncoder;
 	private final PreferGameModeRepository preferGameModeRepository;
 	private final MemberReadService memberReadService;
+	private final MemberLikeRepository memberLikeRepository;
+	private final MemberLikeReadService memberLikeReadService;
+	private final BlockRepository blockRepository;
+	private final ScheduleRepository scheduleRepository;
 
 	public void summonerAccountLink(OauthLoginServiceRequest request) {
 		Member member = MemberThreadLocal.get();
@@ -166,7 +180,7 @@ public class MemberService {
 		sendMail(member.getEmail(), subject, code);
 
 		ValueOperations<String, String> stringValueOperations = redisTemplate.opsForValue();
-		String key = getRedisKey(KeyPrefix.PASSWORD, String.valueOf(member.getId()));
+		String key = getRedisKey(PASSWORD, String.valueOf(member.getId()));
 		stringValueOperations.set(key, code);
 		stringValueOperations.getAndExpire(
 			key,
@@ -179,13 +193,13 @@ public class MemberService {
 		Member member = MemberThreadLocal.get();
 		ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
 
-		String emailAuthKey = getRedisKey(KeyPrefix.PASSWORD, String.valueOf(member.getId()));
+		String emailAuthKey = getRedisKey(PASSWORD, String.valueOf(member.getId()));
 		String savedCode = valueOperations.get(emailAuthKey);
 
 		if (!request.getCode().equals(savedCode)) {
 			throw new BaseException(ErrorCode.INVALID_EMAIL_AUTH_CODE);
 		}
-		String passwordKey = getRedisKey(KeyPrefix.UPDATE_PASSWORD, String.valueOf(member.getId()));
+		String passwordKey = getRedisKey(UPDATE_PASSWORD, String.valueOf(member.getId()));
 		saveInRedis(passwordKey, "verified", Auth.PASSWORD_EXPIRATION.getExpiration());
 		valueOperations.getAndDelete(emailAuthKey);
 	}
@@ -194,7 +208,7 @@ public class MemberService {
 		Member member = memberReadService.findById(memberId);
 		ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
 		String verify = valueOperations.get(
-			getRedisKey(KeyPrefix.SIGNUP, String.valueOf(member.getId())));
+			getRedisKey(SIGNUP, String.valueOf(member.getId())));
 		if (verify == null) {
 			throw new BaseException(ErrorCode.UNAUTHORIZED_EMAIL);
 		}
@@ -202,7 +216,7 @@ public class MemberService {
 		memberRepository.save(member);
 
 		redisTemplate.delete(
-			getRedisKey(KeyPrefix.UPDATE_PASSWORD, String.valueOf(member.getId())));
+			getRedisKey(UPDATE_PASSWORD, String.valueOf(member.getId())));
 	}
 
 	public void updateStatus(Long memberId, StatusUpdateServiceRequest request) {
@@ -232,6 +246,30 @@ public class MemberService {
 		request.getPreferGameModes().stream()
 			.map(entry -> createPreferGameMode(entry, member))
 			.forEach(preferGameModeRepository::save);
+	}
+
+	public void logout() {
+		Member member = MemberThreadLocal.get();
+		ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();
+		valueOperations.getAndDelete(getRedisKey(REFRESH, String.valueOf(member.getId())));
+	}
+
+	public void withdrawal() {
+		Member member = MemberThreadLocal.get();
+		List<MemberLike> targets = memberLikeReadService.findBySourceMember(member);
+		targets.forEach(
+			memberLike -> memberReadService.findById(memberLike.getTargetMember().getId())
+				.decreaseUpCount()
+		);
+		memberLikeRepository.deleteAllFromMember(member.getId());
+		riotAccountRepository.deleteAllFromMember(member.getId());
+		// 챔피언 운용법, 댓글 좋아요
+		oauthInfoRepository.deleteAllFromMember(member.getId());
+		blockRepository.deleteAllFromMember(member.getId());
+		scheduleRepository.deleteAllFromMember(member.getId());
+		preferGameModeRepository.deleteAllFromMember(member.getId());
+		introductionRepository.deleteAllFromMember(member.getId());
+		memberRepository.delete(member);
 	}
 
 	private void sendMail(String to, String subject, String body) {
