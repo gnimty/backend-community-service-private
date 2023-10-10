@@ -2,6 +2,7 @@ package com.gnimty.communityapiserver.domain.member.service.dto.response;
 
 import com.gnimty.communityapiserver.domain.riotaccount.entity.RiotAccount;
 import com.gnimty.communityapiserver.global.constant.Lane;
+import com.gnimty.communityapiserver.global.constant.Tier;
 import lombok.Builder;
 import lombok.Getter;
 
@@ -13,7 +14,7 @@ public class RiotAccountEntry {
 	private String summonerName;
 	private Boolean isMain;
 	private String puuid;
-	private String queue;
+	private Tier queue;
 	private Long lp;
 	private Integer division;
 	private Long mmr;

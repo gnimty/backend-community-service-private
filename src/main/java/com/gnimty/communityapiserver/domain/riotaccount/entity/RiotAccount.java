@@ -3,6 +3,7 @@ package com.gnimty.communityapiserver.domain.riotaccount.entity;
 import com.gnimty.communityapiserver.domain.base.entity.BaseEntity;
 import com.gnimty.communityapiserver.domain.member.entity.Member;
 import com.gnimty.communityapiserver.global.constant.Lane;
+import com.gnimty.communityapiserver.global.constant.Tier;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -41,7 +42,8 @@ public class RiotAccount extends BaseEntity {
 
 	@NotNull
 	@Column(name = "queue", columnDefinition = "VARCHAR(20)")
-	private String queue;
+	@Enumerated(EnumType.STRING)
+	private Tier queue;
 
 	@NotNull
 	@Column(name = "lp", columnDefinition = "BIGINT")
@@ -84,7 +86,7 @@ public class RiotAccount extends BaseEntity {
 	public RiotAccount(
 		String summonerName,
 		Boolean isMain,
-		String queue,
+		Tier queue,
 		Long lp,
 		Integer division,
 		Long mmr,
