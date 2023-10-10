@@ -4,10 +4,15 @@ import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCC
 import static org.springframework.http.HttpStatus.OK;
 
 import com.gnimty.communityapiserver.domain.member.controller.dto.request.SummonerUpdateRequest;
+import com.gnimty.communityapiserver.domain.riotaccount.controller.dto.request.RecommendedSummonersRequest;
+import com.gnimty.communityapiserver.domain.riotaccount.controller.dto.response.RecommendedSummonersResponse;
 import com.gnimty.communityapiserver.domain.riotaccount.service.RiotAccountService;
+import com.gnimty.communityapiserver.domain.riotaccount.service.dto.response.RecommendedSummonersServiceResponse;
 import com.gnimty.communityapiserver.global.response.CommonResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -26,5 +31,14 @@ public class RiotAccountController {
 	) {
 		riotAccountService.updateSummoners(request.toServiceRequest());
 		return CommonResponse.success(SUCCESS_UPDATE_SUMMONERS, OK);
+	}
+
+	@GetMapping
+	public CommonResponse<RecommendedSummonersResponse> getRecommendedSummoners(
+		@ModelAttribute @Valid RecommendedSummonersRequest request
+	) {
+		RecommendedSummonersServiceResponse response = riotAccountService.getRecommendedSummoners(
+			request.toServiceRequest());
+		return CommonResponse.success(RecommendedSummonersResponse.from(response));
 	}
 }
