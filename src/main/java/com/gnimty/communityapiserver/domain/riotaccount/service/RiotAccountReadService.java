@@ -1,12 +1,18 @@
 package com.gnimty.communityapiserver.domain.riotaccount.service;
 
 import com.gnimty.communityapiserver.domain.member.entity.Member;
+import com.gnimty.communityapiserver.domain.riotaccount.controller.dto.response.RecommendedSummonersEntry;
 import com.gnimty.communityapiserver.domain.riotaccount.entity.RiotAccount;
+import com.gnimty.communityapiserver.domain.riotaccount.repository.RiotAccountQueryRepository;
 import com.gnimty.communityapiserver.domain.riotaccount.repository.RiotAccountRepository;
+import com.gnimty.communityapiserver.domain.riotaccount.service.dto.request.RecommendedSummonersServiceRequest;
+import com.gnimty.communityapiserver.domain.riotaccount.service.dto.response.RecommendedSummonersServiceResponse;
+import com.gnimty.communityapiserver.domain.schedule.entity.Schedule;
 import com.gnimty.communityapiserver.global.exception.BaseException;
 import com.gnimty.communityapiserver.global.exception.ErrorCode;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
+import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -16,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 public class RiotAccountReadService {
 
 	private final RiotAccountRepository riotAccountRepository;
+	private final RiotAccountQueryRepository riotAccountQueryRepository;
 
 	public void throwIfExistsByPuuid(String puuid) {
 		if (riotAccountRepository.existsByPuuid(puuid)) {
@@ -48,5 +55,18 @@ public class RiotAccountReadService {
 	public RiotAccount findByPuuid(String puuid) {
 		return riotAccountRepository.findByPuuid(puuid)
 			.orElse(null);
+	}
+
+	public RecommendedSummonersServiceResponse getRecommendedSummoners(
+		RecommendedSummonersServiceRequest request,
+		RiotAccount mainRiotAccount,
+		List<Schedule> schedules
+	) {
+		List<RecommendedSummonersEntry> content = riotAccountQueryRepository.findSummonersByConditions(
+				Pageable.ofSize(request.getPageSize()), request, mainRiotAccount, schedules)
+			.getContent();
+		return RecommendedSummonersServiceResponse.builder()
+			.recommendedSummoners(content)
+			.build();
 	}
 }
