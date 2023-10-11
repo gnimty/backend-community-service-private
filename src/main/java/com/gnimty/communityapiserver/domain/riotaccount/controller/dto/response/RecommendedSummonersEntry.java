@@ -8,7 +8,6 @@ import lombok.Data;
 @Data
 public class RecommendedSummonersEntry {
 
-	// private Long icon;
 	private Long id;
 	private String summonerName;
 	private Status status;
@@ -25,4 +24,5 @@ public class RecommendedSummonersEntry {
 	private Long frequentChampionId3;
 	private String introduction;
 	private Long upCount;
+	private Long iconId;
 }
