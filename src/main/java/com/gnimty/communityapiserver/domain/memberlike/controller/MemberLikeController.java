@@ -1,7 +1,7 @@
 package com.gnimty.communityapiserver.domain.memberlike.controller;
 
-import static com.gnimty.communityapiserver.global.constant.ResponseMessage.*;
-import static org.springframework.http.HttpStatus.*;
+import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_MEMBER_LIKE;
+import static org.springframework.http.HttpStatus.OK;
 
 import com.gnimty.communityapiserver.domain.memberlike.controller.dto.request.MemberLikeRequest;
 import com.gnimty.communityapiserver.domain.memberlike.service.MemberLikeService;
