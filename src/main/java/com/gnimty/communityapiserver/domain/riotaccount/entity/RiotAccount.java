@@ -78,6 +78,10 @@ public class RiotAccount extends BaseEntity {
 	@Column(name = "puuid", columnDefinition = "VARCHAR(100)")
 	private String puuid;
 
+	@NotNull
+	@Column(name = "icon_id", columnDefinition = "BIGINT")
+	private Long iconId;
+
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "member_id", nullable = false)
 	private Member member;
@@ -96,6 +100,7 @@ public class RiotAccount extends BaseEntity {
 		Long frequentChampionId2,
 		Long frequentChampionId3,
 		String puuid,
+		Long iconId,
 		Member member
 	) {
 		this.summonerName = summonerName;
@@ -110,6 +115,7 @@ public class RiotAccount extends BaseEntity {
 		this.frequentChampionId2 = frequentChampionId2;
 		this.frequentChampionId3 = frequentChampionId3;
 		this.puuid = puuid;
+		this.iconId = iconId;
 		this.member = member;
 	}
 
