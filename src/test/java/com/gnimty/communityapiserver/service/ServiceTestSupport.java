@@ -10,4 +10,5 @@ import org.springframework.test.context.ActiveProfiles;
 @SpringBootTest(webEnvironment = WebEnvironment.RANDOM_PORT)
 @ExtendWith(RedisTestConfig.class)
 public abstract class ServiceTestSupport {
+
 }
