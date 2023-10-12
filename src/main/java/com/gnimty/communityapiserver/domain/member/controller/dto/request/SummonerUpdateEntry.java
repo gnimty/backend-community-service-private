@@ -28,4 +28,6 @@ public class SummonerUpdateEntry {
 	private List<Lane> mostLanes;
 	@NotNull(message = ErrorMessage.INVALID_INPUT_VALUE)
 	private List<Long> mostChampionIds;
+	@NotNull(message = ErrorMessage.INVALID_INPUT_VALUE)
+	private Long iconId;
 }
