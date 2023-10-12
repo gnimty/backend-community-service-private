@@ -58,7 +58,8 @@ public class RiotAccountQueryRepository {
 					riotAccount.frequentChampionId2.as("frequentChampionId2"),
 					riotAccount.frequentChampionId3.as("frequentChampionId3"),
 					introduction.content.as("introduction"),
-					member.upCount.as("upCount")
+					member.upCount.as("upCount"),
+					riotAccount.iconId.as("iconId")
 				)
 			)
 			.from(riotAccount)
