@@ -10,6 +10,7 @@ import java.util.Optional;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import lombok.RequiredArgsConstructor;
+import org.springframework.http.HttpMethod;
 import org.springframework.stereotype.Component;
 import org.springframework.web.servlet.HandlerInterceptor;
 import org.springframework.web.servlet.ModelAndView;
@@ -23,6 +24,10 @@ public class TokenAuthInterceptor implements HandlerInterceptor {
 	@Override
 	public boolean preHandle(HttpServletRequest request, HttpServletResponse response,
 		Object handler) {
+		if (request.getServletPath().equals("/summoners")
+			&& request.getMethod().equals(HttpMethod.PATCH.toString())) {
+			return true;
+		}
 		Optional<String> tokenByHeader = jwtProvider.resolveToken(request);
 		if (tokenByHeader.isEmpty()) {
 			throw new BaseException(ErrorCode.TOKEN_NOT_FOUND);
