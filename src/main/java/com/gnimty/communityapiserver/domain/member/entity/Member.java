@@ -91,4 +91,8 @@ public class Member extends BaseEntity {
 	public void decreaseUpCount() {
 		this.upCount--;
 	}
+
+	public void increaseUpCount() {
+		this.upCount++;
+	}
 }
