@@ -13,6 +13,7 @@ import java.util.List;
 
 @NoArgsConstructor
 @Document(collection = "chatRoom")
+@Getter
 public class ChatRoom {
 
     @Field(name = "_id")
