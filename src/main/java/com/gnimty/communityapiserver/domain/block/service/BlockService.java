@@ -25,6 +25,9 @@ public class BlockService {
 
 	public void doBlock(BlockServiceRequest request) {
 		Member member = MemberThreadLocal.get();
+		if (Objects.equals(request.getId(), member.getId())) {
+			throw new BaseException(ErrorCode.NOT_ALLOWED_SELF_BLOCK);
+		}
 		Member blocked = memberReadService.findById(request.getId());
 		if (blockReadService.existsByBlockerAndBlocked(member, blocked)) {
 			throw new BaseException(ErrorCode.ALREADY_BLOCKED_MEMBER);
