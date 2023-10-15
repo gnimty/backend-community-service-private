@@ -87,4 +87,12 @@ public class Member extends BaseEntity {
 	public void updatePassword(String password) {
 		this.password = password;
 	}
+
+	public void decreaseUpCount() {
+		this.upCount--;
+	}
+
+	public void increaseUpCount() {
+		this.upCount++;
+	}
 }

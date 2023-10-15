@@ -25,8 +25,9 @@ public class SummonerUpdateEntry {
 	@NotNull(message = ErrorMessage.INVALID_INPUT_VALUE)
 	private Long mmr;
 	@NotNull(message = ErrorMessage.INVALID_INPUT_VALUE)
-	@ValidEnum(enumClass = Lane.class)
 	private List<Lane> mostLanes;
 	@NotNull(message = ErrorMessage.INVALID_INPUT_VALUE)
 	private List<Long> mostChampionIds;
+	@NotNull(message = ErrorMessage.INVALID_INPUT_VALUE)
+	private Long iconId;
 }

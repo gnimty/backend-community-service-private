@@ -1,7 +1,9 @@
 package com.gnimty.communityapiserver.domain.member.controller;
 
+import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_DISCONNECT_OAUTH;
 import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_GOOGLE_LINK;
 import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_KAKAO_LINK;
+import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_LOGOUT;
 import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_SEND_EMAIL_AUTH_CODE;
 import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_SUMMONER_LINK;
 import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_UPDATE_INTRODUCTION;
@@ -10,6 +12,7 @@ import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCC
 import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_UPDATE_PROFILE;
 import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_UPDATE_STATUS;
 import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_VERIFY_EMAIL;
+import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_WITHDRAWAL;
 import static org.springframework.http.HttpStatus.ACCEPTED;
 import static org.springframework.http.HttpStatus.OK;
 
@@ -28,12 +31,14 @@ import com.gnimty.communityapiserver.global.constant.Provider;
 import com.gnimty.communityapiserver.global.response.CommonResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
+import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -129,5 +134,23 @@ public class MemberController {
 	) {
 		memberService.updatePreferGameMode(request.toServiceRequest());
 		return CommonResponse.success(SUCCESS_UPDATE_PREFER_GAME_MODE, OK);
+	}
+
+	@DeleteMapping("/{member_id}/oauth")
+	public CommonResponse<Void> deleteOauthInfo(@RequestParam Provider provider) {
+		memberService.deleteOauthInfo(provider);
+		return CommonResponse.success(SUCCESS_DISCONNECT_OAUTH, OK);
+	}
+
+	@DeleteMapping("/{member_id}/logout")
+	public CommonResponse<Void> logout() {
+		memberService.logout();
+		return CommonResponse.success(SUCCESS_LOGOUT, OK);
+	}
+
+	@DeleteMapping("/{member_id}")
+	public CommonResponse<Void> withdrawal() {
+		memberService.withdrawal();
+		return CommonResponse.success(SUCCESS_WITHDRAWAL, OK);
 	}
 }

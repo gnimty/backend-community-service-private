@@ -3,6 +3,7 @@ package com.gnimty.communityapiserver.domain.riotaccount.entity;
 import com.gnimty.communityapiserver.domain.base.entity.BaseEntity;
 import com.gnimty.communityapiserver.domain.member.entity.Member;
 import com.gnimty.communityapiserver.global.constant.Lane;
+import com.gnimty.communityapiserver.global.constant.Tier;
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.EnumType;
@@ -41,7 +42,8 @@ public class RiotAccount extends BaseEntity {
 
 	@NotNull
 	@Column(name = "queue", columnDefinition = "VARCHAR(20)")
-	private String queue;
+	@Enumerated(EnumType.STRING)
+	private Tier queue;
 
 	@NotNull
 	@Column(name = "lp", columnDefinition = "BIGINT")
@@ -76,6 +78,10 @@ public class RiotAccount extends BaseEntity {
 	@Column(name = "puuid", columnDefinition = "VARCHAR(100)")
 	private String puuid;
 
+	@NotNull
+	@Column(name = "icon_id", columnDefinition = "BIGINT")
+	private Long iconId;
+
 	@ManyToOne(fetch = FetchType.LAZY, optional = false)
 	@JoinColumn(name = "member_id", nullable = false)
 	private Member member;
@@ -84,7 +90,7 @@ public class RiotAccount extends BaseEntity {
 	public RiotAccount(
 		String summonerName,
 		Boolean isMain,
-		String queue,
+		Tier queue,
 		Long lp,
 		Integer division,
 		Long mmr,
@@ -94,6 +100,7 @@ public class RiotAccount extends BaseEntity {
 		Long frequentChampionId2,
 		Long frequentChampionId3,
 		String puuid,
+		Long iconId,
 		Member member
 	) {
 		this.summonerName = summonerName;
@@ -108,6 +115,7 @@ public class RiotAccount extends BaseEntity {
 		this.frequentChampionId2 = frequentChampionId2;
 		this.frequentChampionId3 = frequentChampionId3;
 		this.puuid = puuid;
+		this.iconId = iconId;
 		this.member = member;
 	}
 
