@@ -3,7 +3,6 @@ package com.gnimty.communityapiserver.domain.member.controller.dto.request;
 import com.gnimty.communityapiserver.global.constant.Lane;
 import com.gnimty.communityapiserver.global.constant.Tier;
 import com.gnimty.communityapiserver.global.exception.ErrorCode.ErrorMessage;
-import com.gnimty.communityapiserver.global.validation.annotation.ValidEnum;
 import java.util.List;
 import javax.validation.constraints.NotNull;
 import lombok.Getter;
@@ -16,7 +15,6 @@ public class SummonerUpdateEntry {
 	@NotNull(message = ErrorMessage.INVALID_INPUT_VALUE)
 	private String puuid;
 	@NotNull(message = ErrorMessage.INVALID_INPUT_VALUE)
-	@ValidEnum(enumClass = Tier.class)
 	private Tier tier;
 	@NotNull(message = ErrorMessage.INVALID_INPUT_VALUE)
 	private Integer division;
