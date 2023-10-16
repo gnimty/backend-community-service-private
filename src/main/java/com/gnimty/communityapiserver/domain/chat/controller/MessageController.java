@@ -17,12 +17,14 @@ import org.springframework.messaging.simp.SimpMessagingTemplate;
 import org.springframework.messaging.simp.annotation.SubscribeMapping;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.validation.Valid;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 @Controller
@@ -38,7 +40,23 @@ public class MessageController {
 
     // Test 용도 (삭제 예정)
     @SubscribeMapping("/test")
-    public String test2() {
+    public String test(@Header(name = "userId", defaultValue = "default") String userId) {
+        log.info("userId= {}", userId);
         return "here";
+    }
+
+    @SubscribeMapping("/test2")
+    public String test2(@Header("userName") String userName,
+                        @Header("userId") String userId) {
+        log.info("test2 왔다!!");
+        log.info("userId= {}", userId);
+        log.info("userName= {}", userName);
+        return "응, 성공";
+    }
+
+    @MessageMapping("/send2")
+    public String send(@Headers Map<String, String > map) {
+        log.info("{}", map);
+        return "응, 성공";
     }
 }

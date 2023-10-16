@@ -9,6 +9,5 @@ public class ChatMessageDto {
     private Long chatRoomId;
     private Long receiverId;
 
-    @NotNull
     private String message;
 }
