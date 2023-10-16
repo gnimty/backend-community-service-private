@@ -11,6 +11,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 @NoArgsConstructor
 @Document(collection = "chatRoom")
+@Getter
 public class ChatRoom {
 
 	@Field(name = "_id")
