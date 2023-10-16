@@ -22,7 +22,10 @@ public enum ResponseMessage {
 	SUCCESS_MEMBER_LIKE("회원 좋아요에 대한 수정을 완료하였습니다."),
 	SUCCESS_DISCONNECT_OAUTH("Oauth 연결 해제를 완료하였습니다."),
 	SUCCESS_LOGOUT("성공적으로 로그아웃 하였습니다."),
-	SUCCESS_WITHDRAWAL("성공적으로 회원탈퇴를 완료하였습니다.");
+	SUCCESS_WITHDRAWAL("성공적으로 회원탈퇴를 완료하였습니다."),
+	SUCCESS_ADD_CHAMPION_COMMENTS("성공적으로 챔피언 운용법을 작성했습니다."),
+	SUCCESS_UPDATE_CHAMPION_COMMENTS("성공적으로 챔피언 운용법을 수정했습니다."),
+	SUCCESS_DELETE_CHAMPION_COMMENTS("성공적으로 챔피언 운용법을 삭제했습니다.");
 
 	private final String message;
 
