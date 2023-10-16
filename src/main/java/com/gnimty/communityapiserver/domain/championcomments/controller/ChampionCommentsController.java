@@ -1,7 +1,10 @@
 package com.gnimty.communityapiserver.domain.championcomments.controller;
 
-import static com.gnimty.communityapiserver.global.constant.ResponseMessage.*;
-import static org.springframework.http.HttpStatus.*;
+import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_ADD_CHAMPION_COMMENTS;
+import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_DELETE_CHAMPION_COMMENTS;
+import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_UPDATE_CHAMPION_COMMENTS;
+import static org.springframework.http.HttpStatus.CREATED;
+import static org.springframework.http.HttpStatus.OK;
 
 import com.gnimty.communityapiserver.domain.championcomments.controller.dto.request.ChampionCommentsRequest;
 import com.gnimty.communityapiserver.domain.championcomments.controller.dto.request.ChampionCommentsUpdateRequest;
