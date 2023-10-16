@@ -2,6 +2,7 @@ package com.gnimty.communityapiserver.domain.chat.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
