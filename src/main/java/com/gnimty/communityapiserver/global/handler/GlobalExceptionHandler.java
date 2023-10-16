@@ -3,11 +3,12 @@ package com.gnimty.communityapiserver.global.handler;
 import static com.gnimty.communityapiserver.global.exception.ErrorCode.HEADER_NOT_FOUND;
 import static com.gnimty.communityapiserver.global.exception.ErrorCode.MEDIA_TYPE_NOT_SUPPORTED;
 import static com.gnimty.communityapiserver.global.exception.ErrorCode.METHOD_NOT_ALLOWED;
-import static com.gnimty.communityapiserver.global.exception.ErrorCode.REQUEST_BODY_INVALID;
+import static com.gnimty.communityapiserver.global.exception.ErrorCode.MISSING_REQUEST_PARAMETER;
 import static com.gnimty.communityapiserver.global.exception.ErrorCode.URL_NOT_FOUND;
 
 import com.gnimty.communityapiserver.global.exception.BaseException;
 import com.gnimty.communityapiserver.global.exception.ErrorCode;
+import com.gnimty.communityapiserver.global.exception.ErrorCode.ErrorMessage;
 import com.gnimty.communityapiserver.global.response.CommonResponse;
 import java.util.Arrays;
 import javax.validation.Path;
@@ -16,13 +17,13 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
-import org.springframework.http.converter.HttpMessageNotReadableException;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MissingRequestHeaderException;
+import org.springframework.web.bind.MissingServletRequestParameterException;
 import org.springframework.web.bind.annotation.ExceptionHandler;
 import org.springframework.web.bind.annotation.RestControllerAdvice;
 import org.springframework.web.servlet.NoHandlerFoundException;
@@ -86,7 +87,7 @@ public class GlobalExceptionHandler {
 		return new ResponseEntity<>(CommonResponse.fail(
 			ErrorCode.CONSTRAINT_VIOLATION,
 			CustomFieldError.builder()
-				.message(err.getDefaultMessage())
+				.message(ErrorMessage.INVALID_INPUT_VALUE)
 				.field(err.getField())
 				.build()
 		), HttpStatus.BAD_REQUEST);
@@ -98,11 +99,15 @@ public class GlobalExceptionHandler {
 		return ResponseEntity.status(HEADER_NOT_FOUND.getStatus()).body(response);
 	}
 
-	@ExceptionHandler(HttpMessageNotReadableException.class)
-	public ResponseEntity<CommonResponse<Void>> HttpMessageNotReadableExceptionHandler(
-		HttpMessageNotReadableException e) {
-		CommonResponse<Void> response = CommonResponse.fail(REQUEST_BODY_INVALID);
-		return ResponseEntity.status(HEADER_NOT_FOUND.getStatus()).body(response);
+	@ExceptionHandler(MissingServletRequestParameterException.class)
+	public ResponseEntity<CommonResponse<Void>> missingRequestParameterExceptionHandler(
+		MissingServletRequestParameterException ex) {
+		String message = String.format(ErrorMessage.MISSING_REQUEST_PARAMETER,
+			ex.getParameterName());
+		ErrorCode errorCode = MISSING_REQUEST_PARAMETER;
+		CommonResponse<Void> response = CommonResponse.fail(errorCode, message);
+
+		return ResponseEntity.status(errorCode.getStatus()).body(response);
 	}
 
 	@Data
