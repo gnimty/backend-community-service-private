@@ -50,6 +50,8 @@ public enum ErrorCode {
 	NOT_ALLOWED_SELF_LIKE(CONFLICT, ErrorMessage.NOT_ALLOWED_SELF_LIKE),
 	NOT_ALLOWED_SELF_BLOCK(CONFLICT, ErrorMessage.NOT_ALLOWED_SELF_BLOCK),
 	OAUTH_INFO_NOT_FOUND(NOT_FOUND, ErrorMessage.OAUTH_INFO_NOT_FOUND),
+	INVALID_ENUM_VALUE(BAD_REQUEST, ErrorMessage.INVALID_ENUM_VALUE),
+	MISSING_REQUEST_PARAMETER(NOT_FOUND, ErrorMessage.MISSING_REQUEST_PARAMETER),
 
 	// server
 	INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Server Error");
@@ -99,5 +101,7 @@ public enum ErrorCode {
 		public static final String NOT_ALLOWED_SELF_LIKE = "자기 자신을 좋아요 할 수 없습니다.";
 		public static final String NOT_ALLOWED_SELF_BLOCK = "자기 자신을 차단할 수 없습니다.";
 		public static final String OAUTH_INFO_NOT_FOUND = "요청에 해당하는 oauth 정보가 존재하지 않습니다.";
+		public static final String INVALID_ENUM_VALUE = "올바르지 않은 열거형 요청입니다.";
+		public static final String MISSING_REQUEST_PARAMETER = "request parameter 중 %s는 필수입니다.";
 	}
 }
