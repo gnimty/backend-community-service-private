@@ -30,4 +30,8 @@ public class MemberReadService {
 		return memberRepository.findById(id)
 			.orElseThrow(() -> new BaseException(ErrorCode.MEMBER_NOT_FOUND));
 	}
+
+	public Boolean existsById(Long id) {
+		return memberRepository.existsById(id);
+	}
 }
