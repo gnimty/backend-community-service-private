@@ -18,9 +18,4 @@ import javax.validation.Valid;
 @Slf4j
 public class MessageController {
 
-    private final SimpMessageSendingOperations sendingOperations;
-    private final SimpMessagingTemplate messagingTemplate;
-    private final ChatRoomRepository chatRoomRepository;
-    private final UserRepository userRepository;
-
 }

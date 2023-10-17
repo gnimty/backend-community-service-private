@@ -1,11 +1,7 @@
 package com.gnimty.communityapiserver.global.auth;
 
 
-import static com.gnimty.communityapiserver.global.constant.Auth.ACCESS_TOKEN_EXPIRATION;
-import static com.gnimty.communityapiserver.global.constant.Auth.BEARER;
-import static com.gnimty.communityapiserver.global.constant.Auth.REFRESH_TOKEN_EXPIRATION;
-import static com.gnimty.communityapiserver.global.constant.Auth.SUBJECT_ACCESS_TOKEN;
-import static com.gnimty.communityapiserver.global.constant.Auth.SUBJECT_REFRESH_TOKEN;
+import static com.gnimty.communityapiserver.global.constant.Auth.*;
 import static com.gnimty.communityapiserver.global.exception.ErrorCode.TOKEN_EXPIRED;
 import static com.gnimty.communityapiserver.global.exception.ErrorCode.TOKEN_INVALID;
 
@@ -115,7 +111,7 @@ public class JwtProvider {
 	}
 
 	public Optional<String> resolveToken(HttpServletRequest request) {
-		return Optional.ofNullable(request.getHeader(Auth.AUTHORIZATION.getContent()));
+		return Optional.ofNullable(request.getHeader(AUTHORIZATION.getContent()));
 	}
 
 	public Long getIdByToken(String token) {
@@ -162,6 +158,6 @@ public class JwtProvider {
 	}
 
 	public String extractJwt(final StompHeaderAccessor accessor) {
-		return accessor.getFirstNativeHeader("Authorization");
+		return accessor.getFirstNativeHeader(AUTHORIZATION.getContent());
 	}
 }
