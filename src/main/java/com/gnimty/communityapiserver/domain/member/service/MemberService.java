@@ -53,10 +53,15 @@ import com.gnimty.communityapiserver.global.constant.Tier;
 import com.gnimty.communityapiserver.global.exception.BaseException;
 import com.gnimty.communityapiserver.global.exception.ErrorCode;
 import com.gnimty.communityapiserver.global.utils.RandomCodeGenerator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 import java.util.concurrent.TimeUnit;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -66,6 +71,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring5.SpringTemplateEngine;
 
 @Service
 @RequiredArgsConstructor
@@ -93,6 +100,7 @@ public class MemberService {
 	private final MemberLikeReadService memberLikeReadService;
 	private final BlockRepository blockRepository;
 	private final ScheduleRepository scheduleRepository;
+	private final SpringTemplateEngine templateEngine;
 
 	public void summonerAccountLink(OauthLoginServiceRequest request) {
 		Member member = MemberThreadLocal.get();
@@ -175,18 +183,42 @@ public class MemberService {
 		if (member.getEmail() == null) {
 			throw new BaseException(ErrorCode.NOT_LOGIN_BY_FORM);
 		}
-		String subject = "인증 코드 전송 메일";
-		String code = RandomCodeGenerator.generateCodeByLength(6);
-		sendMail(member.getEmail(), subject, code);
 
-		ValueOperations<String, String> stringValueOperations = redisTemplate.opsForValue();
-		String key = getRedisKey(PASSWORD, String.valueOf(member.getId()));
-		stringValueOperations.set(key, code);
-		stringValueOperations.getAndExpire(
-			key,
-			Auth.EMAIL_CODE_EXPIRATION.getExpiration(),
-			TimeUnit.MILLISECONDS
-		);
+		try {
+			MimeMessage message = mailSender.createMimeMessage();
+			MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+			// mail subject
+			helper.setSubject(Auth.EMAIL_SUBJECT.getContent());
+			// receiver
+			helper.setTo(member.getEmail());
+			// data
+			Map<String, String> emailValues = new HashMap<>();
+			String code = RandomCodeGenerator.generateCodeByLength(6);
+			emailValues.put("code", code);
+
+			Context context = new Context();
+			emailValues.forEach(context::setVariable);
+
+			String html = templateEngine.process("password-mail", context);
+			helper.setText(html, true);
+
+			// image insert
+			helper.addInline("banner-urf", new ClassPathResource("static/images/banner-urf.png"));
+
+			mailSender.send(message);
+
+			ValueOperations<String, String> stringValueOperations = redisTemplate.opsForValue();
+			String key = getRedisKey(PASSWORD, String.valueOf(member.getId()));
+			stringValueOperations.set(key, code);
+			stringValueOperations.getAndExpire(
+				key,
+				Auth.EMAIL_CODE_EXPIRATION.getExpiration(),
+				TimeUnit.MILLISECONDS
+			);
+		} catch (MessagingException e) {
+			throw new BaseException(ErrorCode.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	public void verifyEmailAuthCode(PasswordEmailVerifyServiceRequest request) {
