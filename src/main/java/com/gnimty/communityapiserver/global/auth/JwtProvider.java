@@ -1,11 +1,7 @@
 package com.gnimty.communityapiserver.global.auth;
 
 
-import static com.gnimty.communityapiserver.global.constant.Auth.ACCESS_TOKEN_EXPIRATION;
-import static com.gnimty.communityapiserver.global.constant.Auth.BEARER;
-import static com.gnimty.communityapiserver.global.constant.Auth.REFRESH_TOKEN_EXPIRATION;
-import static com.gnimty.communityapiserver.global.constant.Auth.SUBJECT_ACCESS_TOKEN;
-import static com.gnimty.communityapiserver.global.constant.Auth.SUBJECT_REFRESH_TOKEN;
+import static com.gnimty.communityapiserver.global.constant.Auth.*;
 import static com.gnimty.communityapiserver.global.exception.ErrorCode.TOKEN_EXPIRED;
 import static com.gnimty.communityapiserver.global.exception.ErrorCode.TOKEN_INVALID;
 
@@ -33,6 +29,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
@@ -114,7 +111,7 @@ public class JwtProvider {
 	}
 
 	public Optional<String> resolveToken(HttpServletRequest request) {
-		return Optional.ofNullable(request.getHeader(Auth.AUTHORIZATION.getContent()));
+		return Optional.ofNullable(request.getHeader(AUTHORIZATION.getContent()));
 	}
 
 	public Long getIdByToken(String token) {
@@ -158,5 +155,9 @@ public class JwtProvider {
 
 	private byte[] generateKey() {
 		return secret.getBytes(StandardCharsets.UTF_8);
+	}
+
+	public String extractJwt(final StompHeaderAccessor accessor) {
+		return accessor.getFirstNativeHeader(AUTHORIZATION.getContent());
 	}
 }
