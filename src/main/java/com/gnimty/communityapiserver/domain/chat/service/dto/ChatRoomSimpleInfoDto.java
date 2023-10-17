@@ -4,7 +4,8 @@ import lombok.Data;
 
 @Data
 public class ChatRoomSimpleInfoDto {
-    private Long chatRoomId;
-    private Long otherUserId;
-    private String lastChatMessage;
+
+	private Long chatRoomId;
+	private Long otherUserId;
+	private String lastChatMessage;
 }

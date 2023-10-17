@@ -105,6 +105,7 @@ public class ChatRoomRepositoryTest {
 
 		return findChatRoom;
 	}
+
 	private ChatUser convertToChatUser(User user) {
 		Long userId = user.getUserId();
 		return new ChatUser(userId, LocalDateTime.now());
