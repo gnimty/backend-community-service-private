@@ -10,6 +10,6 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class ChatService {
 
-    private final ChatRoomRepository chatRoomRepository;
+	private final ChatRoomRepository chatRoomRepository;
 
 }

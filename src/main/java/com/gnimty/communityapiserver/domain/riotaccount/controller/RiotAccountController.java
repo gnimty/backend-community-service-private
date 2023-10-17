@@ -48,7 +48,8 @@ public class RiotAccountController {
 	public CommonResponse<RecommendedSummonersResponse> getMainSummoners(
 		@RequestParam("game-mode") GameMode gameMode
 	) {
-		RecommendedSummonersServiceResponse response = riotAccountService.getMainSummoners(gameMode);
+		RecommendedSummonersServiceResponse response = riotAccountService.getMainSummoners(
+			gameMode);
 		return CommonResponse.success(RecommendedSummonersResponse.from(response));
 	}
 }
