@@ -33,6 +33,7 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
+import org.springframework.messaging.simp.stomp.StompHeaderAccessor;
 import org.springframework.stereotype.Component;
 
 @RequiredArgsConstructor
@@ -158,5 +159,9 @@ public class JwtProvider {
 
 	private byte[] generateKey() {
 		return secret.getBytes(StandardCharsets.UTF_8);
+	}
+
+	public String extractJwt(final StompHeaderAccessor accessor) {
+		return accessor.getFirstNativeHeader("Authorization");
 	}
 }

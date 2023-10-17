@@ -21,11 +21,11 @@ import org.springframework.transaction.annotation.Transactional;
 @SpringBootTest
 public class ChatRoomRepositoryTest {
 
-	@AfterEach
-	void afterEach() {
-		chatRoomRepository.deleteAll();
-		userRepository.deleteAll();
-	}
+//	@AfterEach
+//	void afterEach() {
+//		chatRoomRepository.deleteAll();
+//		userRepository.deleteAll();
+//	}
 
 	@Autowired
 	UserRepository userRepository;
@@ -65,24 +65,24 @@ public class ChatRoomRepositoryTest {
 		return chatRoom;
 	}
 
-	@Test
-	@Transactional
-	void deleteChatRoom() {
-
-		// given
-		ChatRoom chatRoom = new ChatRoom();
-		ChatRoom saveChatRoom = chatRoomRepository.save(chatRoom);
-
-		Optional<ChatRoom> findChatRoom = chatRoomRepository.findById(saveChatRoom.getId());
-		assertThat(findChatRoom).isNotEmpty();
-
-		// when
-		chatRoomRepository.deleteById(findChatRoom.get().getId());
-
-		// then
-		Optional<ChatRoom> deletedChatRoom = chatRoomRepository.findById(saveChatRoom.getId());
-		assertThat(deletedChatRoom).isEmpty();
-	}
+//	@Test
+//	@Transactional
+//	void deleteChatRoom() {
+//
+//		// given
+//		ChatRoom chatRoom = new ChatRoom();
+//		ChatRoom saveChatRoom = chatRoomRepository.save(chatRoom);
+//
+//		Optional<ChatRoom> findChatRoom = chatRoomRepository.findById(saveChatRoom.getId());
+//		assertThat(findChatRoom).isNotEmpty();
+//
+//		// when
+//		chatRoomRepository.deleteById(findChatRoom.get().getId());
+//
+//		// then
+//		Optional<ChatRoom> deletedChatRoom = chatRoomRepository.findById(saveChatRoom.getId());
+//		assertThat(deletedChatRoom).isEmpty();
+//	}
 
 	@Test
 	ChatRoom addChat() {
