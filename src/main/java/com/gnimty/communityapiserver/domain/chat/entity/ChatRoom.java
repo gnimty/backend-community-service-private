@@ -2,6 +2,8 @@ package com.gnimty.communityapiserver.domain.chat.entity;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 import org.bson.types.ObjectId;
 import org.springframework.data.annotation.Id;
@@ -11,6 +13,7 @@ import org.springframework.data.mongodb.core.mapping.Field;
 
 @NoArgsConstructor
 @Document(collection = "chatRoom")
+@Getter
 public class ChatRoom {
 
 	@Field(name = "_id")
