@@ -16,19 +16,19 @@ import org.springframework.stereotype.Component;
 @Order(Ordered.HIGHEST_PRECEDENCE + 99)
 public class StompHandler implements ChannelInterceptor {
 
-    private final JwtProvider jwtProvider;
+	private final JwtProvider jwtProvider;
 
-    @Override
-    public Message<?> preSend(Message<?> message, MessageChannel channel) {
+	@Override
+	public Message<?> preSend(Message<?> message, MessageChannel channel) {
 
-        final StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
+		final StompHeaderAccessor accessor = StompHeaderAccessor.wrap(message);
 
-        // websocket 연결시 헤더의 jwt token 유효성 검증
-        if (StompCommand.CONNECT == accessor.getCommand()) {
-            final String authorization = jwtProvider.extractJwt(accessor);
+		// websocket 연결시 헤더의 jwt token 유효성 검증
+		if (StompCommand.CONNECT == accessor.getCommand()) {
+			final String authorization = jwtProvider.extractJwt(accessor);
 
-            jwtProvider.checkValidation(authorization);
-        }
-        return message;
-    }
+			jwtProvider.checkValidation(authorization);
+		}
+		return message;
+	}
 }
