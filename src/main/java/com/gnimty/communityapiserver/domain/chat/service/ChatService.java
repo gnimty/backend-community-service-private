@@ -12,6 +12,4 @@ public class ChatService {
 
     private final ChatRoomRepository chatRoomRepository;
 
-//    public List<ChatRoomSimpleInfoDto> getChatRoomSimpleInfo(Long userId) {
-//    }
 }
