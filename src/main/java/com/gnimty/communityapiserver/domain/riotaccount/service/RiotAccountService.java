@@ -10,6 +10,7 @@ import com.gnimty.communityapiserver.domain.riotaccount.service.dto.response.Rec
 import com.gnimty.communityapiserver.domain.schedule.entity.Schedule;
 import com.gnimty.communityapiserver.domain.schedule.service.ScheduleReadService;
 import com.gnimty.communityapiserver.global.auth.MemberThreadLocal;
+import com.gnimty.communityapiserver.global.constant.GameMode;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -41,5 +42,10 @@ public class RiotAccountService {
 		RiotAccount mainRiotAccount = riotAccountReadService.findMainAccountByMember(member);
 		List<Schedule> schedules = scheduleReadService.findByMember(member);
 		return riotAccountReadService.getRecommendedSummoners(request, mainRiotAccount, schedules);
+	}
+
+	public RecommendedSummonersServiceResponse getMainSummoners(GameMode gameMode) {
+		Member member = MemberThreadLocal.get();
+		return riotAccountReadService.getMainSummoners(member, gameMode);
 	}
 }
