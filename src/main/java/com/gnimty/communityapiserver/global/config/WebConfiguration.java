@@ -1,10 +1,12 @@
 package com.gnimty.communityapiserver.global.config;
 
 
+import com.gnimty.communityapiserver.global.constant.converter.StringToEnumConverterFactory;
 import com.gnimty.communityapiserver.global.interceptor.MemberAuthInterceptor;
 import com.gnimty.communityapiserver.global.interceptor.TokenAuthInterceptor;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.format.FormatterRegistry;
 import org.springframework.web.servlet.config.annotation.CorsRegistry;
 import org.springframework.web.servlet.config.annotation.InterceptorRegistry;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
@@ -23,6 +25,11 @@ public class WebConfiguration implements WebMvcConfigurer {
 			.allowedMethods("GET", "POST", "PUT", "PATCH", "DELETE")
 			.allowCredentials(true)
 			.allowedHeaders("*");
+	}
+
+	@Override
+	public void addFormatters(FormatterRegistry registry) {
+		registry.addConverterFactory(new StringToEnumConverterFactory());
 	}
 
 	@Override
