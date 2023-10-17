@@ -250,6 +250,9 @@ public class MemberService {
 
 	public void deleteOauthInfo(Provider provider) {
 		Member member = MemberThreadLocal.get();
+		if (member.getEmail() == null) {
+			throw new BaseException(ErrorCode.NOT_LOGIN_BY_FORM);
+		}
 		OauthInfo oauthInfo = oauthInfoReadService.findByMemberAndProvider(member, provider);
 		oauthInfoRepository.delete(oauthInfo);
 	}
