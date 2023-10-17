@@ -42,6 +42,10 @@ spring:
         debug: true
         transport:
           protocol: smtp
+
+  thymeleaf:
+    mode: HTML5
+    cache: false
 ---
 spring:
   config:
