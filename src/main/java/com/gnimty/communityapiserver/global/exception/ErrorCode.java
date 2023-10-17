@@ -50,6 +50,11 @@ public enum ErrorCode {
 	NOT_ALLOWED_SELF_LIKE(CONFLICT, ErrorMessage.NOT_ALLOWED_SELF_LIKE),
 	NOT_ALLOWED_SELF_BLOCK(CONFLICT, ErrorMessage.NOT_ALLOWED_SELF_BLOCK),
 	OAUTH_INFO_NOT_FOUND(NOT_FOUND, ErrorMessage.OAUTH_INFO_NOT_FOUND),
+	CHAMPION_COMMENTS_NOT_FOUND(NOT_FOUND, ErrorMessage.CHAMPION_COMMENTS_NOT_FOUND),
+	SERVICE_UNAVAILABLE(HttpStatus.SERVICE_UNAVAILABLE, ErrorMessage.SERVICE_UNAVAILABLE),
+	PARENT_COMMENTS_DEPTH_MUST_BE_ONE(BAD_REQUEST, ErrorMessage.PARENT_COMMENTS_DEPTH_MUST_BE_ONE),
+	COMMENTS_ID_AND_CHAMPION_ID_INVALID(BAD_REQUEST,
+		ErrorMessage.COMMENTS_ID_AND_CHAMPION_ID_INVALID),
 
 	// server
 	INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Server Error");
@@ -99,5 +104,9 @@ public enum ErrorCode {
 		public static final String NOT_ALLOWED_SELF_LIKE = "자기 자신을 좋아요 할 수 없습니다.";
 		public static final String NOT_ALLOWED_SELF_BLOCK = "자기 자신을 차단할 수 없습니다.";
 		public static final String OAUTH_INFO_NOT_FOUND = "요청에 해당하는 oauth 정보가 존재하지 않습니다.";
+		public static final String CHAMPION_COMMENTS_NOT_FOUND = "요청에 해당하는 챔피언 운용법이 존재하지 않습니다.";
+		public static final String SERVICE_UNAVAILABLE = "외부 서비스에 요청에 대한 응답을 받을 수 없습니다.";
+		public static final String PARENT_COMMENTS_DEPTH_MUST_BE_ONE = "부모 댓글은 depth를 가질 수 없습니다.";
+		public static final String COMMENTS_ID_AND_CHAMPION_ID_INVALID = "commentsId와 championId가 일치하지 않습니다.";
 	}
 }
