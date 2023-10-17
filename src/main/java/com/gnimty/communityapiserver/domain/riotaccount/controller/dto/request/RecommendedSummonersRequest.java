@@ -6,7 +6,7 @@ import com.gnimty.communityapiserver.global.constant.Lane;
 import com.gnimty.communityapiserver.global.constant.SortBy;
 import com.gnimty.communityapiserver.global.constant.Status;
 import com.gnimty.communityapiserver.global.constant.Tier;
-import com.gnimty.communityapiserver.global.validation.annotation.ValidEnum;
+import com.gnimty.communityapiserver.global.exception.ErrorCode.ErrorMessage;
 import java.util.List;
 import javax.validation.constraints.NotNull;
 import lombok.Builder;
@@ -20,15 +20,13 @@ public class RecommendedSummonersRequest {
 	private Status status;
 	private List<Long> preferChampionIds;
 	private Boolean duoable;
-	@ValidEnum(enumClass = Tier.class)
 	private Tier tier;
 	private List<Lane> lanes;
-	@ValidEnum(enumClass = SortBy.class)
 	private SortBy sortBy;
 	private Boolean timeMatch;
-	@NotNull
+	@NotNull(message = ErrorMessage.INVALID_INPUT_VALUE)
 	private Long cursorId;
-	@NotNull
+	@NotNull(message = ErrorMessage.INVALID_INPUT_VALUE)
 	private Integer pageSize;
 
 	public RecommendedSummonersServiceRequest toServiceRequest() {
