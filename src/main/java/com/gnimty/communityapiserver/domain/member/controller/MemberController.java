@@ -1,5 +1,6 @@
 package com.gnimty.communityapiserver.domain.member.controller;
 
+import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_DISCONNECT_OAUTH;
 import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_GOOGLE_LINK;
 import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_KAKAO_LINK;
 import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_LOGOUT;
@@ -37,6 +38,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -132,6 +134,12 @@ public class MemberController {
 	) {
 		memberService.updatePreferGameMode(request.toServiceRequest());
 		return CommonResponse.success(SUCCESS_UPDATE_PREFER_GAME_MODE, OK);
+	}
+
+	@DeleteMapping("/{member_id}/oauth")
+	public CommonResponse<Void> deleteOauthInfo(@RequestParam Provider provider) {
+		memberService.deleteOauthInfo(provider);
+		return CommonResponse.success(SUCCESS_DISCONNECT_OAUTH, OK);
 	}
 
 	@DeleteMapping("/{member_id}/logout")

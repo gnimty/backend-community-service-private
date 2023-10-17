@@ -20,6 +20,8 @@ public interface OauthInfoRepository extends JpaRepository<OauthInfo, Long> {
 
 	Boolean existsByMemberAndProvider(Member member, Provider provider);
 
+	Optional<OauthInfo> findByMemberAndProvider(Member member, Provider provider);
+
 	@Query("delete from OauthInfo o where o.member.id = :id")
 	@Modifying
 	void deleteAllFromMember(@Param("id") Long id);

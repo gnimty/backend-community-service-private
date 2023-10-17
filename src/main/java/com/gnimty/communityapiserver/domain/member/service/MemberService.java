@@ -280,6 +280,12 @@ public class MemberService {
 			.forEach(preferGameModeRepository::save);
 	}
 
+	public void deleteOauthInfo(Provider provider) {
+		Member member = MemberThreadLocal.get();
+		OauthInfo oauthInfo = oauthInfoReadService.findByMemberAndProvider(member, provider);
+		oauthInfoRepository.delete(oauthInfo);
+	}
+
 	public void logout() {
 		Member member = MemberThreadLocal.get();
 		ValueOperations<String, String> valueOperations = redisTemplate.opsForValue();

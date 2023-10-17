@@ -40,6 +40,7 @@ public class MemberLikeService {
 		if (memberLikeReadService.existsBySourceAndTarget(source, target)) {
 			throw new BaseException(ErrorCode.ALREADY_MEMBER_LIKE);
 		}
+		target.increaseUpCount();
 		memberLikeRepository.save(MemberLike.builder()
 			.sourceMember(source)
 			.targetMember(target)
