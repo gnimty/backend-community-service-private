@@ -20,6 +20,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.BindException;
 import org.springframework.validation.BindingResult;
 import org.springframework.validation.FieldError;
+import org.springframework.validation.ObjectError;
 import org.springframework.web.HttpMediaTypeNotSupportedException;
 import org.springframework.web.HttpRequestMethodNotSupportedException;
 import org.springframework.web.bind.MissingRequestHeaderException;
@@ -82,8 +83,18 @@ public class GlobalExceptionHandler {
 	@ExceptionHandler(BindException.class)
 	public ResponseEntity<CommonResponse<CustomFieldError>> BindExceptionHandler(BindException ex,
 		BindingResult result) {
-		FieldError err = result.getFieldErrors().stream().findFirst().get();
+		if (result.getFieldErrors().isEmpty()) {
+			ObjectError err = result.getAllErrors().stream().findFirst().get();
+			return new ResponseEntity<>(CommonResponse.fail(
+				ErrorCode.CONSTRAINT_VIOLATION,
+				CustomFieldError.builder()
+					.message(err.getDefaultMessage())
+					.field(err.getObjectName())
+					.build()
+			), HttpStatus.BAD_REQUEST);
+		}
 
+		FieldError err = result.getFieldErrors().stream().findFirst().get();
 		return new ResponseEntity<>(CommonResponse.fail(
 			ErrorCode.CONSTRAINT_VIOLATION,
 			CustomFieldError.builder()
