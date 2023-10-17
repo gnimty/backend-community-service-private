@@ -6,10 +6,12 @@ import static com.gnimty.communityapiserver.domain.prefergamemode.entity.QPrefer
 import static com.gnimty.communityapiserver.domain.riotaccount.entity.QRiotAccount.riotAccount;
 import static com.gnimty.communityapiserver.domain.schedule.entity.QSchedule.schedule;
 
+import com.gnimty.communityapiserver.domain.member.entity.Member;
 import com.gnimty.communityapiserver.domain.riotaccount.controller.dto.response.RecommendedSummonersEntry;
 import com.gnimty.communityapiserver.domain.riotaccount.entity.RiotAccount;
 import com.gnimty.communityapiserver.domain.riotaccount.service.dto.request.RecommendedSummonersServiceRequest;
 import com.gnimty.communityapiserver.domain.schedule.entity.Schedule;
+import com.gnimty.communityapiserver.global.auth.MemberThreadLocal;
 import com.gnimty.communityapiserver.global.constant.GameMode;
 import com.gnimty.communityapiserver.global.constant.Lane;
 import com.gnimty.communityapiserver.global.constant.SortBy;
@@ -17,7 +19,9 @@ import com.gnimty.communityapiserver.global.constant.Status;
 import com.gnimty.communityapiserver.global.constant.Tier;
 import com.querydsl.core.BooleanBuilder;
 import com.querydsl.core.types.Projections;
+import com.querydsl.core.types.QBean;
 import com.querydsl.core.types.dsl.BooleanExpression;
+import com.querydsl.core.types.dsl.Expressions;
 import com.querydsl.jpa.impl.JPAQuery;
 import com.querydsl.jpa.impl.JPAQueryFactory;
 import java.util.List;
@@ -39,28 +43,9 @@ public class RiotAccountQueryRepository {
 		RiotAccount mainRiotAccount,
 		List<Schedule> schedules
 	) {
-
+		Member me = MemberThreadLocal.get();
 		JPAQuery<RecommendedSummonersEntry> query = queryFactory.select(
-				Projections.bean(
-					RecommendedSummonersEntry.class,
-					riotAccount.id.as("id"),
-					riotAccount.summonerName.as("summonerName"),
-					member.status.as("status"),
-					riotAccount.isMain.as("isMain"),
-					riotAccount.puuid.as("puuid"),
-					riotAccount.queue.as("queue"),
-					riotAccount.lp.as("lp"),
-					riotAccount.division.as("division"),
-					riotAccount.mmr.as("mmr"),
-					riotAccount.frequentLane1.as("frequentLane1"),
-					riotAccount.frequentLane2.as("frequentLane2"),
-					riotAccount.frequentChampionId1.as("frequentChampionId1"),
-					riotAccount.frequentChampionId2.as("frequentChampionId2"),
-					riotAccount.frequentChampionId3.as("frequentChampionId3"),
-					introduction.content.as("introduction"),
-					member.upCount.as("upCount")
-				)
-			)
+				getProjectionBean())
 			.from(riotAccount)
 			.join(riotAccount.member, member)
 			.join(preferGameMode).on(preferGameMode.member.eq(member))
@@ -77,7 +62,8 @@ public class RiotAccountQueryRepository {
 					.and(frequentChampionIdEq(request.getPreferChampionIds()))
 					.and(duoable(mainRiotAccount.getQueue(), mainRiotAccount.getDivision(),
 						request.getDuoable()))
-					.and(timeMatch(schedules, request.getTimeMatch())))
+					.and(timeMatch(schedules, request.getTimeMatch()))
+					.and(riotAccount.member.id.ne(me.getId())))
 			.limit(pageable.getPageSize());
 		if (request.getSortBy().equals(SortBy.ATOZ)) {
 			query = query.orderBy(riotAccount.summonerName.asc());
@@ -98,6 +84,59 @@ public class RiotAccountQueryRepository {
 			hasNext = true;
 		}
 		return new SliceImpl<>(fetch, pageable, hasNext);
+	}
+
+	public List<RecommendedSummonersEntry> findMainSummonersByMember(Member me, GameMode gameMode) {
+		JPAQuery<RecommendedSummonersEntry> query = queryFactory.select(
+				getProjectionBean())
+			.from(riotAccount)
+			.join(riotAccount.member, member)
+			.join(preferGameMode).on(preferGameMode.member.eq(member))
+			.join(introduction).on(introduction.member.eq(member))
+			.join(schedule).on(schedule.member.eq(member))
+			.where(
+				memberStatusEq(Status.ONLINE)
+					.and(gameModeEq(gameMode))
+					.and(riotAccount.member.id.ne(me.getId())));
+
+		RiotAccount account = queryFactory
+			.selectFrom(riotAccount)
+			.where(riotAccount.member.id.eq(me.getId()))
+			.fetchOne();
+		if (account == null) {
+			return query
+				.orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc())
+				.limit(5)
+				.fetch();
+		}
+		return query
+			.where(duoable(account.getQueue(), account.getDivision(), true))
+			.orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc())
+			.limit(5)
+			.fetch();
+	}
+
+	private QBean<RecommendedSummonersEntry> getProjectionBean() {
+		return Projections.bean(
+			RecommendedSummonersEntry.class,
+			riotAccount.id.as("id"),
+			riotAccount.summonerName.as("summonerName"),
+			member.status.as("status"),
+			riotAccount.isMain.as("isMain"),
+			riotAccount.puuid.as("puuid"),
+			riotAccount.queue.as("queue"),
+			riotAccount.lp.as("lp"),
+			riotAccount.division.as("division"),
+			riotAccount.mmr.as("mmr"),
+			riotAccount.frequentLane1.as("frequentLane1"),
+			riotAccount.frequentLane2.as("frequentLane2"),
+			riotAccount.frequentChampionId1.as("frequentChampionId1"),
+			riotAccount.frequentChampionId2.as("frequentChampionId2"),
+			riotAccount.frequentChampionId3.as("frequentChampionId3"),
+			introduction.content.as("introduction"),
+			member.upCount.as("upCount"),
+			riotAccount.iconId.as("iconId")
+		);
 	}
 
 	private BooleanExpression isMainRiotAccount() {

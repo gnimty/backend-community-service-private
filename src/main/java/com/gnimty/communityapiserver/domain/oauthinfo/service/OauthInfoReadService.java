@@ -31,4 +31,9 @@ public class OauthInfoReadService {
 	public Boolean existsByMemberAndProvider(Member member, Provider provider) {
 		return oauthInfoRepository.existsByMemberAndProvider(member, provider);
 	}
+
+	public OauthInfo findByMemberAndProvider(Member member, Provider provider) {
+		return oauthInfoRepository.findByMemberAndProvider(member, provider)
+			.orElseThrow(() -> new BaseException(ErrorCode.OAUTH_INFO_NOT_FOUND));
+	}
 }
