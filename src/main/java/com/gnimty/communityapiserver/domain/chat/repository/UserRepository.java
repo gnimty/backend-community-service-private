@@ -9,7 +9,5 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface UserRepository extends MongoRepository<User, Long> {
 
-	@Query("{ 'userId' : ?0 }")
-	Optional<User> findByUserId(Long id);
-
+	Optional<User> findByActualUserId(Long userId);
 }
