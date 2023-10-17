@@ -1,7 +1,12 @@
 package com.gnimty.communityapiserver.global.auth;
 
 
-import static com.gnimty.communityapiserver.global.constant.Auth.*;
+import static com.gnimty.communityapiserver.global.constant.Auth.ACCESS_TOKEN_EXPIRATION;
+import static com.gnimty.communityapiserver.global.constant.Auth.AUTHORIZATION;
+import static com.gnimty.communityapiserver.global.constant.Auth.BEARER;
+import static com.gnimty.communityapiserver.global.constant.Auth.REFRESH_TOKEN_EXPIRATION;
+import static com.gnimty.communityapiserver.global.constant.Auth.SUBJECT_ACCESS_TOKEN;
+import static com.gnimty.communityapiserver.global.constant.Auth.SUBJECT_REFRESH_TOKEN;
 import static com.gnimty.communityapiserver.global.exception.ErrorCode.TOKEN_EXPIRED;
 import static com.gnimty.communityapiserver.global.exception.ErrorCode.TOKEN_INVALID;
 
@@ -9,7 +14,6 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.gnimty.communityapiserver.domain.member.controller.dto.response.AuthToken;
 import com.gnimty.communityapiserver.domain.member.entity.Member;
 import com.gnimty.communityapiserver.domain.member.service.MemberReadService;
-import com.gnimty.communityapiserver.global.constant.Auth;
 import com.gnimty.communityapiserver.global.constant.KeyPrefix;
 import com.gnimty.communityapiserver.global.exception.BaseException;
 import io.jsonwebtoken.Claims;
