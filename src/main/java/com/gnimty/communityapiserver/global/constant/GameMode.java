@@ -1,6 +1,8 @@
 package com.gnimty.communityapiserver.global.constant;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.gnimty.communityapiserver.global.exception.BaseException;
+import com.gnimty.communityapiserver.global.exception.ErrorCode;
 import java.util.stream.Stream;
 import lombok.Getter;
 
@@ -15,6 +17,6 @@ public enum GameMode {
 		return Stream.of(GameMode.values())
 			.filter(c -> c.name().equals(input))
 			.findFirst()
-			.orElse(null);
+			.orElseThrow(() -> new BaseException(ErrorCode.INVALID_ENUM_VALUE));
 	}
 }

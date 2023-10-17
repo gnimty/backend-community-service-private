@@ -4,7 +4,6 @@ import com.gnimty.communityapiserver.domain.schedule.entity.Schedule;
 import com.gnimty.communityapiserver.global.constant.DayOfWeek;
 import com.gnimty.communityapiserver.global.exception.ErrorCode.ErrorMessage;
 import com.gnimty.communityapiserver.global.validation.annotation.BeforeEndTime;
-import com.gnimty.communityapiserver.global.validation.annotation.ValidEnum;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -17,7 +16,6 @@ import lombok.Getter;
 public class ScheduleEntry {
 
 	@NotNull(message = ErrorMessage.INVALID_INPUT_VALUE)
-	@ValidEnum(enumClass = DayOfWeek.class)
 	private DayOfWeek dayOfWeek;
 
 	@NotNull(message = ErrorMessage.INVALID_INPUT_VALUE)
