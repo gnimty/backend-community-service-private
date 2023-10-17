@@ -20,8 +20,13 @@ import com.gnimty.communityapiserver.global.constant.Status;
 import com.gnimty.communityapiserver.global.exception.BaseException;
 import com.gnimty.communityapiserver.global.exception.ErrorCode;
 import com.gnimty.communityapiserver.global.utils.RandomCodeGenerator;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.concurrent.TimeUnit;
+import javax.mail.MessagingException;
+import javax.mail.internet.MimeMessage;
 import lombok.RequiredArgsConstructor;
+import org.springframework.core.io.ClassPathResource;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
 import org.springframework.mail.javamail.JavaMailSender;
@@ -31,6 +36,8 @@ import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.context.Context;
+import org.thymeleaf.spring5.SpringTemplateEngine;
 
 @Service
 @RequiredArgsConstructor
@@ -46,6 +53,7 @@ public class AuthService {
 	private final KakaoOauthUtil kakaoOauthUtil;
 	private final GoogleOauthUtil googleOauthUtil;
 	private final JavaMailSender mailSender;
+	private final SpringTemplateEngine templateEngine;
 
 	public void signup(SignupServiceRequest request) {
 		memberReadService.throwIfExistByEmail(request.getEmail());
@@ -112,18 +120,43 @@ public class AuthService {
 
 	@Async("mailExecutor")
 	public void sendEmailAuthCode(EmailAuthServiceRequest request) {
-		String subject = "인증 코드 전송 메일";
-		String code = RandomCodeGenerator.generateCodeByLength(6);
-		sendMail(request.getEmail(), subject, code);
 
-		ValueOperations<String, String> stringValueOperations = redisTemplate.opsForValue();
-		String key = getRedisKey(KeyPrefix.EMAIL, request.getEmail());
-		stringValueOperations.set(key, code);
-		stringValueOperations.getAndExpire(
-			key,
-			Auth.EMAIL_CODE_EXPIRATION.getExpiration(),
-			TimeUnit.MILLISECONDS
-		);
+		try {
+			MimeMessage message = mailSender.createMimeMessage();
+			MimeMessageHelper helper = new MimeMessageHelper(message, true, "UTF-8");
+
+			// mail subject
+			helper.setSubject(Auth.EMAIL_SUBJECT.getContent());
+			// receiver
+			helper.setTo(request.getEmail());
+			// data
+			Map<String, String> emailValues = new HashMap<>();
+			String code = RandomCodeGenerator.generateCodeByLength(6);
+			emailValues.put("code", code);
+
+			Context context = new Context();
+			emailValues.forEach(context::setVariable);
+
+			String html = templateEngine.process("signup-mail", context);
+			helper.setText(html, true);
+
+
+			// image insert
+			helper.addInline("banner-pengu", new ClassPathResource("static/images/banner-pengu.png"));
+
+			mailSender.send(message);
+
+			ValueOperations<String, String> stringValueOperations = redisTemplate.opsForValue();
+			String key = getRedisKey(KeyPrefix.EMAIL, request.getEmail());
+			stringValueOperations.set(key, code);
+			stringValueOperations.getAndExpire(
+				key,
+				Auth.EMAIL_CODE_EXPIRATION.getExpiration(),
+				TimeUnit.MILLISECONDS
+			);
+		} catch (MessagingException e) {
+			throw new BaseException(ErrorCode.INTERNAL_SERVER_ERROR);
+		}
 	}
 
 	public void verifyEmailAuthCode(EmailVerifyServiceRequest request) {
