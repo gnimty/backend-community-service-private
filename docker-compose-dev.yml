@@ -1,8 +1,8 @@
 version: '3'
 services:
-
   community-web-dev:
-    image: kariskan/gnimty-community-server:latest
+#    image: kariskan/gnimty-community-server:latest
+    build: .
     container_name: community-server
     depends_on:
       - community-mongo-dev
@@ -38,6 +38,8 @@ services:
   community-mongo-dev:
     image: mongo:6.0.4
     container_name: gnimty-community-mongo-main
+    volumes:
+      - ./dev-mongo-data:/data/db
     ports:
       - "37017:27017"
     env_file:
@@ -57,3 +59,7 @@ services:
       - "mode=standalone"
     restart: on-failure
     command: redis-server /usr/local/conf/redis.conf
+
+networks:
+  our_net:
+    driver: bridge
