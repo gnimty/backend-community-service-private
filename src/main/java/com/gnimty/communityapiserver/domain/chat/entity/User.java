@@ -13,6 +13,7 @@ import javax.persistence.Id;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@EqualsAndHashCode(exclude = "_id")
 public class User {
 	@Id
 	private String id;
