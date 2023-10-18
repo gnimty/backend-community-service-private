@@ -8,7 +8,6 @@ public class ChatRoomInfo {
     private Long otherUserId;
 
     // ... 필드 추가 예정
-
     public ChatRoomInfo(Long chatRoomId, Long otherUserId) {
         this.chatRoomId = chatRoomId;
         this.otherUserId = otherUserId;
