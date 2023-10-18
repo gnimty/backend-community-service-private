@@ -55,8 +55,8 @@ public class ChatController {
 
     // 채팅방 나가기
     @SubscribeMapping("/chatRoom/exit/{chatRoomId}")
-    public void exitChatRoom(@DestinationVariable("chatRoomId") Long chatRoomId, LocalDateTime localDateTime) {
-        chatService.exitChatRoom(chatRoomId, localDateTime);
+    public void exitChatRoom(@DestinationVariable("chatRoomId") Long chatRoomId) {
+        chatService.exitChatRoom(chatRoomId);
     }
 
 

@@ -29,7 +29,7 @@ public class ChatService {
         return false; // 삭제 예정
     }
 
-    public void exitChatRoom(Long chatRoomId, LocalDateTime exitTime) {
+    public void exitChatRoom(Long chatRoomId) {
         // 채팅방 나감 처리
     }
 
