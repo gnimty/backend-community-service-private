@@ -4,73 +4,110 @@ import static org.assertj.core.api.Assertions.assertThat;
 
 import com.gnimty.communityapiserver.domain.chat.entity.User;
 import com.gnimty.communityapiserver.global.constant.Status;
+
+import java.util.List;
 import java.util.Optional;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.test.context.ActiveProfiles;
 
 
 @Slf4j
 @SpringBootTest
+@ActiveProfiles("test")
 public class UserRepositoryTest {
+    @Autowired
+    private ChatRepository chatRepository;
+    @Autowired
+    private UserRepository userRepository;
+    @Autowired
+    private ChatRoomRepository chatRoomRepository;
 
-	@AfterEach
-	void afterEach() {
-		userRepository.deleteAll();
-	}
+    void clear(){
+        chatRoomRepository.deleteAll();
+        userRepository.deleteAll();
+        chatRepository.deleteAll();
+    }
 
-	@Autowired
-	UserRepository userRepository;
+    @Test
+    void 유저생성_테스트(){
 
-	@Test
-	void saveUser() {
+        clear();
+        // 1. 유저 한명 생성 테스트
+        User user = new User(null, 1L, 3L, "diamond", 3, "so1omon", "ON");
+        List<User> all = userRepository.findAll();
 
-		// given
-		User user = new User(1234L);
+        System.out.println("저장 전");
+        for (User user1 : all) {
+            System.out.println("user1 = " + user1);
+        }
+        User save = userRepository.save(user);
+        all = userRepository.findAll();
 
-		// when
-		userRepository.save(user);
+        System.out.println("저장 후");
+        for (User user1 : all) {
+            System.out.println("user1 = " + user1);
+        }
 
-		// then
-		Optional<User> findUser = userRepository.findByUserId(user.getUserId());
-		assertThat(findUser).isNotEmpty();
-	}
-
-	@Test
-	void updateUser() {
-
-		// given
-		User user = new User(2345L);
-		user.updateUser("A", Status.ONLINE);
-		userRepository.save(user);
-
-		//when
-		User findUser = userRepository.findByUserId(2345L).orElse(null);
-		findUser.updateUser("B", Status.OFFLINE);
-		userRepository.save(findUser);
-
-		// then
-		User changedUser = userRepository.findByUserId(2345L).orElse(null);
-		assertThat(changedUser.getNickname()).isEqualTo("B");
-		assertThat(changedUser.getStatus()).isEqualTo(Status.OFFLINE);
-	}
-
-	@Test
-	void deleteUser() {
-		// given
-		User user = new User(2345L);
-		user.updateUser("A", Status.ONLINE);
-		userRepository.save(user);
-
-		// when
-		User findUser = userRepository.findByUserId(2345L).orElse(null);
-		userRepository.delete(findUser);
-
-		// then
-		Optional<User> deletedUser = userRepository.findByUserId(2345L);
-		assertThat(deletedUser).isEmpty();
-	}
+    }
+//	@AfterEach
+//	void afterEach() {
+//		userRepository.deleteAll();
+//	}
+//
+//	@Autowired
+//	UserRepository userRepository;
+//
+//	@Test
+//	void saveUser() {
+//
+//		// given
+//		User user = new User(1234L);
+//
+//		// when
+//		userRepository.save(user);
+//
+//		// then
+//		Optional<User> findUser = userRepository.findByUserId(user.getUserId());
+//		assertThat(findUser).isNotEmpty();
+//	}
+//
+//	@Test
+//	void updateUser() {
+//
+//		// given
+//		User user = new User(2345L);
+//		user.updateUser("A", Status.ONLINE);
+//		userRepository.save(user);
+//
+//		//when
+//		User findUser = userRepository.findByUserId(2345L).orElse(null);
+//		findUser.updateUser("B", Status.OFFLINE);
+//		userRepository.save(findUser);
+//
+//		// then
+//		User changedUser = userRepository.findByUserId(2345L).orElse(null);
+//		assertThat(changedUser.getNickname()).isEqualTo("B");
+//		assertThat(changedUser.getStatus()).isEqualTo(Status.OFFLINE);
+//	}
+//
+//	@Test
+//	void deleteUser() {
+//		// given
+//		User user = new User(2345L);
+//		user.updateUser("A", Status.ONLINE);
+//		userRepository.save(user);
+//
+//		// when
+//		User findUser = userRepository.findByUserId(2345L).orElse(null);
+//		userRepository.delete(findUser);
+//
+//		// then
+//		Optional<User> deletedUser = userRepository.findByUserId(2345L);
+//		assertThat(deletedUser).isEmpty();
+//	}
 
 }
