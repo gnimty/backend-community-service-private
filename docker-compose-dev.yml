@@ -1,6 +1,5 @@
 version: '3'
 services:
-
   community-web-dev:
     image: kariskan/gnimty-community-server:latest
     container_name: community-server
@@ -38,6 +37,8 @@ services:
   community-mongo-dev:
     image: mongo:6.0.4
     container_name: gnimty-community-mongo-main
+    volumes:
+      - ./dev-mongo-data:/data/db
     ports:
       - "37017:27017"
     env_file:
