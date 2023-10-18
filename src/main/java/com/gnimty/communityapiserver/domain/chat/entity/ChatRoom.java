@@ -1,35 +1,42 @@
 package com.gnimty.communityapiserver.domain.chat.entity;
 
-import java.util.ArrayList;
-import java.util.List;
+
+
 
 import lombok.Getter;
 import lombok.NoArgsConstructor;
-import org.bson.types.ObjectId;
+
+
+import lombok.*;
+
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
+import java.util.Date;
+import java.util.Set;
 
-@NoArgsConstructor
 @Document(collection = "chatRoom")
 @Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
+@ToString
 public class ChatRoom {
-
-	@Field(name = "_id")
 	@Id
-	private ObjectId id;
-	private List<Chat> chats;
+	private String id;
+	private Long chatRoomNo;
+	private Set<Participant> participants;
+	private Date createdDate;
 
-	private List<ChatUser> chatUsers;
-
-
-	public ChatRoom(List<ChatUser> chatUsers) {
-		this.chats = new ArrayList<>();
-		this.chatUsers = chatUsers;
-	}
-
-	public void addChat(Chat chat) {
-		this.chats.add(chat);
+	@Getter
+	@Setter
+	@AllArgsConstructor
+	@ToString
+	public static class Participant{
+		@DBRef
+		private User user;
+		private Date exitDate;
+		private Status status = Status.UNBLOCK;
 	}
 }

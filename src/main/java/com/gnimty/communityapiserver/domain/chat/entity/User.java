@@ -1,31 +1,28 @@
 package com.gnimty.communityapiserver.domain.chat.entity;
 
-import com.gnimty.communityapiserver.global.constant.Status;
-import lombok.AllArgsConstructor;
-import lombok.Getter;
-import lombok.NoArgsConstructor;
-import org.springframework.data.annotation.Id;
+
+import lombok.*;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-import org.springframework.data.mongodb.core.mapping.Field;
 
-@Getter
+import javax.persistence.Id;
+
 @Document(collection = "user")
-@NoArgsConstructor
+@Getter
+@Setter
 @AllArgsConstructor
+@NoArgsConstructor
+@ToString
 public class User {
-
 	@Id
-	@Field(name = "_id")
-	private Long userId;
-	private String nickname;
-	private Status status;
+	private String id;
 
-	public User(Long userId) {
-		this.userId = userId;
-	}
+	@Indexed(unique=true)
+	private Long actualUserId;
 
-	public void updateUser(String nickname, Status status) {
-		this.nickname = nickname;
-		this.status = status;
-	}
+	private Long profileIconId;
+	private String tier;
+	private Integer division;
+	private String summonerName;
+	private String status = "ON";
 }

@@ -2,6 +2,15 @@
 # Edit at https://www.toptal.com/developers/gitignore?templates=java,gradle,intellij+all,git
 *.env
 
+# test yaml
+application-test.yml
+
+# dev mounting directory
+**/dev-data/
+**/dev-logs/
+**/dev-redis/
+**/dev-redis-conf/
+
 ### Git ###
 # Created by git for backups. To disable backups in Git:
 # $ git config --global mergetool.keepBackup false

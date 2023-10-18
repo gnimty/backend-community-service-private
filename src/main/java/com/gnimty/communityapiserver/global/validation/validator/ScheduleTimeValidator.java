@@ -9,13 +9,11 @@ import javax.validation.ConstraintValidatorContext;
 
 public class ScheduleTimeValidator implements ConstraintValidator<BeforeEndTime, Object> {
 
-	private String message;
 	private String startTime;
 	private String endTime;
 
 	@Override
 	public void initialize(BeforeEndTime constraintAnnotation) {
-		message = constraintAnnotation.message();
 		startTime = constraintAnnotation.startTime();
 		endTime = constraintAnnotation.endTime();
 	}
