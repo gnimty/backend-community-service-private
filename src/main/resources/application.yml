@@ -44,13 +44,13 @@ spring:
           protocol: smtp
   data:
     mongodb:
-      authenticationDatabase: ${MONGO_ADMIN_DB}
       username: ${MONGO_USERNAME}
       password: ${MONGO_PASSWORD}
       database: ${MONGO_DATABASE}
       host: ${MONGO_HOST}
       port: ${MONGO_PORT}
       timeZone: Asia/Seoul
+      authentication-database: ${MONGO_ADMIN_DB}
 ---
 spring:
   config:
