@@ -37,14 +37,12 @@ public class ChatController {
         return chatRoomInfos;
     }
 
-//    @MessageMapping("/user/{other_id}")
-//    public void userSub() {
-//        // service
-//            // 채팅방 id를 얻어옴
-//            // 구독 요청을 보내야함
-//        template.
-//
-//    }
+    @MessageMapping("/user/{otherUser_id}")
+    public void userSub() {
+
+        template.convertAndSend();
+
+    }
 
 
 }

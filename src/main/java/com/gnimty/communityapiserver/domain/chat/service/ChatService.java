@@ -13,11 +13,7 @@ import org.springframework.stereotype.Service;
 @Slf4j
 public class ChatService {
 
-    private final ChatRoomRepository chatRoomRepository;
-    private final JwtProvider jwtProvider;
-
-
-
+//    private final ChatRoomRepository chatRoomRepository;
     public List<ChatRoomInfo> getTotalChats() {
         return null;
     }
