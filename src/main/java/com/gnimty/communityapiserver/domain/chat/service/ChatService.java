@@ -1,8 +1,6 @@
 package com.gnimty.communityapiserver.domain.chat.service;
 
-import com.gnimty.communityapiserver.domain.chat.repository.ChatRepository;
 import com.gnimty.communityapiserver.domain.chat.repository.ChatRoomRepository;
-import com.gnimty.communityapiserver.domain.chat.repository.UserRepository;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.stereotype.Service;
@@ -13,9 +11,23 @@ import org.springframework.stereotype.Service;
 public class ChatService {
 
 	private final ChatRoomRepository chatRoomRepository;
-	private final ChatRepository chatRepository;
-	private final UserRepository userRepository;
+    public List<ChatRoomInfo> getTotalChats() {
+        return null;
+    }
 
+    public Long getChatRoomId(Long otherUserId) {
+        Long chatRoomId = 1L;
+        return chatRoomId;
+    }
 
+    public boolean isBlock(Long otherUserId) {
+        // 로직
+
+        return false; // 삭제 예정
+    }
+
+    public void exitChatRoom(Long chatRoomId) {
+        // 채팅방 나감 처리
+    }
 
 }
