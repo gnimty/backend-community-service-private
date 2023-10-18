@@ -1,6 +1,7 @@
 package com.gnimty.communityapiserver.global.handler;
 
 import com.gnimty.communityapiserver.global.auth.JwtProvider;
+
 import lombok.RequiredArgsConstructor;
 import org.springframework.core.Ordered;
 import org.springframework.core.annotation.Order;
