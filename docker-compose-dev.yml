@@ -1,8 +1,7 @@
 version: '3'
 services:
   community-web-dev:
-#    image: kariskan/gnimty-community-server:latest
-    build: .
+    image: kariskan/gnimty-community-server:latest
     container_name: community-server
     depends_on:
       - community-mongo-dev
