@@ -1,16 +1,25 @@
 package com.gnimty.communityapiserver.domain.chat.entity;
 
-import java.time.LocalDateTime;
+import lombok.AllArgsConstructor;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.mapping.Document;
 
+import java.util.Date;
+
+@Document("chat")
+@Getter
+@Setter
+@AllArgsConstructor
+@NoArgsConstructor
 public class Chat {
-
-	private Long userId;
+	@Id
+	private String id;
+	private Long chatRoomNo;
+	private String senderId;
 	private String message;
-	private LocalDateTime timeSend;
-
-	public Chat(Long userId, String message, LocalDateTime timeSend) {
-		this.userId = userId;
-		this.message = message;
-		this.timeSend = timeSend;
-	}
+	private Date sendDate;
+	private Integer readCnt;
 }
