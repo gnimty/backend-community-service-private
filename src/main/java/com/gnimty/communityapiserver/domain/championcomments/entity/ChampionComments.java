@@ -127,4 +127,12 @@ public class ChampionComments extends BaseEntity {
 	public void updateCommentsType(CommentsType commentsType) {
 		this.commentsType = commentsType;
 	}
+
+	public void increaseUpCount() {
+		this.upCount++;
+	}
+
+	public void increaseDownCount() {
+		this.downCount++;
+	}
 }
