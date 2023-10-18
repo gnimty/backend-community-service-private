@@ -46,22 +46,15 @@ public class MongoDBConfiguration extends AbstractMongoClientConfiguration {
             .createCredential(mongoProperties.getUsername(),
                 mongoProperties.getAuthenticationDatabase(), mongoProperties.getPassword());
 
-        // profile에 따라 MongoClient 생성 시 credential을 넣을지 말지 결정
-        if (profile == "local" || profile == "dev") {
-            return MongoClients.create(MongoClientSettings.builder()
-                .applyToClusterSettings(builder -> builder
-                    .hosts(singletonList(
-                        new ServerAddress(mongoProperties.getHost(), mongoProperties.getPort()))))
-                .credential(credential)
-                .build());
-        } else {
-            return MongoClients.create(MongoClientSettings.builder()
-                .applyToClusterSettings(builder -> builder
-                    .hosts(singletonList(
-                        new ServerAddress(mongoProperties.getHost(), mongoProperties.getPort()))))
-                .build());
-        }
+        return MongoClients.create(MongoClientSettings.builder()
+            .applyToClusterSettings(builder -> builder
+                .hosts(singletonList(
+                    new ServerAddress(mongoProperties.getHost(), mongoProperties.getPort()))))
+            .credential(credential)
+            .build());
     }
+
+
 
     @Bean
     public MongoTemplate mongoTemplate(MongoProperties mongoProperties, MongoClient mongoClient) {

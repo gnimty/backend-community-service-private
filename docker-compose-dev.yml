@@ -58,7 +58,3 @@ services:
       - "mode=standalone"
     restart: on-failure
     command: redis-server /usr/local/conf/redis.conf
-
-networks:
-  our_net:
-    driver: bridge
