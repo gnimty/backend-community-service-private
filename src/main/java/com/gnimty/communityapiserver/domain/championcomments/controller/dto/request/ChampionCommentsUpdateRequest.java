@@ -5,7 +5,6 @@ import static com.gnimty.communityapiserver.global.exception.ErrorCode.ErrorMess
 import com.gnimty.communityapiserver.domain.championcomments.service.dto.request.ChampionCommentsUpdateServiceRequest;
 import com.gnimty.communityapiserver.global.constant.CommentsType;
 import com.gnimty.communityapiserver.global.constant.Lane;
-import com.gnimty.communityapiserver.global.validation.annotation.ValidEnum;
 import javax.validation.constraints.NotNull;
 import javax.validation.constraints.Size;
 import lombok.Getter;
@@ -13,14 +12,12 @@ import lombok.Getter;
 @Getter
 public class ChampionCommentsUpdateRequest {
 
-	@ValidEnum(enumClass = Lane.class)
 	private Lane lane;
 	private Long opponentChampionId;
 	private Long mentionedMemberId;
 	@NotNull
 	@Size(max = 1000)
 	private String contents;
-	@ValidEnum(enumClass = CommentsType.class)
 	@NotNull(message = INVALID_INPUT_VALUE)
 	private CommentsType commentsType;
 

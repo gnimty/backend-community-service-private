@@ -2,7 +2,7 @@ name: gnimty-community-server-dev-deploy
 
 on:
   push:
-    branches: dev
+    branches: [ dev, hotfix ]
 
 jobs:
   build:
