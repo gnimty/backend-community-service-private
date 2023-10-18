@@ -1,7 +1,9 @@
 package com.gnimty.communityapiserver.domain.chat.entity;
 
+import java.util.List;
 import lombok.*;
 import org.springframework.data.annotation.Id;
+import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
@@ -14,11 +16,14 @@ import java.util.Set;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@EqualsAndHashCode(exclude = "_id")
 public class ChatRoom {
 	@Id
 	private String id;
+
+	@Indexed(unique=true)
 	private Long chatRoomNo;
-	private Set<Participant> participants;
+	private List<Participant> participants;
 	private Date createdDate;
 
 	@Getter
