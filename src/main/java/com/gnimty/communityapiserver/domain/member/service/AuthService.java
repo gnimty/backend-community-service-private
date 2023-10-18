@@ -10,6 +10,7 @@ import com.gnimty.communityapiserver.domain.member.service.dto.request.OauthLogi
 import com.gnimty.communityapiserver.domain.member.service.dto.request.SignupServiceRequest;
 import com.gnimty.communityapiserver.domain.member.service.utils.GoogleOauthUtil;
 import com.gnimty.communityapiserver.domain.member.service.utils.KakaoOauthUtil;
+import com.gnimty.communityapiserver.domain.member.service.utils.MailSenderUtil;
 import com.gnimty.communityapiserver.domain.oauthinfo.entity.OauthInfo;
 import com.gnimty.communityapiserver.domain.oauthinfo.repository.OauthInfoRepository;
 import com.gnimty.communityapiserver.global.auth.JwtProvider;
@@ -24,9 +25,6 @@ import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -45,7 +43,7 @@ public class AuthService {
 	private final StringRedisTemplate redisTemplate;
 	private final KakaoOauthUtil kakaoOauthUtil;
 	private final GoogleOauthUtil googleOauthUtil;
-	private final JavaMailSender mailSender;
+	private final MailSenderUtil mailSenderUtil;
 
 	public void signup(SignupServiceRequest request) {
 		memberReadService.throwIfExistByEmail(request.getEmail());
@@ -112,18 +110,12 @@ public class AuthService {
 
 	@Async("mailExecutor")
 	public void sendEmailAuthCode(EmailAuthServiceRequest request) {
-		String subject = "인증 코드 전송 메일";
-		String code = RandomCodeGenerator.generateCodeByLength(6);
-		sendMail(request.getEmail(), subject, code);
 
-		ValueOperations<String, String> stringValueOperations = redisTemplate.opsForValue();
+		String code = RandomCodeGenerator.generateCodeByLength(6);
+		mailSenderUtil.sendEmail(Auth.EMAIL_SUBJECT.getContent(), request.getEmail(), code,
+			"signup-mail", "static/images/banner-pengu.png");
 		String key = getRedisKey(KeyPrefix.EMAIL, request.getEmail());
-		stringValueOperations.set(key, code);
-		stringValueOperations.getAndExpire(
-			key,
-			Auth.EMAIL_CODE_EXPIRATION.getExpiration(),
-			TimeUnit.MILLISECONDS
-		);
+		saveInRedis(key, code, Auth.EMAIL_CODE_EXPIRATION.getExpiration());
 	}
 
 	public void verifyEmailAuthCode(EmailVerifyServiceRequest request) {
@@ -161,17 +153,6 @@ public class AuthService {
 		if (savedToken == null || !savedToken.equals(refreshToken)) {
 			throw new BaseException(ErrorCode.TOKEN_INVALID);
 		}
-	}
-
-	private void sendMail(String to, String subject, String body) {
-		MimeMessagePreparator messagePreparator =
-			mimeMessage -> {
-				final MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-				helper.setTo(to);
-				helper.setSubject(subject);
-				helper.setText(body, true);
-			};
-		mailSender.send(messagePreparator);
 	}
 
 	private Member createMemberByEmail(String userEmail, Provider provider) {

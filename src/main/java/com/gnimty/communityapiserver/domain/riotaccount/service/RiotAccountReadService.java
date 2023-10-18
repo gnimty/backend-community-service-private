@@ -8,6 +8,7 @@ import com.gnimty.communityapiserver.domain.riotaccount.repository.RiotAccountRe
 import com.gnimty.communityapiserver.domain.riotaccount.service.dto.request.RecommendedSummonersServiceRequest;
 import com.gnimty.communityapiserver.domain.riotaccount.service.dto.response.RecommendedSummonersServiceResponse;
 import com.gnimty.communityapiserver.domain.schedule.entity.Schedule;
+import com.gnimty.communityapiserver.global.constant.GameMode;
 import com.gnimty.communityapiserver.global.exception.BaseException;
 import com.gnimty.communityapiserver.global.exception.ErrorCode;
 import java.util.List;
@@ -67,6 +68,14 @@ public class RiotAccountReadService {
 			.getContent();
 		return RecommendedSummonersServiceResponse.builder()
 			.recommendedSummoners(content)
+			.build();
+	}
+
+	public RecommendedSummonersServiceResponse getMainSummoners(Member member, GameMode gameMode) {
+		List<RecommendedSummonersEntry> result = riotAccountQueryRepository.findMainSummonersByMember(
+			member, gameMode);
+		return RecommendedSummonersServiceResponse.builder()
+			.recommendedSummoners(result)
 			.build();
 	}
 }

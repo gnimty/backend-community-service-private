@@ -1,6 +1,8 @@
 package com.gnimty.communityapiserver.global.constant;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.gnimty.communityapiserver.global.exception.BaseException;
+import com.gnimty.communityapiserver.global.exception.ErrorCode;
 import java.util.stream.Stream;
 import lombok.Getter;
 
@@ -13,15 +15,15 @@ public enum Status {
 
 	private final String status;
 
-	Status(String stats) {
-		this.status = stats;
+	Status(String status) {
+		this.status = status;
 	}
 
 	@JsonCreator(mode = JsonCreator.Mode.DELEGATING)
-	public static Status findByCode(String input) {
+	public static Status findByInput(String input) {
 		return Stream.of(Status.values())
 			.filter(c -> c.name().equals(input))
 			.findFirst()
-			.orElse(null);
+			.orElseThrow(() -> new BaseException(ErrorCode.INVALID_ENUM_VALUE));
 	}
 }

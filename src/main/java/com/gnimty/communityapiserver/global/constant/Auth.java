@@ -18,7 +18,8 @@ public enum Auth {
 	SUBJECT_ACCESS_TOKEN("accessToken"),
 	SUBJECT_REFRESH_TOKEN("refreshToken"),
 	BEARER("Bearer "),
-	AUTHORIZATION("Authorization");
+	AUTHORIZATION("Authorization"),
+	EMAIL_SUBJECT("gnimty : 이메일 인증번호 안내");
 
 	private long expiration;
 	private String content;

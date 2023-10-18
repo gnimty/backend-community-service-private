@@ -1,6 +1,8 @@
 package com.gnimty.communityapiserver.global.constant;
 
 import com.fasterxml.jackson.annotation.JsonCreator;
+import com.gnimty.communityapiserver.global.exception.BaseException;
+import com.gnimty.communityapiserver.global.exception.ErrorCode;
 import java.util.stream.Stream;
 import lombok.Getter;
 
@@ -16,11 +18,10 @@ public enum DayOfWeek {
 	SATURDAY;
 
 	@JsonCreator(mode = JsonCreator.Mode.DELEGATING)
-	public static DayOfWeek findByCode(String input) {
+	public static DayOfWeek findByInput(String input) {
 		return Stream.of(DayOfWeek.values())
 			.filter(c -> c.name().equals(input))
 			.findFirst()
-			.orElse(null);
+			.orElseThrow(() -> new BaseException(ErrorCode.INVALID_ENUM_VALUE));
 	}
-
 }

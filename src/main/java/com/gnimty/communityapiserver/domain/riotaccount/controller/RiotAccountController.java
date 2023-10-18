@@ -8,6 +8,7 @@ import com.gnimty.communityapiserver.domain.riotaccount.controller.dto.request.R
 import com.gnimty.communityapiserver.domain.riotaccount.controller.dto.response.RecommendedSummonersResponse;
 import com.gnimty.communityapiserver.domain.riotaccount.service.RiotAccountService;
 import com.gnimty.communityapiserver.domain.riotaccount.service.dto.response.RecommendedSummonersServiceResponse;
+import com.gnimty.communityapiserver.global.constant.GameMode;
 import com.gnimty.communityapiserver.global.response.CommonResponse;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.ModelAttribute;
 import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
@@ -39,6 +41,15 @@ public class RiotAccountController {
 	) {
 		RecommendedSummonersServiceResponse response = riotAccountService.getRecommendedSummoners(
 			request.toServiceRequest());
+		return CommonResponse.success(RecommendedSummonersResponse.from(response));
+	}
+
+	@GetMapping("/main")
+	public CommonResponse<RecommendedSummonersResponse> getMainSummoners(
+		@RequestParam("game-mode") GameMode gameMode
+	) {
+		RecommendedSummonersServiceResponse response = riotAccountService.getMainSummoners(
+			gameMode);
 		return CommonResponse.success(RecommendedSummonersResponse.from(response));
 	}
 }

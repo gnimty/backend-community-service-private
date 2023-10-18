@@ -6,7 +6,6 @@ import com.gnimty.communityapiserver.domain.championcomments.service.dto.request
 import com.gnimty.communityapiserver.global.constant.CommentsType;
 import com.gnimty.communityapiserver.global.constant.Lane;
 import com.gnimty.communityapiserver.global.validation.annotation.IsChildComments;
-import com.gnimty.communityapiserver.global.validation.annotation.ValidEnum;
 import javax.validation.constraints.Max;
 import javax.validation.constraints.Min;
 import javax.validation.constraints.NotNull;
@@ -17,7 +16,6 @@ import lombok.Getter;
 @IsChildComments(parentChampionCommentsId = "parentChampionCommentsId", depth = "depth")
 public class ChampionCommentsRequest {
 
-	@ValidEnum(enumClass = Lane.class)
 	private Lane lane;
 	private Long opponentChampionId;
 	@NotNull(message = INVALID_INPUT_VALUE)
@@ -28,7 +26,6 @@ public class ChampionCommentsRequest {
 	@NotNull
 	@Size(max = 1000)
 	private String contents;
-	@ValidEnum(enumClass = CommentsType.class)
 	@NotNull(message = INVALID_INPUT_VALUE)
 	private CommentsType commentsType;
 	private Long parentChampionCommentsId;
