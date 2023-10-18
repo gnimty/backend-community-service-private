@@ -36,7 +36,7 @@ public class ChatController {
 
     // 채팅방 구독 유도
     @MessageMapping("/user/{otherUserId}")
-    public void userSub(@DestinationVariable("otherUserId") Long otherUserId) {
+    public void createChatRoomAndDerive(@DestinationVariable("otherUserId") Long otherUserId) {
 
         Long chatRoomId = chatService.getChatRoomId(otherUserId);
 
