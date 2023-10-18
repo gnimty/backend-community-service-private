@@ -42,10 +42,16 @@ spring:
         debug: true
         transport:
           protocol: smtp
-
-  thymeleaf:
-    mode: HTML5
-    cache: false
+  data:
+    mongodb:
+      uri: ${MONGO_URI}
+      authenticationDatabase: ${MONGO_ADMIN_DB}
+      username: ${MONGO_USERNAME}
+      password: ${MONGO_PASSWORD}
+      database: ${MONGO_DATABASE}
+      host: ${MONGO_HOST}
+      port: ${MONGO_PORT}
+      timeZone: Asia/Seoul
 ---
 spring:
   config:
@@ -54,9 +60,9 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: root
-    password: ${MYSQL_LOCAL_PASSWORD}
-    jdbc-url: jdbc:mysql://localhost:3306/community
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+    jdbc-url: ${MYSQL_HOST}
     hikari:
       max-lifetime: 60000
       connection-timeout: 30000
@@ -68,14 +74,6 @@ spring:
       hibernate:
         hbm2ddl:
           auto: create-drop
-
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/community?retryWrites=false
-      authentication-database: admin
-      username: ${MONGODB_LOCAL_USERNAME}
-      password: ${MONGODB_LOCAL_PASSWORD}
-
 
 oauth:
   kakao:
@@ -108,9 +106,10 @@ spring:
         dialect: org.hibernate.dialect.MySQL5InnoDBDialect
     defer-datasource-initialization: true
 
-  mongodb:
-    embedded:
-      version: 3.5.5
+#  다시 세팅할 예정
+#  mongodb:
+#    embedded:
+#      version: 3.5.5
 
 logging:
   level:
@@ -134,7 +133,7 @@ spring:
     properties:
       hibernate:
         hbm2ddl:
-          auto: create-drop
+          auto: update
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${MYSQL_USERNAME}
@@ -144,14 +143,6 @@ spring:
       connection-timeout: 30000
       maximum-pool-size: 10
     jdbc-url: ${MYSQL_HOST}
-
-  data:
-    mongodb:
-      uri: ${MONGO_HOST}
-      port: ${MONGO_PORT}
-      username: ${MONGO_USERNAME}
-      password: ${MONGO_PASSWORD}
-      authentication-database: admin
 
   redis:
     host: ${REDIS_HOST}
