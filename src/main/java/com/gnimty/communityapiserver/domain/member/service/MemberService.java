@@ -26,6 +26,7 @@ import com.gnimty.communityapiserver.domain.member.service.dto.response.RiotAcco
 import com.gnimty.communityapiserver.domain.member.service.dto.response.RiotDependentInfo;
 import com.gnimty.communityapiserver.domain.member.service.utils.GoogleOauthUtil;
 import com.gnimty.communityapiserver.domain.member.service.utils.KakaoOauthUtil;
+import com.gnimty.communityapiserver.domain.member.service.utils.MailSenderUtil;
 import com.gnimty.communityapiserver.domain.member.service.utils.RiotOauthUtil;
 import com.gnimty.communityapiserver.domain.memberlike.entity.MemberLike;
 import com.gnimty.communityapiserver.domain.memberlike.repository.MemberLikeRepository;
@@ -59,9 +60,6 @@ import java.util.concurrent.TimeUnit;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.data.redis.core.ValueOperations;
-import org.springframework.mail.javamail.JavaMailSender;
-import org.springframework.mail.javamail.MimeMessageHelper;
-import org.springframework.mail.javamail.MimeMessagePreparator;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
@@ -85,7 +83,6 @@ public class MemberService {
 	private final IntroductionRepository introductionRepository;
 	private final MemberRepository memberRepository;
 	private final StringRedisTemplate redisTemplate;
-	private final JavaMailSender mailSender;
 	private final PasswordEncoder passwordEncoder;
 	private final PreferGameModeRepository preferGameModeRepository;
 	private final MemberReadService memberReadService;
@@ -93,6 +90,7 @@ public class MemberService {
 	private final MemberLikeReadService memberLikeReadService;
 	private final BlockRepository blockRepository;
 	private final ScheduleRepository scheduleRepository;
+	private final MailSenderUtil mailSenderUtil;
 
 	public void summonerAccountLink(OauthLoginServiceRequest request) {
 		Member member = MemberThreadLocal.get();
@@ -175,18 +173,11 @@ public class MemberService {
 		if (member.getEmail() == null) {
 			throw new BaseException(ErrorCode.NOT_LOGIN_BY_FORM);
 		}
-		String subject = "인증 코드 전송 메일";
 		String code = RandomCodeGenerator.generateCodeByLength(6);
-		sendMail(member.getEmail(), subject, code);
-
-		ValueOperations<String, String> stringValueOperations = redisTemplate.opsForValue();
+		mailSenderUtil.sendEmail(Auth.EMAIL_SUBJECT.getContent(), member.getEmail(), code,
+			"password-mail", "static/images/banner-urf.png");
 		String key = getRedisKey(PASSWORD, String.valueOf(member.getId()));
-		stringValueOperations.set(key, code);
-		stringValueOperations.getAndExpire(
-			key,
-			Auth.EMAIL_CODE_EXPIRATION.getExpiration(),
-			TimeUnit.MILLISECONDS
-		);
+		saveInRedis(key, code, Auth.EMAIL_CODE_EXPIRATION.getExpiration());
 	}
 
 	public void verifyEmailAuthCode(PasswordEmailVerifyServiceRequest request) {
@@ -279,17 +270,6 @@ public class MemberService {
 		preferGameModeRepository.deleteAllFromMember(member.getId());
 		introductionRepository.deleteAllFromMember(member.getId());
 		memberRepository.delete(member);
-	}
-
-	private void sendMail(String to, String subject, String body) {
-		MimeMessagePreparator messagePreparator =
-			mimeMessage -> {
-				final MimeMessageHelper helper = new MimeMessageHelper(mimeMessage, true, "UTF-8");
-				helper.setTo(to);
-				helper.setSubject(subject);
-				helper.setText(body, true);
-			};
-		mailSender.send(messagePreparator);
 	}
 
 	private void updateIntroductions(List<IntroductionEntry> introductions, Member member) {
