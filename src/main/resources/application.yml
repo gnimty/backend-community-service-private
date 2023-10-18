@@ -42,16 +42,16 @@ spring:
         debug: true
         transport:
           protocol: smtp
-#  data:
-#    mongodb:
-#      uri: ${MONGO_URI}
-#      authenticationDatabase: ${MONGO_ADMIN_DB}
-#      username: ${MONGO_USERNAME}
-#      password: ${MONGO_PASSWORD}
-#      database: ${MONGO_DATABASE}
-#      host: ${MONGO_HOST}
-#      port: ${MONGO_PORT}
-#      timeZone: Asia/Seoul
+  data:
+    mongodb:
+      uri: ${MONGO_URI}
+      authenticationDatabase: ${MONGO_ADMIN_DB}
+      username: ${MONGO_USERNAME}
+      password: ${MONGO_PASSWORD}
+      database: ${MONGO_DATABASE}
+      host: ${MONGO_HOST}
+      port: ${MONGO_PORT}
+      timeZone: Asia/Seoul
 ---
 spring:
   config:
@@ -60,9 +60,9 @@ spring:
 
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
-    username: ${MYSQL_LOCAL_USERNAME}
-    password: ${MYSQL_LOCAL_PASSWORD}
-    jdbc-url: ${MYSQL_LOCAL_HOST}
+    username: ${MYSQL_USERNAME}
+    password: ${MYSQL_PASSWORD}
+    jdbc-url: ${MYSQL_HOST}
     hikari:
       max-lifetime: 60000
       connection-timeout: 30000
@@ -72,13 +72,6 @@ spring:
     database: mysql   # 추가 해준 부분
     hibernate:
       ddl-auto: create-drop
-
-  data:
-    mongodb:
-      uri: mongodb://localhost:27017/community?retryWrites=false
-      authentication-database: admin
-      username: ${MONGODB_LOCAL_USERNAME}
-      password: ${MONGODB_LOCAL_PASSWORD}
 
 oauth:
   kakao:
