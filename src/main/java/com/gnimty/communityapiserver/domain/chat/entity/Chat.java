@@ -1,6 +1,7 @@
 package com.gnimty.communityapiserver.domain.chat.entity;
 
 import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
@@ -14,11 +15,12 @@ import java.util.Date;
 @Setter
 @AllArgsConstructor
 @NoArgsConstructor
+@EqualsAndHashCode(exclude = "_id")
 public class Chat {
 	@Id
 	private String id;
 	private Long chatRoomNo;
-	private String senderId;
+	private Long senderId;
 	private String message;
 	private Date sendDate;
 	private Integer readCnt;

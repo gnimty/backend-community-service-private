@@ -13,6 +13,7 @@ import javax.persistence.Id;
 @AllArgsConstructor
 @NoArgsConstructor
 @ToString
+@EqualsAndHashCode(exclude = "_id")
 public class User {
 	@Id
 	private String id;
@@ -24,5 +25,5 @@ public class User {
 	private String tier;
 	private Integer division;
 	private String summonerName;
-	private String status = "ON";
+	private Status status;
 }

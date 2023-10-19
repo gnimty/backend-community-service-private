@@ -2,6 +2,7 @@ package com.gnimty.communityapiserver.domain.chat.entity;
 
 
 public enum Status {
-    UNBLOCK,
-    BLOCK
+    ONLINE,
+    OFFLINE,
+    AWAY // 자리비움
 }
