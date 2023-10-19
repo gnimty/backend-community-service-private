@@ -5,11 +5,11 @@ import java.util.Optional;
 import org.springframework.data.mongodb.repository.MongoRepository;
 
 public interface ChatRoomRepository extends MongoRepository<ChatRoom, String>,
-    ChatRoomRepositoryCustom {
+	ChatRoomRepositoryCustom {
 
-    Optional<ChatRoom> findByChatRoomNo(Long chatRoomNo);
+	Optional<ChatRoom> findByChatRoomNo(Long chatRoomNo);
 
-    ChatRoom findFirstByOrderByChatRoomNoDesc();
+	ChatRoom findFirstByOrderByChatRoomNoDesc();
 
-    void deleteByChatRoomNo();
+	void deleteByChatRoomNo();
 }

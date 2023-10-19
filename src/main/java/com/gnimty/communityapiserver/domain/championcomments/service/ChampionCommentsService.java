@@ -1,6 +1,7 @@
 package com.gnimty.communityapiserver.domain.championcomments.service;
 
 import static com.gnimty.communityapiserver.global.exception.ErrorCode.COMMENTS_ID_AND_CHAMPION_ID_INVALID;
+import static com.gnimty.communityapiserver.global.exception.ErrorCode.NO_PERMISSION;
 
 import com.gnimty.communityapiserver.domain.championcomments.entity.ChampionComments;
 import com.gnimty.communityapiserver.domain.championcomments.repository.ChampionCommentsRepository;
@@ -106,7 +107,11 @@ public class ChampionCommentsService {
 		Long commentsId,
 		ChampionCommentsUpdateServiceRequest request
 	) {
+		Member member = MemberThreadLocal.get();
 		ChampionComments championComments = championCommentsReadService.findById(commentsId);
+		if (!Objects.equals(championComments.getMember().getId(), member.getId())) {
+			throw new BaseException(NO_PERMISSION);
+		}
 		if (!Objects.equals(championComments.getChampionId(), championId)) {
 			throw new BaseException(COMMENTS_ID_AND_CHAMPION_ID_INVALID);
 		}
@@ -119,7 +124,11 @@ public class ChampionCommentsService {
 	}
 
 	public void deleteComments(Long championId, Long commentsId) {
+		Member member = MemberThreadLocal.get();
 		ChampionComments championComments = championCommentsReadService.findById(commentsId);
+		if (!Objects.equals(championComments.getMember().getId(), member.getId())) {
+			throw new BaseException(NO_PERMISSION);
+		}
 		if (!Objects.equals(championComments.getChampionId(), championId)) {
 			throw new BaseException(COMMENTS_ID_AND_CHAMPION_ID_INVALID);
 		}

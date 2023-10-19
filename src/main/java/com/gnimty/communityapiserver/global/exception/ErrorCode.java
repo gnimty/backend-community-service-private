@@ -59,6 +59,7 @@ public enum ErrorCode {
 	NOT_FOUND_CHAT_USER(BAD_REQUEST, ErrorMessage.NOT_FOUND_CHAT_USER),
 	COMMENTS_ID_AND_CHAMPION_ID_INVALID(BAD_REQUEST,
 		ErrorMessage.COMMENTS_ID_AND_CHAMPION_ID_INVALID),
+	ALREADY_CHAMPION_COMMENTS_LIKE(CONFLICT, ErrorMessage.ALREADY_CHAMPION_COMMENTS_LIKE),
 
 	// server
 	INTERNAL_SERVER_ERROR(HttpStatus.INTERNAL_SERVER_ERROR, "Server Error");
@@ -78,7 +79,7 @@ public enum ErrorCode {
 
 		public static final String INVALID_INPUT_VALUE = "입력값 중 검증에 실패한 값이 있습니다.";
 		public static final String AGREE_TERMS_MUST_BE_TRUE = "약관 동의 항목은 반드시 true여야 합니다.";
-			public static final String MEMBER_NOT_FOUND = "요청에 해당하는 회원을 찾을 수 없습니다.";
+		public static final String MEMBER_NOT_FOUND = "요청에 해당하는 회원을 찾을 수 없습니다.";
 		public static final String TOKEN_EXPIRED = "만료된 token 입니다.";
 		public static final String TOKEN_INVALID = "유효하지 않은 token 입니다.";
 		public static final String INVALID_LOGIN = "올바르지 않은 로그인 정보입니다.";
@@ -115,7 +116,7 @@ public enum ErrorCode {
 		public static final String PARENT_COMMENTS_DEPTH_MUST_BE_ONE = "부모 댓글은 depth를 가질 수 없습니다.";
 		public static final String COMMENTS_ID_AND_CHAMPION_ID_INVALID = "commentsId와 championId가 일치하지 않습니다.";
 		public static final String CHATROOM_ALREADY_EXISTS = "해당 채팅방이 이미 존재합니다.";
-
 		public static final String NOT_FOUND_CHAT_USER = "유저 정보를 찾을 수 없습니다. 존재하지 않는 userId이거나 Riot Account에 연동되지 않은 유저입니다.";
+		public static final String ALREADY_CHAMPION_COMMENTS_LIKE = "이미 좋아요 또는 싫어요를 한 댓글입니다.";
 	}
 }

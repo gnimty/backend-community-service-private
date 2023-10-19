@@ -72,7 +72,7 @@ spring:
       port: ${MONGO_PORT}
       timeZone: Asia/Seoul
       auto-index-creation: true
-  
+
 oauth:
   kakao:
     redirect_uri: http://localhost:8080/community/oauth/kakao/redirect
