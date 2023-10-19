@@ -60,7 +60,7 @@ public class ChampionCommentsQueryRepository {
 
 	private BooleanExpression selectBlocked(Member me) {
 		if (me == null) {
-			return championComments.deleted.isNotNull().as("blocked");
+			return championComments.deleted.isNull().as("blocked");
 		}
 		return block.blocker.eq(me).as("blocked");
 	}
