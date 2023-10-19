@@ -50,11 +50,11 @@ public class ChatController {
         // chatRoom을 먼저 생성 또는 조회 후 그 정보를 그대로 보내주거나 DTO로 변환해서 보내주는 게 좋아 보임
 
         Long myUserId = 2L; // 자신의 id (삭제 예정)
-        template.convertAndSend("/sub/user/" + myUserId, chatRoom);
+        template.convertAndSend("/sub/user/" + myUserId, chatRoom.getChatRoomNo());
 
         if (!chatService.isBlock(chatRoom, other)) //
         {
-            template.convertAndSend("/sub/user/" + otherUserId, chatRoom);
+            template.convertAndSend("/sub/user/" + otherUserId, chatRoom.getChatRoomNo());
         }
     }
 
