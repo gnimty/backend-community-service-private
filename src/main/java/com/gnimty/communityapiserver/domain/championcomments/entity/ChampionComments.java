@@ -109,14 +109,23 @@ public class ChampionComments extends BaseEntity {
 	}
 
 	public void updateLane(Lane lane) {
+		if (lane == null) {
+			return;
+		}
 		this.lane = lane;
 	}
 
 	public void updateOpponentChampionId(Long opponentChampionId) {
+		if (opponentChampionId == null) {
+			return;
+		}
 		this.opponentChampionId = opponentChampionId;
 	}
 
 	public void updateMentionedMemberId(Long mentionedMemberId) {
+		if (mentionedMemberId == null) {
+			return;
+		}
 		this.mentionedMemberId = mentionedMemberId;
 	}
 
