@@ -1,4 +1,4 @@
-package com.gnimty.communityapiserver.domain.chat.repository;
+package com.gnimty.communityapiserver.domain.chat.repository.ChatRoom;
 
 import com.gnimty.communityapiserver.domain.chat.entity.ChatRoom;
 import com.gnimty.communityapiserver.domain.chat.entity.User;
@@ -16,4 +16,5 @@ public interface ChatRoomRepositoryCustom {
 
     ChatRoom save(User user1, User user2);
 
+    void updateExitDate(User user);
 }

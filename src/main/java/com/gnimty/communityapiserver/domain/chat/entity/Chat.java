@@ -20,7 +20,7 @@ public class Chat {
 	@Id
 	private String id;
 	private Long chatRoomNo;
-	private String senderId;
+	private Long senderId;
 	private String message;
 	private Date sendDate;
 	private Integer readCnt;

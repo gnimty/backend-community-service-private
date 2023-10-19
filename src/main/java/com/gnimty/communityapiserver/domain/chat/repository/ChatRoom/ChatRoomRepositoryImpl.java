@@ -1,8 +1,7 @@
-package com.gnimty.communityapiserver.domain.chat.repository;
+package com.gnimty.communityapiserver.domain.chat.repository.ChatRoom;
 
 import com.gnimty.communityapiserver.domain.chat.entity.ChatRoom;
-import com.gnimty.communityapiserver.domain.chat.entity.ChatRoom.Participant;
-import com.gnimty.communityapiserver.domain.chat.entity.Status;
+import com.gnimty.communityapiserver.domain.chat.entity.Blocked;
 import com.gnimty.communityapiserver.domain.chat.entity.User;
 import com.gnimty.communityapiserver.global.exception.BaseException;
 import com.gnimty.communityapiserver.global.exception.ErrorCode;
@@ -11,7 +10,6 @@ import java.util.Date;
 import java.util.Optional;
 import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.beans.factory.annotation.Qualifier;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.mongodb.core.MongoTemplate;
 import org.springframework.data.mongodb.core.query.Criteria;
@@ -67,16 +65,20 @@ public class ChatRoomRepositoryImpl implements ChatRoomRepositoryCustom {
 
         // 2. chatRoom에 User Set
         List<ChatRoom.Participant> participants = new ArrayList<>();
-        participants.add(new ChatRoom.Participant(user1, null, Status.UNBLOCK));
-        participants.add(new ChatRoom.Participant(user2, null, Status.UNBLOCK));
+        participants.add(new ChatRoom.Participant(user1, null, Blocked.UNBLOCK));
+        participants.add(new ChatRoom.Participant(user2, null, Blocked.UNBLOCK));
 
-        ChatRoom chatRoom = new ChatRoom(null, chatRoomNo, participants, new Date());
+        ChatRoom chatRoom = new ChatRoom(null, chatRoomNo, participants, new Date(), new Date());
 
 
         // 3. 저장하고 리턴
         return mongoTemplate.save(chatRoom);
     }
 
+    @Override
+    public void updateExitDate(User user){
+
+    }
 
 
 

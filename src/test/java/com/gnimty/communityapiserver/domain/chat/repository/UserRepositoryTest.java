@@ -1,8 +1,12 @@
 package com.gnimty.communityapiserver.domain.chat.repository;
 
 
+import com.gnimty.communityapiserver.domain.chat.entity.Status;
 import com.gnimty.communityapiserver.domain.chat.entity.User;
 
+import com.gnimty.communityapiserver.domain.chat.repository.Chat.ChatRepository;
+import com.gnimty.communityapiserver.domain.chat.repository.ChatRoom.ChatRoomRepository;
+import com.gnimty.communityapiserver.domain.chat.repository.User.UserRepository;
 import java.util.List;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.jupiter.api.Assertions;
@@ -36,7 +40,7 @@ public class UserRepositoryTest {
 
         clear();
         // 1. 유저 한명 생성 테스트
-        User user = new User(null, 1L, 3L, "diamond", 3, "so1omon", "ON");
+        User user = new User(null, 1L, 3L, "diamond", 3, "so1omon", Status.ONLINE);
         List<User> all = userRepository.findAll();
 
         System.out.println("저장 전");
@@ -58,11 +62,13 @@ public class UserRepositoryTest {
 
         clear();
         // 1. 유저 한명 생성 테스트
-        User user1 = new User(null, 1L, 3L, "diamond", 3, "so1omon", "ON");
-        User user2 = new User(null, 1L, 3L, "diamond", 3, "so1omon", "ON");
+        User user1 = new User(null, 1L, 3L, "diamond", 3,
+            "so1omon", Status.ONLINE);
+        User user2 = new User(null, 1L, 3L, "diamond", 3,
+            "so1omon", Status.ONLINE);
 
-        Assertions.assertThrows(
-            DuplicateKeyException.class, ()->userRepository.saveAll(List.of(user1, user2)));
+        Assertions.assertThrows(DuplicateKeyException.class,
+            () -> userRepository.saveAll(List.of(user1, user2)));
     }
 
 //	@AfterEach
