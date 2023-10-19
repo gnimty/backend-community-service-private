@@ -42,16 +42,7 @@ spring:
         debug: true
         transport:
           protocol: smtp
-  data:
-    mongodb:
-      uri: ${MONGO_URI}
-      authenticationDatabase: ${MONGO_ADMIN_DB}
-      username: ${MONGO_USERNAME}
-      password: ${MONGO_PASSWORD}
-      database: ${MONGO_DATABASE}
-      host: ${MONGO_HOST}
-      port: ${MONGO_PORT}
-      timeZone: Asia/Seoul
+
 ---
 spring:
   config:
@@ -73,7 +64,14 @@ spring:
     properties:
       hibernate:
         hbm2ddl:
-          auto: create-drop
+          auto: update
+  data:
+    mongodb:
+      database: ${MONGO_DATABASE}
+      host: ${MONGO_HOST}
+      port: ${MONGO_PORT}
+      timeZone: Asia/Seoul
+      auto-index-creation: true
 
 oauth:
   kakao:
@@ -134,6 +132,7 @@ spring:
       hibernate:
         hbm2ddl:
           auto: update
+
   datasource:
     driver-class-name: com.mysql.cj.jdbc.Driver
     username: ${MYSQL_USERNAME}
@@ -143,6 +142,17 @@ spring:
       connection-timeout: 30000
       maximum-pool-size: 10
     jdbc-url: ${MYSQL_HOST}
+
+  data:
+    mongodb:
+      username: ${MONGO_USERNAME}
+      password: ${MONGO_PASSWORD}
+      database: ${MONGO_DATABASE}
+      host: ${MONGO_HOST}
+      port: ${MONGO_PORT}
+      timeZone: Asia/Seoul
+      authentication-database: ${MONGO_ADMIN_DB}
+      auto-index-creation: true
 
   redis:
     host: ${REDIS_HOST}

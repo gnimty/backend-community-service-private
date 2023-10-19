@@ -1,7 +1,7 @@
 package com.gnimty.communityapiserver.domain.championcommentslike.controller;
 
-import static com.gnimty.communityapiserver.global.constant.ResponseMessage.*;
-import static org.springframework.http.HttpStatus.*;
+import static com.gnimty.communityapiserver.global.constant.ResponseMessage.SUCCESS_CHAMPION_COMMENTS_LIKE;
+import static org.springframework.http.HttpStatus.CREATED;
 
 import com.gnimty.communityapiserver.domain.championcommentslike.controller.dto.request.ChampionCommentsLikeRequest;
 import com.gnimty.communityapiserver.domain.championcommentslike.service.ChampionCommentsLikeService;
