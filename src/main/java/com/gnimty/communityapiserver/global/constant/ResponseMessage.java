@@ -25,7 +25,8 @@ public enum ResponseMessage {
 	SUCCESS_WITHDRAWAL("성공적으로 회원탈퇴를 완료하였습니다."),
 	SUCCESS_ADD_CHAMPION_COMMENTS("성공적으로 챔피언 운용법을 작성했습니다."),
 	SUCCESS_UPDATE_CHAMPION_COMMENTS("성공적으로 챔피언 운용법을 수정했습니다."),
-	SUCCESS_DELETE_CHAMPION_COMMENTS("성공적으로 챔피언 운용법을 삭제했습니다.");
+	SUCCESS_DELETE_CHAMPION_COMMENTS("성공적으로 챔피언 운용법을 삭제했습니다."),
+	SUCCESS_CHAMPION_COMMENTS_LIKE("성공적으로 챔피언 운용법 좋아요/싫어요를 완료하였습니다.");
 
 	private final String message;
 

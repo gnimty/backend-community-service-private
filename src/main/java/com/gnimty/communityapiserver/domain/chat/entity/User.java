@@ -1,11 +1,15 @@
 package com.gnimty.communityapiserver.domain.chat.entity;
 
 
-import lombok.*;
+import javax.persistence.Id;
+import lombok.AllArgsConstructor;
+import lombok.EqualsAndHashCode;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+import lombok.ToString;
 import org.springframework.data.mongodb.core.index.Indexed;
 import org.springframework.data.mongodb.core.mapping.Document;
-
-import javax.persistence.Id;
 
 @Document(collection = "user")
 @Getter
@@ -15,10 +19,11 @@ import javax.persistence.Id;
 @ToString
 @EqualsAndHashCode(exclude = "_id")
 public class User {
+
 	@Id
 	private String id;
 
-	@Indexed(unique=true)
+	@Indexed(unique = true)
 	private Long actualUserId;
 
 	private Long profileIconId;
