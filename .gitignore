@@ -7,6 +7,7 @@ application-test.yml
 
 # dev mounting directory
 **/dev-data/
+**/dev-mongo-data/
 **/dev-logs/
 **/dev-redis/
 **/dev-redis-conf/
