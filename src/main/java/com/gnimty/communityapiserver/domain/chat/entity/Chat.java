@@ -1,5 +1,6 @@
 package com.gnimty.communityapiserver.domain.chat.entity;
 
+import java.util.Date;
 import lombok.AllArgsConstructor;
 import lombok.EqualsAndHashCode;
 import lombok.Getter;
@@ -8,8 +9,6 @@ import lombok.Setter;
 import org.springframework.data.annotation.Id;
 import org.springframework.data.mongodb.core.mapping.Document;
 
-import java.util.Date;
-
 @Document("chat")
 @Getter
 @Setter
@@ -17,6 +16,7 @@ import java.util.Date;
 @NoArgsConstructor
 @EqualsAndHashCode(exclude = "_id")
 public class Chat {
+
 	@Id
 	private String id;
 	private Long chatRoomNo;

@@ -97,23 +97,43 @@ public class RiotAccountQueryRepository {
 			.where(
 				memberStatusEq(Status.ONLINE)
 					.and(gameModeEq(gameMode))
-					.and(riotAccount.member.id.ne(me.getId())));
+					.and(memberNotEq(me)));
 
+		if (me == null || !existsByMember(me)) {
+			return notLinkedSummonersQuery(query);
+		}
 		RiotAccount account = queryFactory
 			.selectFrom(riotAccount)
 			.where(riotAccount.member.id.eq(me.getId()))
-			.fetchOne();
-		if (account == null) {
-			return query
-				.orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc())
-				.limit(5)
-				.fetch();
-		}
+			.fetchFirst();
 		return query
 			.where(duoable(account.getQueue(), account.getDivision(), true))
 			.orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc())
 			.limit(5)
 			.fetch();
+	}
+
+	private Boolean existsByMember(Member member) {
+		return queryFactory
+			.selectOne()
+			.from(riotAccount)
+			.where(riotAccount.member.id.eq(member.getId()))
+			.fetchFirst() != null;
+	}
+
+	private List<RecommendedSummonersEntry> notLinkedSummonersQuery(
+		JPAQuery<RecommendedSummonersEntry> query) {
+		return query
+			.orderBy(Expressions.numberTemplate(Double.class, "function('rand')").asc())
+			.limit(5)
+			.fetch();
+	}
+
+	private BooleanExpression memberNotEq(Member me) {
+		if (me == null) {
+			return null;
+		}
+		return riotAccount.member.id.ne(me.getId());
 	}
 
 	private QBean<RecommendedSummonersEntry> getProjectionBean() {
