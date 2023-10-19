@@ -8,7 +8,6 @@ import org.springframework.data.mongodb.core.mapping.DBRef;
 import org.springframework.data.mongodb.core.mapping.Document;
 
 import java.util.Date;
-import java.util.Set;
 
 @Document(collection = "chatRoom")
 @Getter
@@ -34,6 +33,8 @@ public class ChatRoom {
 		@DBRef
 		private User user;
 		private Date exitDate;
-		private Status status = Status.UNBLOCK;
+		private Blocked status;
 	}
+
+	private Date lastModifiedDate;
 }

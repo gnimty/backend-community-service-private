@@ -3,8 +3,12 @@ package com.gnimty.communityapiserver.domain.chat.repository;
 import static org.assertj.core.api.Assertions.assertThat;
 
 import com.gnimty.communityapiserver.domain.chat.entity.ChatRoom;
+import com.gnimty.communityapiserver.domain.chat.entity.Blocked;
 import com.gnimty.communityapiserver.domain.chat.entity.Status;
 import com.gnimty.communityapiserver.domain.chat.entity.User;
+import com.gnimty.communityapiserver.domain.chat.repository.Chat.ChatRepository;
+import com.gnimty.communityapiserver.domain.chat.repository.ChatRoom.ChatRoomRepository;
+import com.gnimty.communityapiserver.domain.chat.repository.User.UserRepository;
 import com.gnimty.communityapiserver.global.exception.BaseException;
 import java.util.*;
 
@@ -20,6 +24,7 @@ import org.springframework.test.context.ActiveProfiles;
 @SpringBootTest
 @ActiveProfiles("test")
 public class ChatRoomRepositoryTest {
+
     @Autowired
     private ChatRepository chatRepository;
     @Autowired
@@ -27,56 +32,62 @@ public class ChatRoomRepositoryTest {
     @Autowired
     private ChatRoomRepository chatRoomRepository;
 
-    void clear(){
+    void clear() {
         chatRoomRepository.deleteAll();
         userRepository.deleteAll();
         chatRepository.deleteAll();
     }
 
-    void 채팅방_여러개_만들기(){
+    void 채팅방_여러개_만들기() {
         clear();
         List<User> users = new ArrayList<>();
         List<ChatRoom> chatRooms = new ArrayList<>();
 //
-        for(Integer i=0;i<20;i++){
-            users.add(userRepository.save(new User(null, i.longValue(), 3L, "diamond", 3, "so1omon", "ON")));
+        for (Integer i = 0; i < 20; i++) {
+            users.add(userRepository.save(
+                new User(null, i.longValue(), 3L, "diamond", 3,
+                    "so1omon", Status.ONLINE)));
         }
 
-        for(Integer i=1;i<10;i++){
+        for (Integer i = 1; i < 10; i++) {
             List<ChatRoom.Participant> participants = new ArrayList<>();
-            participants.add(new ChatRoom.Participant(users.get(0), null, Status.UNBLOCK));
-            participants.add(new ChatRoom.Participant(users.get(i), null, Status.UNBLOCK));
-            chatRooms.add(chatRoomRepository.save(new ChatRoom(null, i.longValue(), participants, new Date())));
+            participants.add(new ChatRoom.Participant(users.get(0), null, Blocked.UNBLOCK));
+            participants.add(new ChatRoom.Participant(users.get(i), null, Blocked.UNBLOCK));
+            chatRooms.add(chatRoomRepository.save(
+                new ChatRoom(null, i.longValue(), participants, new Date(), new Date())));
         }
 
-        for(Integer i=11;i<20;i++){
+        for (Integer i = 11; i < 20; i++) {
             List<ChatRoom.Participant> participants = new ArrayList<>();
-            participants.add(new ChatRoom.Participant(users.get(10), null, Status.UNBLOCK));
-            participants.add(new ChatRoom.Participant(users.get(i), null, Status.UNBLOCK));
-            chatRooms.add(chatRoomRepository.save(new ChatRoom(null, i.longValue(), participants, new Date())));
+            participants.add(new ChatRoom.Participant(users.get(10), null, Blocked.UNBLOCK));
+            participants.add(new ChatRoom.Participant(users.get(i), null, Blocked.UNBLOCK));
+            chatRooms.add(chatRoomRepository.save(
+                new ChatRoom(null, i.longValue(), participants, new Date(), new Date())));
         }
     }
 
     @BeforeEach
-	void beforeUnitTest() {
+    void beforeUnitTest() {
         채팅방_여러개_만들기();
-	}
-
+    }
 
 
     @Test
-    void 유저두명_생성해서_chatRoom에_넣기_테스트(){
-        User user1 = userRepository.save(new User(null, 130L, 3L, "diamond", 3, "so1omon", "ON"));
-        User user2 = userRepository.save(new User(null, 131L, 4L, "emerald", 3, "solmin23", "ON"));
+    void 유저두명_생성해서_chatRoom에_넣기_테스트() {
+        User user1 = userRepository.save(
+            new User(null, 130L, 3L, "diamond", 3,
+                "so1omon", Status.ONLINE));
+        User user2 = userRepository.save(
+            new User(null, 131L, 4L, "emerald", 3,
+                "solmin23", Status.ONLINE));
 
         ChatRoom save = chatRoomRepository.save(user1, user2);
         System.out.println("save = " + save);
     }
 
 
-
     @Test
-    void 채팅방_조회(){
+    void 채팅방_조회() {
         User user = userRepository.findByActualUserId(0L).get();
 
         List<ChatRoom> results = chatRoomRepository.findByUser(user);
@@ -89,7 +100,7 @@ public class ChatRoomRepositoryTest {
     }
 
     @Test
-    void 두명이_속한_채팅방_조회(){
+    void 두명이_속한_채팅방_조회() {
         User user1 = userRepository.findByActualUserId(0L).get();
         User user2 = userRepository.findByActualUserId(1L).get();
 
@@ -101,15 +112,13 @@ public class ChatRoomRepositoryTest {
     }
 
     @Test
-    void 채팅방_생성_비정상_CASE(){
+    void 채팅방_생성_비정상_CASE() {
         List<User> all = userRepository.findAll();
         User user1 = all.get(0);
         User user2 = all.get(1);
 
-        chatRoomRepository.save(user1, user2);
-        Assertions.assertThrows(BaseException.class, ()->chatRoomRepository.save(user1, user2));
+        Assertions.assertThrows(BaseException.class, () -> chatRoomRepository.save(user1, user2));
     }
-
 
 //	@AfterEach
 //	void afterEach() {

@@ -25,5 +25,5 @@ public class User {
 	private String tier;
 	private Integer division;
 	private String summonerName;
-	private String status = "ON";
+	private Status status;
 }
