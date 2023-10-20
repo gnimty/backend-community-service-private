@@ -13,7 +13,6 @@ public class WebSocketSessionManager {
 
     public void addSession(String sessionId, Long memberId) {
         sessionStore.put(sessionId, memberId);
-        log.info("addSession: {} {}", sessionId, memberId);
     }
 
     public Long disConnectSession(String sessionId) {
