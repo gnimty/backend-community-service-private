@@ -1,6 +1,7 @@
 package com.gnimty.communityapiserver.global.config;
 
 import com.gnimty.communityapiserver.global.handler.StompExceptionHandler;
+import com.gnimty.communityapiserver.global.handler.StompHandShakeHandler;
 import com.gnimty.communityapiserver.global.handler.StompHandler;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
@@ -9,6 +10,7 @@ import org.springframework.messaging.simp.config.MessageBrokerRegistry;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
+import org.springframework.web.socket.server.HandshakeHandler;
 
 @Configuration
 @EnableWebSocketMessageBroker
@@ -17,6 +19,7 @@ public class StompConfiguration implements WebSocketMessageBrokerConfigurer {
 
 	private final StompHandler stompHandler;
 	private final StompExceptionHandler stompExceptionHandler;
+	private final StompHandShakeHandler stompHandShakeHandler;
 
 	@Override
 	public void configureMessageBroker(MessageBrokerRegistry registry) {
@@ -33,6 +36,7 @@ public class StompConfiguration implements WebSocketMessageBrokerConfigurer {
 			.setErrorHandler(stompExceptionHandler)
 			.addEndpoint("/chat")
 //            .addInterceptors((HandshakeInterceptor) stompHandler)
+			.setHandshakeHandler(stompHandShakeHandler)
 			.setAllowedOriginPatterns("*");
 
 		// SockJS 사용 시
@@ -48,4 +52,6 @@ public class StompConfiguration implements WebSocketMessageBrokerConfigurer {
 	public void configureClientInboundChannel(ChannelRegistration registration) {
 		registration.interceptors(stompHandler);
 	}
+
+
 }

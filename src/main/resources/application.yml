@@ -61,10 +61,8 @@ spring:
 
   jpa:
     database: mysql   # 추가 해준 부분
-    properties:
-      hibernate:
-        hbm2ddl:
-          auto: update
+    hibernate:
+      ddl-auto: create-drop
   data:
     mongodb:
       database: ${MONGO_DATABASE}
