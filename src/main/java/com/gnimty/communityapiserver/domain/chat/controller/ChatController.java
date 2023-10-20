@@ -74,5 +74,4 @@ public class ChatController {
 		template.convertAndSend("/sub/chatRoom/" + chatRoomNo, message);
 	}
 
-	// 구독 취소 (유저 차단) 어떻게 구현?
 }
