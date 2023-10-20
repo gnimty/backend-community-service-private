@@ -28,7 +28,6 @@ public class ChatController {
 	private final MemberService memberService;
 	private final SimpMessagingTemplate template;
 	private final WebSocketSessionManager webSocketSessionManager;
-
 	// 채팅의 모든 조회
 	@SubscribeMapping("/init_chat")
 	public List<ChatRoomInfo> getTotalChatRoomsAndChatsAndOtherUserInfo() {
@@ -78,7 +77,7 @@ public class ChatController {
 	public void sendStatus(@DestinationVariable("chatRoomNo") Long chatRoomNo, String message) {
 		template.convertAndSend("/sub/chatRoom/" + chatRoomNo, message);
 	}
-
+  
 	@EventListener
 	public void onClientDisconnect(SessionDisconnectEvent event) {
 		Long memberId = webSocketSessionManager.disConnectSession(event.getSessionId());

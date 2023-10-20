@@ -6,11 +6,13 @@ import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.messaging.simp.config.ChannelRegistration;
 import org.springframework.messaging.simp.config.MessageBrokerRegistry;
+
 import org.springframework.messaging.support.ChannelInterceptor;
 import org.springframework.web.socket.config.annotation.EnableWebSocketMessageBroker;
 import org.springframework.web.socket.config.annotation.StompEndpointRegistry;
 import org.springframework.web.socket.config.annotation.WebSocketMessageBrokerConfigurer;
 import org.springframework.web.socket.server.HandshakeInterceptor;
+
 
 @Configuration
 @EnableWebSocketMessageBroker
@@ -28,12 +30,14 @@ public class StompConfiguration implements WebSocketMessageBrokerConfigurer {
 			"/sub"); //클라이언트에서 메세지 송신 시 붙일 prefix 정의 - 클라이언트가 메세지를 보낼때
 	}
 
+
 	@Override
 	public void registerStompEndpoints(StompEndpointRegistry registry) {
 		registry
 			.setErrorHandler(stompExceptionHandler)
 			.addEndpoint("/chat")
             //.addInterceptors((HandshakeInterceptor) stompHandler)
+
 			.setAllowedOriginPatterns("*");
 
 		// SockJS 사용 시
@@ -41,6 +45,7 @@ public class StompConfiguration implements WebSocketMessageBrokerConfigurer {
 			.setErrorHandler(stompExceptionHandler)
 			.addEndpoint("/chat")
 			//.addInterceptors((HandshakeInterceptor) stompHandler)
+
 			.setAllowedOriginPatterns("*")
 			.withSockJS();
 	}
@@ -49,5 +54,6 @@ public class StompConfiguration implements WebSocketMessageBrokerConfigurer {
 	public void configureClientInboundChannel(ChannelRegistration registration) {
 		registration.interceptors(stompHandler);
 	}
+
 
 }

@@ -20,6 +20,7 @@ public class StompHandler implements ChannelInterceptor {
 	private final JwtProvider jwtProvider;
 	private final WebSocketSessionManager webSocketSessionManager;
 
+
 	@Override
 	public Message<?> preSend(Message<?> message, MessageChannel channel) {
 
@@ -37,6 +38,7 @@ public class StompHandler implements ChannelInterceptor {
 		}
 		return message;
 	}
+
 
 
 }
